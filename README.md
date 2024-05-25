@@ -42,7 +42,7 @@ $ npm start
 # build for production with minification
 $ npm run build
 ```
-## Visual Site Map Diagram
+## Site Map Outline View
 ```
 Home Page
     ├── Welcome Message
