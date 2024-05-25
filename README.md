@@ -16,4 +16,15 @@ User Authentication: This feature supports the registration, login, and role-bas
 - **Communication Tools**: This feature offers messaging functionality for direct communication between teachers, students, and parents, as well as group messaging for announcements and notifications. 
 - **Resource Management**: This feature allows administrators to manage school resources, such as classrooms, labs, and equipment, and track their usage and availability. 
 - **Dashboard and Reporting**: This feature provides users with personalized dashboards and generates various reports to help monitor performance and make data-driven decisions. 
+# Installation
+  Clone the repo
+ ```
+ git clone https://github.com/skimsry/aupp_schoolcool.git
+ cd aupp_schoolcool
+ ```
+  
+# Copyright and license
+Copyright@ 2024 
+- **SORN KIMSRY**
+- **Tel 016 571 913**
 
