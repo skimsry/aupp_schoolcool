@@ -17,12 +17,96 @@ User Authentication: This feature supports the registration, login, and role-bas
 - **Resource Management**: This feature allows administrators to manage school resources, such as classrooms, labs, and equipment, and track their usage and availability. 
 - **Dashboard and Reporting**: This feature provides users with personalized dashboards and generates various reports to help monitor performance and make data-driven decisions. 
 # Installation
-  Clone the repo
- ```
- git clone https://github.com/skimsry/aupp_schoolcool.git
- cd aupp_schoolcool
- ```
-  
+  ### Clone repo
+``` bash
+# clone the repo
+git clone https://github.com/skimsry/aupp_schoolcool.git
+
+# go into app's directory
+cd aupp_schoolcool
+
+# install backend's dependencies
+cd backend
+npm install
+
+# install frontend's dependencies
+cd ../frontend
+npm install
+```
+## Usage
+
+``` bash
+# serve with hot reload at localhost:3000.
+$ npm start
+
+# build for production with minification
+$ npm run build
+```
+## Visual Site Map Diagram
+```
+Home Page
+    ├── Welcome Message
+    └── News and Announcements
+User Authentication
+    ├── Login
+    ├── Register
+    └── Forgot Password
+Dashboard
+    ├── Administrator Dashboard
+    ├── Teacher Dashboard
+    ├── Student Dashboard
+    └── Parent Dashboard
+User Management
+    ├── Administrators
+    │   ├── Add Administrator
+    │   └── Manage Administrators
+    ├── Teachers
+    │   ├── Add Teacher
+    │   ├── Manage Teachers
+    │   └── Assign Courses
+    ├── Students
+    │   ├── Add Student
+    │   ├── Manage Students
+    │   └── Enrolment Status
+    └── Parents
+        ├── Add Parent
+        └── Manage Parents
+Course Management
+    ├── Create Course
+    ├── Manage Courses
+    ├── Course Schedules
+    ├── Class Timings
+    ├── Room Assignments
+    └── Instructor Allocation
+Attendance Management
+    ├── Record Attendance
+    ├── View Attendance Records
+    └── Attendance Trends and Reports
+Grade Management
+    ├── Input Grades
+    ├── Manage Grades
+    ├── Generate Report Cards
+    └── Progress Reports
+Parent Portal
+    ├── View Child’s Attendance
+    ├── View Child’s Grades
+    ├── Teacher Feedback
+    └── Announcements
+Communication Tools
+    ├── Direct Messaging
+    ├── Group Messaging
+    └── Announcements and Notifications
+Resource Management
+    ├── Manage Classrooms
+    ├── Manage Labs
+    ├── Manage Equipment
+    └── Resource Availability
+Reports and Analytics
+    ├── Personalized Dashboards
+    ├── Performance Reports
+    ├── Data-Driven Insights
+    └── Export Reports
+```
 # Copyright and license
 Copyright@ 2024 
 - **SORN KIMSRY**
