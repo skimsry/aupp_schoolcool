@@ -7,6 +7,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import Header from "./components/header/Header";
+import Footer from "./components/footer/Footer";
+import Home from "./components/home/Home";
 import { UserContext } from "./ctx/UserContextProvider";
 
 const App = () => {
@@ -16,6 +18,8 @@ const App = () => {
       <div className="App">
         <div className="headSection">
           <Header />
+          <Home />
+          <Footer />
         </div>
       </div>
     </Router>

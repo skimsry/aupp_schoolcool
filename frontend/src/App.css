@@ -36,3 +36,29 @@
     transform: rotate(360deg);
   }
 }
+
+/* text on slideshow */
+.slideshow {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+}
+
+.slide {
+  display: none;
+}
+
+.active {
+  display: block;
+}
+
+.text-overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 5px;
+}
