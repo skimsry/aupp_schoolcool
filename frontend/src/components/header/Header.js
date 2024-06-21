@@ -1,8 +1,9 @@
 import React from "react";
 import "../../input.css";
 import "../../index.css";
-import "../../components/home/header.css";
+import "../../components/header/header.css";
 import logo from "../../assets/schoolcool.png";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -14,7 +15,7 @@ const Header = () => {
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
             <img src={logo} className="h-12" alt="SchoolCool Logo" />
-            <span className="self-center text-4xl font-semibold whitespace-nowrap dark:text-white anton-regular">
+            <span className="self-center text-4xl font-semibold whitespace-nowrap dark:text-white anton-regular text-[#003070]">
               SchoolCool
             </span>
           </a>
@@ -45,37 +46,37 @@ const Header = () => {
           <div className="flex items-center">
             <ul className="flex flex-row font-medium mt-0 space-x-8 rtl:space-x-reverse text-sm">
               <li>
-                <a
-                  href="#"
-                  className="text-gray-900 dark:text-white hover:underline"
+                <Link
+                  to="/"
+                  className="hover:bg-[#003070] rounded px-2 py-1 hover:text-white"
                   aria-current="page"
                 >
                   Home
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="text-gray-900 dark:text-white hover:underline"
+                <Link
+                  to="/announcement"
+                  className="hover:bg-[#003070] rounded px-2 py-1 hover:text-white"
                 >
                   Announcement
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="text-gray-900 dark:text-white hover:underline"
+                <Link
+                  to="/about_us"
+                  className="hover:bg-[#003070] rounded px-2 py-1 hover:text-white"
                 >
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="text-gray-900 dark:text-white hover:underline"
+                <Link
+                  to="/contact"
+                  className="hover:bg-[#003070] rounded px-2 py-1 hover:text-white"
                 >
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

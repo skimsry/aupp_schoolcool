@@ -1,3 +1,13 @@
+@media (min-width: 1024px) {
+  body {
+    padding-top: 60px;
+  }
+}
+@media (max-width: 768px) {
+  body {
+    padding-top: 140px;
+  }
+}
 .fixed-header {
   position: fixed;
   top: 0;
@@ -6,8 +16,4 @@
   background-color: #fff;
   z-index: 1000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-body {
-  padding-top: 60px;
 }

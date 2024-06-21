@@ -1,24 +1,29 @@
-import React, { useContext } from "react";
+import React from "react";
 import "./App.css";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
 import Home from "./components/home/Home";
-import { UserContext } from "./ctx/UserContextProvider";
+import Announcement from "./components/announcement/Announcement";
+import AboutUs from "./components/aboutUs/AboutUs";
+import Contact from "./components/contact/Contact";
 
 const App = () => {
-  const { isAuthenticated } = useContext(UserContext);
   return (
     <Router>
       <div className="App">
-        <div className="headSection">
+        <div className="header-section">
           <Header />
-          <Home />
+        </div>
+        <div className="container">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/announcement" element={<Announcement />} />
+            <Route path="/about_us" element={<AboutUs />} />
+            <Route path="/contact" element={<Contact />} />
+          </Routes>
+        </div>
+        <div className="footer-section">
           <Footer />
         </div>
       </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../input.css";
 import "../../index.css";
 import { ChevronLeft, ChevronRight } from "react-feather";
+import TextCarousel from "./TextCarousel";
 const slides = [
   {
     src: "https://www.aupp.edu.kh/wp-content/uploads/Welcome-Back.jpg",
@@ -44,18 +45,15 @@ const Carousel = ({ autoSlide = true, autoSlideInterval = 10000 }) => {
         style={{ transform: `translateX(-${curr * 100}%)` }}
       >
         {slides.map((image, index) => (
-          <>
-            <img
-              src={image.src}
-              id={index}
-              style={{ width: "1900px", height: "860px" }}
-              alt={image.caption}
-            />
-            {/* <h1>{image.caption}</h1>
-            <p>{image.description}</p> */}
-          </>
+          <img
+            src={image.src}
+            id={index}
+            alt={image.caption}
+            className="max-w-full h-auto"
+          />
         ))}
       </div>
+      <TextCarousel />
       <div className="absolute inset-0 flex items-center justify-between p-4">
         <button
           onClick={prev}
