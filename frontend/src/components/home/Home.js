@@ -4,10 +4,12 @@ import Map from "./Map";
 import Partners from "./Partners";
 import OurTeam from "./OurTeam";
 import Activities from "./Activities";
+import BlockQuote from "./BlockQuote";
 const Home = () => {
   return (
     <>
       <Carousel />
+      <BlockQuote />
       <Activities />
       <OurTeam />
       <Partners />

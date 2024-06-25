@@ -13,10 +13,20 @@ const Contact = () => {
           backgroundImage: `url(${contactBg})`,
           height: "250px",
         }}
-      ></div>
-      <h2 className="text-3xl font-bold tracking-tight text-blue-800 sm:text-4xl pb-10 pt-10">
+      >
+        <div className="text-white space-y-2 text-center pt-20">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            {" "}
+            Contact Us
+          </h2>
+          <p className="font-serif text-sm dark:text-gray-600">
+            Qualisque erroribus usu at, duo te agam soluta mucius.
+          </p>
+        </div>
+      </div>
+      {/* <h2 className="text-3xl font-bold tracking-tight text-blue-800 sm:text-4xl pb-10 pt-10">
         Contact Us
-      </h2>
+      </h2> */}
       <div className="flex">
         <div className="w-1/2">
           <div className="text-left flex items-center justify-center p-12">
