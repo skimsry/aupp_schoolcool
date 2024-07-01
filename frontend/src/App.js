@@ -15,9 +15,9 @@ const App = () => {
   return (
     <Router>
       <div className="App">
-        {/* <div className="header-section">
+        <div className="header-section">
           <Header />
-        </div> */}
+        </div>
         <div className="container">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -29,9 +29,9 @@ const App = () => {
             <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </div>
-        {/* <div className="footer-section">
+        <div className="footer-section">
           <Footer />
-        </div> */}
+        </div>
       </div>
     </Router>
   );
