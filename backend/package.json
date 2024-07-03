@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "concurrently \"nodemon app\" \"cd ../frontend && npm start\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon -r dotenv/config ./index.js"
   },
   "keywords": [],
   "author": "",
@@ -27,7 +28,18 @@
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^8.0.0",
     "react-slick": "^0.29.0",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "bad-words": "^3.0.4",
+    "compression": "^1.7.4",
+    "connect-redis": "^7.1.1",
+    "csrf-sync": "^4.0.3",
+    "helmet": "^7.1.0",
+    "ioredis": "^5.4.1",
+    "memorystore": "^1.6.7",
+    "moment": "^2.30.1",
+    "morgan": "^1.10.0",
+    "pug": "^3.0.2",
+    "redis": "^4.6.14"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
