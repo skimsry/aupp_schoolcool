@@ -1,6 +1,10 @@
 import React from "react";
 import "../../input.css";
 import "../../index.css";
+import ATC from "../../assets/ATC.png";
+import UA from "../../assets/UA.png";
+import AUPPHS from "../../assets/AUPPHS-FA.png";
+import Fort from "../../assets/Fort-Hays.png";
 
 const Partners = () => {
   return (
@@ -13,31 +17,23 @@ const Partners = () => {
         <div className="flex justify-center space-x-8">
           <div className="flex flex-col items-center">
             <img
-              src="https://www.aupp.edu.kh/wp-content/uploads/UA.png"
+              src={UA}
               alt="The University of Arizona"
               className="h-48 mb-2"
             />
           </div>
           <div className="flex flex-col items-center">
             <img
-              src="https://www.aupp.edu.kh/wp-content/uploads/Fort-Hays.png"
+              src={Fort}
               alt="FORT HAYS STATE UNIVERSITY"
               className="h-48 mb-2"
             />
           </div>
           <div className="flex flex-col items-center">
-            <img
-              src="https://www.aupp.edu.kh/wp-content/uploads/AUPPHS-FA.png"
-              alt="AUPP HIGH SCHOOL"
-              className="h-48 mb-2"
-            />
+            <img src={AUPPHS} alt="AUPP HIGH SCHOOL" className="h-48 mb-2" />
           </div>
           <div className="flex flex-col items-center">
-            <img
-              src="https://www.aupp.edu.kh/wp-content/uploads/ATC.png"
-              alt="AUPP TECHNOLOGY CENTER"
-              className="h-48 mb-2"
-            />
+            <img src={ATC} alt="AUPP TECHNOLOGY CENTER" className="h-48 mb-2" />
           </div>
         </div>
       </div>

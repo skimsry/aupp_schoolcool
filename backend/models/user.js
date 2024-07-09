@@ -10,7 +10,7 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  userName: {
+  username: {
     type: String,
   },
   phoneNumber: {
@@ -27,13 +27,17 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  status: {
+  type: {
     type: Number,
+  },
+  status: {
+    type: Boolean,
   },
   createdDate: { type: Date, default: Date.now },
   updateDate: { type: Date, default: Date.now },
 });
 
+// Hash password before saving
 userSchema.pre("save", function (next) {
   if (!this.isModified("password")) {
     return next();
@@ -41,29 +45,31 @@ userSchema.pre("save", function (next) {
   this.password = bcrypt.hashSync(this.password, 10);
   next();
 });
+
+// Check if password matches the hashed password
 userSchema.methods.checkPassword = async function (password) {
   try {
     const match = await bcrypt.compare(password, this.password);
     if (match) {
       return Promise.resolve();
     }
-    return Promise.reject();
+    return Promise.reject(new Error("Password mismatch"));
   } catch (error) {
     return Promise.reject(error);
   }
 };
 
-userSchema.methods.updateLoggedIn = function () {
-  return this.model("User").findOneAndUpdate(
-    {
-      email: this.email,
-    },
-    {
-      updateDate: new Date(),
-    }
-  );
+// Update the logged-in timestamp
+userSchema.methods.updateLoggedIn = async function () {
+  try {
+    this.updateDate = new Date();
+    await this.save();
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };
-//delete account
+
+// Pre-delete hook to log deletion
 userSchema.pre(
   "deleteOne",
   { document: true, query: false },

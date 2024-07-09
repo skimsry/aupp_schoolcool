@@ -17,7 +17,21 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const logFile = join(__dirname, "schoolcool.log");
 const PORT = process.env.PORT || 3000;
 app.use(helmet());
+// Helmet with Content Security Policy settings
+
 app.use(compression());
+
+// Serve static files from the React app
+import path from "path";
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+app.get("/api", (req, res) => {
+  res.send({ message: "Hello from the server!" });
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
+});
 
 // app.use("/assets", express.static(join(__dirname, "public")));
 // app.use(express.static(join(__dirname, "public", "client")));

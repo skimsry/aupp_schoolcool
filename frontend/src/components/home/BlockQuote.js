@@ -1,6 +1,7 @@
 import React from "react";
 import "../../input.css";
 import "../../index.css";
+import josh from "../../assets/josh.avif";
 const BlockQuote = () => {
   return (
     <blockquote className="w-1/2 relative border-s-4 ps-4 sm:ps-6 dark:border-neutral-700 pt-10 ms-4">
@@ -16,7 +17,7 @@ const BlockQuote = () => {
           <div className="flex-shrink-0">
             <img
               className="size-10 rounded-full"
-              src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
+              src={josh}
               alt="Image Description"
             />
           </div>

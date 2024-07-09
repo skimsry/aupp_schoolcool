@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/static/css/main.80c7e628.css",
+    "main.js": "/static/js/main.878dbf9f.js",
+    "static/js/453.c621718c.chunk.js": "/static/js/453.c621718c.chunk.js",
+    "static/media/Welcome-Back.jpg": "/static/media/Welcome-Back.f3666e0b54699440c236.jpg",
+    "static/media/aboutUsBg.png": "/static/media/aboutUsBg.7b59c8fd05ebd1ce6394.png",
+    "static/media/contactBg.png": "/static/media/contactBg.2af1c22d1e1e77eb1202.png",
+    "static/media/ATC.png": "/static/media/ATC.db03cd484fc57a113d8a.png",
+    "static/media/Fort-Hays.png": "/static/media/Fort-Hays.b7d689efabe6570a6453.png",
+    "static/media/AUPPHS-FA.png": "/static/media/AUPPHS-FA.b9d05300b39030fcad9d.png",
+    "static/media/announcementBg.png": "/static/media/announcementBg.e6464548a98f96d4e919.png",
+    "static/media/UA.png": "/static/media/UA.d4819f23453d9f67c07c.png",
+    "static/media/schoolcool.png": "/static/media/schoolcool.14a853ce5364e75d03a5.png",
+    "static/media/image-1.jpg": "/static/media/image-1.6251f43d45a45c8eaa38.jpg",
+    "static/media/josh.avif": "/static/media/josh.2ff7b8aaa1ef89fabdd2.avif",
+    "static/media/team.avif": "/static/media/team.955a23632bd04632c03c.avif",
+    "index.html": "/index.html",
+    "main.80c7e628.css.map": "/static/css/main.80c7e628.css.map",
+    "main.878dbf9f.js.map": "/static/js/main.878dbf9f.js.map",
+    "453.c621718c.chunk.js.map": "/static/js/453.c621718c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.80c7e628.css",
+    "static/js/main.878dbf9f.js"
+  ]
+}

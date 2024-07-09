@@ -1,6 +1,7 @@
 import React from "react";
 import "../../index.css";
 import "../../input.css";
+import teamIcon from "../../assets/team.avif";
 
 const OurTeam = () => {
   return (
@@ -50,38 +51,32 @@ const teamMembers = [
   {
     name: "Leslie Alexander",
     position: "Co-Founder / CEO",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    image: teamIcon,
   },
   {
     name: "Leslie Alexander",
     position: "Co-Founder / CEO",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    image: teamIcon,
   },
   {
     name: "Leslie Alexander",
     position: "Co-Founder / CEO",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    image: teamIcon,
   },
   {
     name: "Leslie Alexander",
     position: "Co-Founder / CEO",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    image: teamIcon,
   },
   {
     name: "Leslie Alexander",
     position: "Co-Founder / CEO",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    image: teamIcon,
   },
   {
     name: "Leslie Alexander",
     position: "Co-Founder / CEO",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    image: teamIcon,
   },
 ];
 

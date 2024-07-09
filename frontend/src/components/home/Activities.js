@@ -1,6 +1,7 @@
 import React from "react";
 import "../../index.css";
 import "../../input.css";
+import imagePost from "../../assets/image-1.jpg";
 
 const Activities = () => {
   const activities = [
@@ -8,42 +9,42 @@ const Activities = () => {
       title: "Noteworthy technology acquisitions 2021",
       description:
         "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-      image: "https://flowbite.com/docs/images/blog/image-1.jpg",
+      image: imagePost,
       link: "#",
     },
     {
       title: "Noteworthy technology acquisitions 2021",
       description:
         "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-      image: "https://flowbite.com/docs/images/blog/image-1.jpg",
+      image: imagePost,
       link: "#",
     },
     {
       title: "Noteworthy technology acquisitions 2021",
       description:
         "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-      image: "https://flowbite.com/docs/images/blog/image-1.jpg",
+      image: imagePost,
       link: "#",
     },
     {
       title: "Noteworthy technology acquisitions 2021",
       description:
         "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-      image: "https://flowbite.com/docs/images/blog/image-1.jpg",
+      image: imagePost,
       link: "#",
     },
     {
       title: "Noteworthy technology acquisitions 2021",
       description:
         "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-      image: "https://flowbite.com/docs/images/blog/image-1.jpg",
+      image: imagePost,
       link: "#",
     },
     {
       title: "Noteworthy technology acquisitions 2021",
       description:
         "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-      image: "https://flowbite.com/docs/images/blog/image-1.jpg",
+      image: imagePost,
       link: "#",
     },
   ];

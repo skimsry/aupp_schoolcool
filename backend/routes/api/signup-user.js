@@ -2,34 +2,34 @@ import { signUpUser } from "../../controllers/user.js";
 
 export default async (req, res) => {
   try {
-    let {
-      fname,
-      lname,
+    const {
+      firstName,
+      lastName,
       username,
       phoneNumber,
-      type,
       email,
       password,
+      type,
       status,
-      createdDate,
-      updateDate,
     } = req.body;
-
+    console.log(req.body);
     const { user, token } = await signUpUser({
-      fname,
-      lname,
+      firstName,
+      lastName,
       username,
       phoneNumber,
-      type,
       email,
       password,
-      status: 1,
+      type,
+      status,
       createdDate: new Date(),
       updateDate: new Date(),
     });
-    console.log(user);
     res.json({ user, token });
   } catch (error) {
-    res.status(403).json(error);
+    console.error("Error during sign up:", error);
+    res
+      .status(403)
+      .json({ error: error.message || "An error occurred during sign up." });
   }
 };

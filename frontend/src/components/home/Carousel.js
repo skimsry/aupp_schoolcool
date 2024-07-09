@@ -3,24 +3,25 @@ import "../../input.css";
 import "../../index.css";
 import { ChevronLeft, ChevronRight } from "react-feather";
 import TextCarousel from "./TextCarousel";
+import slideshow from "../../assets/Welcome-Back.jpg";
 const slides = [
   {
-    src: "https://www.aupp.edu.kh/wp-content/uploads/Welcome-Back.jpg",
+    src: slideshow,
     caption: "First Slide",
     description: "This is the first slide",
   },
   {
-    src: "https://www.aupp.edu.kh/wp-content/uploads/Welcome-Back.jpg",
+    src: slideshow,
     caption: "Second Slide",
     description: "This is the second slide",
   },
   {
-    src: "https://www.aupp.edu.kh/wp-content/uploads/Welcome-Back.jpg",
+    src: slideshow,
     caption: "Third Slide",
     description: "This is the third slide",
   },
   {
-    src: "https://www.aupp.edu.kh/wp-content/uploads/Welcome-Back.jpg",
+    src: slideshow,
     caption: "Fourth Slide",
     description: "This is the fourth slide",
   },
