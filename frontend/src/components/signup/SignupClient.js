@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import "../../input.css";
 import "../../index.css";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Terms from "./Terms";
+import { signUpClient } from "../../stores/actions";
 
-const Signup = () => {
+const SignupClient = () => {
   const [showTerm, setshowTerm] = useState(false);
   const openTerms = () => setshowTerm(true);
   const closeTerms = () => setshowTerm(false);
@@ -21,11 +22,13 @@ const Signup = () => {
     type: "",
     email: "",
     password: "",
+    rePassword: "",
     status: "",
     createdDate: "",
     updateDate: "",
   });
 
+  const dispatch = useDispatch();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -40,40 +43,44 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      setLoading(true);
-
+    if (
+      formData.firstName &&
+      formData.lastName &&
+      formData.phoneNumber &&
+      formData.email &&
+      formData.password &&
+      formData.password === formData.rePassword
+    ) {
       const userData = {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        username: formData.username,
-        phoneNumber: formData.phoneNumber,
-        type: formData.type,
-        email: formData.email,
-        password: formData.password,
+        ...formData,
         status: false,
         createdDate: new Date(),
         updateDate: new Date(),
       };
-
-      const response = await axios.post("/api/users/register", userData);
-      toast.success(
-        "User registered and is waiting approve from Administrator. Please check your email.",
-        {
+      try {
+        setLoading(true);
+        dispatch(signUpClient(userData));
+        //console.table(userData);
+        toast.success(
+          "User registered and is waiting for approval from the Administrator. Please check your email.",
+          {
+            position: "bottom-right",
+            autoClose: 3000,
+          }
+        );
+        setLoading(false);
+        setTimeout(() => {
+          navigate("/login");
+        }, 3000);
+      } catch (error) {
+        setLoading(false);
+        toast.error("This email is already in use. Please try another email.", {
           position: "bottom-right",
           autoClose: 3000,
-        }
-      );
-      setLoading(false);
-      setTimeout(() => {
-        navigate("/login");
-      }, 3000);
-    } catch (error) {
-      setLoading(false);
-      toast.error("This email is already in use. Please try another email.", {
-        position: "bottom-right",
-        autoClose: 3000,
-      });
+        });
+      }
+    } else {
+      setError("Passwords do not match or required fields are missing.");
     }
   };
 
@@ -95,7 +102,7 @@ const Signup = () => {
                     htmlFor="firstName"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    First Name
+                    First Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -113,7 +120,7 @@ const Signup = () => {
                     htmlFor="lastName"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Last Name
+                    Last Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -132,7 +139,7 @@ const Signup = () => {
                   htmlFor="username"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  username
+                  Username
                 </label>
                 <input
                   type="text"
@@ -150,7 +157,7 @@ const Signup = () => {
                     htmlFor="phoneNumber"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Phone Number
+                    Phone Number <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="tel"
@@ -190,7 +197,7 @@ const Signup = () => {
                   htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Your email
+                  Your email <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
@@ -208,7 +215,7 @@ const Signup = () => {
                   htmlFor="password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Password
+                  Password <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="password"
@@ -216,6 +223,24 @@ const Signup = () => {
                   id="password"
                   placeholder="••••••••"
                   value={formData.password}
+                  onChange={handleChange}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="rePassword"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Retype Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  name="rePassword"
+                  id="rePassword"
+                  placeholder="••••••••"
+                  value={formData.rePassword}
                   onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required
@@ -242,11 +267,11 @@ const Signup = () => {
                       href="#"
                       onClick={openTerms}
                     >
-                      Terms and Conditions
+                      Terms and Conditions{" "}
+                      <span className="text-red-500">*</span>
                     </a>
                   </label>
                 </div>
-
                 <Terms show={showTerm} onClose={closeTerms}>
                   <p>
                     A Terms and Conditions agreement acts as a legal contract
@@ -280,4 +305,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default SignupClient;

@@ -1,9 +1,52 @@
-import React from "react";
+import React, { useState } from "react";
 import "../../input.css";
 import "../../index.css";
-import { Link } from "react-feather";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    const newValue = type === "checkbox" ? checked : value;
+
+    setFormData({
+      ...formData,
+      [name]: newValue,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const userData = {
+        email: formData.email,
+        password: formData.password,
+      };
+
+      const response = await axios.post("/api/users/login", userData);
+
+      if (response.status === 200) {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      setLoading(false);
+      if (error.response && error.response.status === 401) {
+        setError("Incorrect email or password.");
+      } else {
+        setError("Login failed. Please try again later.");
+      }
+    }
+  };
+
   return (
     <section className="text-left bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -12,26 +55,28 @@ const Login = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Log in to your account
             </h1>
-            <form className="space-y-4 md:space-y-6" action="#">
+            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label
-                  for="email"
+                  htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Your email / Username
+                  Your email
                 </label>
                 <input
                   type="text"
-                  name="eu"
-                  id="eu"
+                  name="email"
+                  id="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="name@company.com / sorn.kimsry"
-                  required="true"
+                  placeholder="name@company.com"
+                  required
                 />
               </div>
               <div>
                 <label
-                  for="password"
+                  htmlFor="password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Password
@@ -41,8 +86,10 @@ const Login = () => {
                   name="password"
                   id="password"
                   placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required="true"
+                  required
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -53,12 +100,11 @@ const Login = () => {
                       aria-describedby="remember"
                       type="checkbox"
                       className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                      required=""
                     />
                   </div>
                   <div className="ml-3 text-sm">
                     <label
-                      for="remember"
+                      htmlFor="remember"
                       className="text-gray-500 dark:text-gray-300"
                     >
                       Remember me
@@ -78,6 +124,8 @@ const Login = () => {
               >
                 Log in
               </button>
+              {loading && <p>Loading...</p>}
+              {error && <p className="text-red-500">{error}</p>}
             </form>
           </div>
         </div>

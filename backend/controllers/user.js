@@ -1,5 +1,35 @@
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
+import createError from "../utils/appError.js";
+import bcrypt from "bcryptjs";
+
+export const signUpClient = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      return next(new createError("User already exist!", 400));
+    }
+    const hashedPassword = await bcrypt.hash(req.body.password, 12);
+    const newUser = await User.create({
+      ...req.body,
+      password: hashedPassword,
+    });
+    const token = jwt.sign(
+      {
+        _id: newUser._id,
+      },
+      "secretkey123",
+      { expiresIn: "90d" }
+    );
+    res.status(201).json({
+      status: "success",
+      message: "User registered successfully",
+      token,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const sign = (obj) => {
   return new Promise((resolve, reject) => {
@@ -81,5 +111,24 @@ export const verifyUser = async (email) => {
     return user ? Promise.resolve(true) : Promise.resolve(false);
   } catch (error) {
     return Promise.reject(false);
+  }
+};
+
+export const loginUser = async ({ email, password }) => {
+  try {
+    const user = await User.findOne({ email });
+    await user.checkPassword(password);
+    const token = await sign({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    });
+
+    return Promise.resolve({
+      user: { id: user._id, name: user.name },
+      token,
+    });
+  } catch (error) {
+    return Promise.reject({ error });
   }
 };

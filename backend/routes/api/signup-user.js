@@ -12,7 +12,7 @@ export default async (req, res) => {
       type,
       status,
     } = req.body;
-    console.log(req.body);
+
     const { user, token } = await signUpUser({
       firstName,
       lastName,

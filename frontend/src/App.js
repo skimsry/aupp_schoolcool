@@ -8,7 +8,7 @@ import Announcement from "./components/announcement/Announcement";
 import AboutUs from "./components/aboutUs/AboutUs";
 import Contact from "./components/contact/Contact";
 import Login from "./components/login/Login";
-import Signup from "./components/signup/Signup";
+import SignupClient from "./components/signup/SignupClient";
 import Dashboard from "./components/dashboard/partial/Dashboard";
 
 const App = () => {
@@ -25,7 +25,7 @@ const App = () => {
             <Route path="/about_us" element={<AboutUs />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+            <Route path="/signup_client" element={<SignupClient />} />
             <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </div>

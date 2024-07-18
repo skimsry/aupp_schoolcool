@@ -58,3 +58,13 @@ Promise.all([connectToDb()])
     console.error(`MongoDB Atlas Error: ${error}`);
     process.exit();
   });
+
+//Global error handler
+app.use((err, req, res, next) => {
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || "error";
+  res.status(err.statusCode).json({
+    status: err.status,
+    message: err.message,
+  });
+});
