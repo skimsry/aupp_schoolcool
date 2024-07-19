@@ -15,7 +15,7 @@ import api from "./routes/api/index.js";
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const logFile = join(__dirname, "schoolcool.log");
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 app.use(helmet());
 // Helmet with Content Security Policy settings
 

@@ -7,8 +7,14 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Terms from "./Terms";
 import { signUpClient } from "../../stores/actions";
+import useSignup from "../../hooks/useSignup.js";
 
 const SignupClient = () => {
+  const { registerUser } = useSignup;
+  const handleRegister = (formData) => {
+    registerUser(formData);
+  };
+
   const [showTerm, setshowTerm] = useState(false);
   const openTerms = () => setshowTerm(true);
   const closeTerms = () => setshowTerm(false);
@@ -41,48 +47,48 @@ const SignupClient = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (
-      formData.firstName &&
-      formData.lastName &&
-      formData.phoneNumber &&
-      formData.email &&
-      formData.password &&
-      formData.password === formData.rePassword
-    ) {
-      const userData = {
-        ...formData,
-        status: false,
-        createdDate: new Date(),
-        updateDate: new Date(),
-      };
-      try {
-        setLoading(true);
-        dispatch(signUpClient(userData));
-        //console.table(userData);
-        toast.success(
-          "User registered and is waiting for approval from the Administrator. Please check your email.",
-          {
-            position: "bottom-right",
-            autoClose: 3000,
-          }
-        );
-        setLoading(false);
-        setTimeout(() => {
-          navigate("/login");
-        }, 3000);
-      } catch (error) {
-        setLoading(false);
-        toast.error("This email is already in use. Please try another email.", {
-          position: "bottom-right",
-          autoClose: 3000,
-        });
-      }
-    } else {
-      setError("Passwords do not match or required fields are missing.");
-    }
-  };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (
+  //     formData.firstName &&
+  //     formData.lastName &&
+  //     formData.phoneNumber &&
+  //     formData.email &&
+  //     formData.password &&
+  //     formData.password === formData.rePassword
+  //   ) {
+  //     const userData = {
+  //       ...formData,
+  //       status: false,
+  //       createdDate: new Date(),
+  //       updateDate: new Date(),
+  //     };
+  //     try {
+  //       setLoading(true);
+  //       dispatch(signUpClient(userData));
+  //       //console.table(userData);
+  //       toast.success(
+  //         "User registered and is waiting for approval from the Administrator. Please check your email.",
+  //         {
+  //           position: "bottom-right",
+  //           autoClose: 3000,
+  //         }
+  //       );
+  //       setLoading(false);
+  //       setTimeout(() => {
+  //         navigate("/login");
+  //       }, 3000);
+  //     } catch (error) {
+  //       setLoading(false);
+  //       toast.error("This email is already in use. Please try another email.", {
+  //         position: "bottom-right",
+  //         autoClose: 3000,
+  //       });
+  //     }
+  //   } else {
+  //     setError("Passwords do not match or required fields are missing.");
+  //   }
+  // };
 
   return (
     <section
@@ -95,7 +101,7 @@ const SignupClient = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Create an account
             </h1>
-            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-4 md:space-y-6" onSubmit={handleRegister}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="col-span-1">
                   <label
@@ -133,23 +139,6 @@ const SignupClient = () => {
                     required
                   />
                 </div>
-              </div>
-              <div>
-                <label
-                  htmlFor="username"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Username
-                </label>
-                <input
-                  type="text"
-                  name="username"
-                  id="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="sorn.kimsry"
-                />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="col-span-1">
