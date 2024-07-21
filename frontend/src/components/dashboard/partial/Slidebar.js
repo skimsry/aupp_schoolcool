@@ -2,12 +2,13 @@ import React from "react";
 import "../../../input.css";
 import "../../../index.css";
 import logo from "../../../assets/schoolcool.png";
+import { Link } from "react-router-dom";
 function Slidebar() {
   return (
     <>
       <div className="fixed left-0 top-0 w-64 h-full bg-gray-900 p-4 z-50 sidebar-menu transition-transform">
-        <a
-          href="#"
+        <Link
+          to="/"
           className="flex items-center pb-4 border-b border-b-gray-800"
         >
           <img
@@ -18,7 +19,7 @@ function Slidebar() {
           <span className="text-lg font-bold text-white ml-3 whitespace-nowrap">
             SchoolCool
           </span>
-        </a>
+        </Link>
         <ul className="mt-4">
           <li className="mb-1 group active">
             <a

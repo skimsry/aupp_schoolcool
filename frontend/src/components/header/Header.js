@@ -11,15 +11,15 @@ const Header = () => {
     <div className="fixed-header">
       <nav className="bg-white border-gray-200 dark:bg-gray-900">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">
-          <a
-            href="/"
+          <Link
+            to="/"
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
             <img src={logo} className="h-12" alt="SchoolCool Logo" />
             <span className="self-center text-4xl font-semibold whitespace-nowrap dark:text-white anton-regular text-[#003070]">
               SchoolCool
             </span>
-          </a>
+          </Link>
           <div className="flex items-center space-x-6 rtl:space-x-reverse">
             <a
               href="tel:016571913"

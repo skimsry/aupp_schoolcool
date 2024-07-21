@@ -113,6 +113,7 @@ const Main = () => {
             path="/dashboard"
             element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
           />
+          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
         </Routes>
       </div>
       <div className="footer-section">{showHeader && <Footer />}</div>
