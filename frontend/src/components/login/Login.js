@@ -1,10 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "../../input.css";
 import "../../index.css";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { UserContext } from "../../ctx/UserContextProvider";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+//import { yupResolver } from "@hookform/resolvers/yup";
+//import * as yup from "yup";
 
 const Login = () => {
+  const { login } = useContext(UserContext);
+
+  // const validateSchema = yup.object().shape({
+  //   email: yup
+  //     .string()
+  //     .email("Invalid email format")
+  //     .required("Email is required"),
+  //   password: yup
+  //     .string()
+  //     .min(6, "Password must be at least 6 characters")
+  //     .required("Password is required"),
+  // });
+  // const {
+  //   formState: { errors },
+  // } = useForm({
+  //   resolver: yupResolver(validateSchema),
+  // });
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
@@ -23,6 +46,32 @@ const Login = () => {
     });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     setLoading(true);
+  //     const userData = {
+  //       email: formData.email,
+  //       password: formData.password,
+  //     };
+
+  //     const response = await axios.post(
+  //       "http://localhost:3001/api/users/login",
+  //       userData
+  //     );
+
+  //     if (response.status === 200) {
+  //       navigate("/dashboard");
+  //     }
+  //   } catch (error) {
+  //     setLoading(false);
+  //     if (error.response && error.response.status === 401) {
+  //       setError("Incorrect email or password.");
+  //     } else {
+  //       setError("Login failed. Please try again later.");
+  //     }
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -32,17 +81,36 @@ const Login = () => {
         password: formData.password,
       };
 
-      const response = await axios.post("/api/users/login", userData);
+      // Make an HTTP POST request to your backend login endpoint
+      const response = await axios.post(
+        "http://localhost:3001/api/users/login",
+        userData
+      );
 
       if (response.status === 200) {
-        navigate("/dashboard");
+        login(response.data.user, response.data.token);
+        toast.success("Login successfully. !!!.", {
+          position: "bottom-right",
+          autoClose: 200,
+          onClose: () => {
+            navigate("/dashboard");
+          },
+        });
       }
     } catch (error) {
       setLoading(false);
       if (error.response && error.response.status === 401) {
-        setError("Incorrect email or password.");
+        //setError("Incorrect email or password.");
+        toast.error("Incorrect email or password. !!!.", {
+          position: "bottom-right",
+          autoClose: 2000,
+        });
       } else {
-        setError("Login failed. Please try again later.");
+        //setError("Login failed. Please try again later.");
+        toast.error("Login failed. Please try again later.", {
+          position: "bottom-right",
+          autoClose: 2000,
+        });
       }
     }
   };
@@ -61,7 +129,7 @@ const Login = () => {
                   htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Your email
+                  Your email <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -79,7 +147,7 @@ const Login = () => {
                   htmlFor="password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Password
+                  Password <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="password"
@@ -124,12 +192,13 @@ const Login = () => {
               >
                 Log in
               </button>
-              {loading && <p>Loading...</p>}
-              {error && <p className="text-red-500">{error}</p>}
+              {/* {loading && <p>Loading...</p>}
+              {error && <p className="text-red-500">{error}</p>} */}
             </form>
           </div>
         </div>
       </div>
+      <ToastContainer />
     </section>
   );
 };

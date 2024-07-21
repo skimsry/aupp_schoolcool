@@ -6,6 +6,7 @@ import morgan from "morgan";
 import compression from "compression";
 import connectToDb from "./db/index.js";
 import helmet from "helmet";
+import cors from "cors";
 
 // import session from "./session/index.js";
 // import home from "./routes/home/index.js";
@@ -18,20 +19,27 @@ const logFile = join(__dirname, "schoolcool.log");
 const PORT = process.env.PORT || 3001;
 app.use(helmet());
 // Helmet with Content Security Policy settings
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Allow this origin
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 app.use(compression());
 
 // Serve static files from the React app
-import path from "path";
-app.use(express.static(path.join(__dirname, "../frontend/build")));
+// import path from "path";
+// app.use(express.static(path.join(__dirname, "../frontend/build")));
 
 app.get("/api", (req, res) => {
   res.send({ message: "Hello from the server!" });
 });
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
+// });
 
 // app.use("/assets", express.static(join(__dirname, "public")));
 // app.use(express.static(join(__dirname, "public", "client")));

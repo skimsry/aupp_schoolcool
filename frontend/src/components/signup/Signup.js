@@ -16,11 +16,11 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    username: "",
     phoneNumber: "",
     type: "",
     email: "",
     password: "",
+    rePassword: "",
     status: "",
     createdDate: "",
     updateDate: "",
@@ -37,43 +37,86 @@ const Signup = () => {
       [name]: value,
     });
   };
-
+  const checkPasswordStrength = (password) => {
+    let strength = "";
+    if (password.length >= 8) {
+      if (
+        /[A-Z]/.test(password) &&
+        /[a-z]/.test(password) &&
+        /[0-9]/.test(password) &&
+        /[^A-Za-z0-9]/.test(password)
+      ) {
+        strength = "strong";
+      } else if (
+        /[A-Z]/.test(password) ||
+        /[a-z]/.test(password) ||
+        /[0-9]/.test(password)
+      ) {
+        strength = "medium";
+      } else {
+        strength = "weak";
+      }
+    } else {
+      strength = "weak";
+    }
+    return strength;
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      setLoading(true);
-
-      const userData = {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        username: formData.username,
-        phoneNumber: formData.phoneNumber,
-        type: formData.type,
-        email: formData.email,
-        password: formData.password,
-        status: false,
-        createdDate: new Date(),
-        updateDate: new Date(),
-      };
-
-      const response = await axios.post("/api/users/register", userData);
-      toast.success(
-        "User registered and is waiting approve from Administrator. Please check your email.",
-        {
-          position: "bottom-right",
-          autoClose: 3000,
-        }
-      );
-      setLoading(false);
-      setTimeout(() => {
-        navigate("/login");
-      }, 3000);
-    } catch (error) {
-      setLoading(false);
-      toast.error("This email is already in use. Please try another email.", {
+    const checkStrongPassword = checkPasswordStrength(formData.password);
+    if (checkStrongPassword === "weak") {
+      toast.error("Your password is not strong enough. Please try again!", {
         position: "bottom-right",
-        autoClose: 3000,
+        autoClose: 2000,
       });
+    } else {
+      if (formData.password !== formData.rePassword) {
+        toast.error("Please type Retype-Password again !!!.", {
+          position: "bottom-right",
+          autoClose: 2000,
+        });
+      } else {
+        try {
+          setLoading(true);
+
+          const userData = {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            phoneNumber: formData.phoneNumber,
+            type: formData.type,
+            email: formData.email,
+            password: formData.password,
+            status: false,
+            createdDate: new Date(),
+            updateDate: new Date(),
+          };
+
+          const response = await axios.post(
+            "http://localhost:3001/api/users/register",
+            userData
+          );
+          toast.success(
+            "User registered and is waiting approve from Administrator. Please check your email.",
+            {
+              position: "bottom-right",
+              autoClose: 2000,
+            }
+          );
+          setLoading(false);
+          setTimeout(() => {
+            navigate("/login");
+          }, 2000);
+        } catch (error) {
+          setLoading(false);
+          toast.error(
+            "This email is already in use. Please try another email.",
+            {
+              position: "bottom-right",
+              autoClose: 2000,
+            }
+          );
+        }
+      }
     }
   };
 
@@ -95,7 +138,7 @@ const Signup = () => {
                     htmlFor="firstName"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    First Name
+                    First Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -113,7 +156,7 @@ const Signup = () => {
                     htmlFor="lastName"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Last Name
+                    Last Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -129,19 +172,20 @@ const Signup = () => {
               </div>
               <div>
                 <label
-                  htmlFor="username"
+                  htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  username
+                  Your email <span className="text-red-500">*</span>
                 </label>
                 <input
-                  type="text"
-                  name="username"
-                  id="username"
-                  value={formData.username}
+                  type="email"
+                  name="email"
+                  id="email"
+                  value={formData.email}
                   onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="sorn.kimsry"
+                  placeholder="name@company.com"
+                  required
                 />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -150,7 +194,7 @@ const Signup = () => {
                     htmlFor="phoneNumber"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Phone Number
+                    Phone Number <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="tel"
@@ -185,21 +229,22 @@ const Signup = () => {
                   </select>
                 </div>
               </div>
+
               <div>
                 <label
-                  htmlFor="email"
+                  htmlFor="password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Your email
+                  Password <span className="text-red-500">*</span>
                 </label>
                 <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  value={formData.email}
+                  type="password"
+                  name="password"
+                  id="password"
+                  placeholder="••••••••"
+                  value={formData.password}
                   onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="name@company.com"
                   required
                 />
               </div>
@@ -208,14 +253,14 @@ const Signup = () => {
                   htmlFor="password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Password
+                  Retype-Password <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="password"
-                  name="password"
-                  id="password"
+                  name="rePassword"
+                  id="rePassword"
                   placeholder="••••••••"
-                  value={formData.password}
+                  value={formData.rePassword}
                   onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required
@@ -236,13 +281,13 @@ const Signup = () => {
                     htmlFor="terms"
                     className="font-light text-gray-500 dark:text-gray-300"
                   >
-                    I accept the{" "}
+                    <span className="text-red-500">*</span> I accept the{" "}
                     <a
                       className="font-medium text-primary-600 hover:underline dark:text-primary-500"
                       href="#"
                       onClick={openTerms}
                     >
-                      Terms and Conditions
+                      Terms and Conditions{" "}
                     </a>
                   </label>
                 </div>

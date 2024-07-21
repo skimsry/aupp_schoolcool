@@ -6,16 +6,16 @@ import reportWebVitals from "./reportWebVitals";
 import { UserContextProvider } from "./ctx/UserContextProvider";
 import { Provider } from "react-redux";
 import stores from "./stores";
-import { AuthProvider } from "./context/AuthContext";
+//import { AuthProvider } from "./context/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <Provider store={stores}>
-      {/* <AuthProvider> */}
+    {/* <Provider store={stores}> */}
+    <UserContextProvider>
       <App />
-      {/* </AuthProvider> */}
-    </Provider>
+    </UserContextProvider>
+    {/* </Provider> */}
   </React.StrictMode>
 );
 

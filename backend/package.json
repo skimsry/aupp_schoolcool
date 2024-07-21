@@ -5,8 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "concurrently \"nodemon app\" \"cd ../frontend && npm start\"",
-    "dev": "nodemon -r dotenv/config ./index.js"
+    "start": "nodemon -r dotenv/config ./index.js"
   },
   "keywords": [],
   "author": "",

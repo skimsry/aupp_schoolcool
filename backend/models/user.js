@@ -35,26 +35,26 @@ const userSchema = new Schema({
 });
 
 // Hash password before saving
-// userSchema.pre("save", function (next) {
-//   if (!this.isModified("password")) {
-//     return next();
-//   }
-//   this.password = bcrypt.hashSync(this.password, 10);
-//   next();
-// });
+userSchema.pre("save", function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  this.password = bcrypt.hashSync(this.password, 10);
+  next();
+});
 
 // Check if password matches the hashed password
-// userSchema.methods.checkPassword = async function (password) {
-//   try {
-//     const match = await bcrypt.compare(password, this.password);
-//     if (match) {
-//       return Promise.resolve();
-//     }
-//     return Promise.reject(new Error("Password mismatch"));
-//   } catch (error) {
-//     return Promise.reject(error);
-//   }
-// };
+userSchema.methods.checkPassword = async function (password) {
+  try {
+    const match = await bcrypt.compare(password, this.password);
+    if (match) {
+      return Promise.resolve();
+    }
+    return Promise.reject(new Error("Password mismatch"));
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
 
 // Update the logged-in timestamp
 // userSchema.methods.updateLoggedIn = async function () {

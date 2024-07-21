@@ -5,12 +5,11 @@ export default async (req, res) => {
     const user = await loginUser({ email, password });
     req.session.user = {
       id: user._id,
-      name: user.name,
       email: user.email,
     };
 
-    return res.redirect("/dashboard");
+    // return res.redirect("/dashboard");
   } catch (error) {
-    res.redirect("/login");
+    // res.redirect("/login");
   }
 };
