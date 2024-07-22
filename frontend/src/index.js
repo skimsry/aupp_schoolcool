@@ -1,21 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
+import "./style.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { UserContextProvider } from "./ctx/UserContextProvider";
-import { Provider } from "react-redux";
-import stores from "./stores";
-//import { AuthProvider } from "./context/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    {/* <Provider store={stores}> */}
     <UserContextProvider>
       <App />
     </UserContextProvider>
-    {/* </Provider> */}
   </React.StrictMode>
 );
 

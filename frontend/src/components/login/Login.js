@@ -2,80 +2,45 @@ import React, { useState, useContext } from "react";
 import "../../input.css";
 import "../../index.css";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../ctx/UserContextProvider";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-//import { yupResolver } from "@hookform/resolvers/yup";
-//import * as yup from "yup";
 
 const Login = () => {
   const { login } = useContext(UserContext);
-
-  // const validateSchema = yup.object().shape({
-  //   email: yup
-  //     .string()
-  //     .email("Invalid email format")
-  //     .required("Email is required"),
-  //   password: yup
-  //     .string()
-  //     .min(6, "Password must be at least 6 characters")
-  //     .required("Password is required"),
-  // });
-  // const {
-  //   formState: { errors },
-  // } = useForm({
-  //   resolver: yupResolver(validateSchema),
-  // });
 
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState("");
+  // const [loading, setLoading] = useState(false);
 
+  //const handleChange = (e) => {
+  //const { name, value, type, checked } = e.target;
+  // const { name, value, type, checked } = e.target;
+  // const newValue = type === "checkbox" ? checked : value;
+
+  // setFormData({
+  //   ...formData,
+  // [name]: newValue,
+  //   });
+  // };
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    const newValue = type === "checkbox" ? checked : value;
+    const { name, value } = e.target;
 
     setFormData({
       ...formData,
-      [name]: newValue,
+      [name]: value,
     });
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     setLoading(true);
-  //     const userData = {
-  //       email: formData.email,
-  //       password: formData.password,
-  //     };
-
-  //     const response = await axios.post(
-  //       "http://localhost:3001/api/users/login",
-  //       userData
-  //     );
-
-  //     if (response.status === 200) {
-  //       navigate("/dashboard");
-  //     }
-  //   } catch (error) {
-  //     setLoading(false);
-  //     if (error.response && error.response.status === 401) {
-  //       setError("Incorrect email or password.");
-  //     } else {
-  //       setError("Login failed. Please try again later.");
-  //     }
-  //   }
-  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
+      // setLoading(true);
       const userData = {
         email: formData.email,
         password: formData.password,
@@ -98,7 +63,7 @@ const Login = () => {
         });
       }
     } catch (error) {
-      setLoading(false);
+      // setLoading(false);
       if (error.response && error.response.status === 401) {
         //setError("Incorrect email or password.");
         toast.error("Incorrect email or password. !!!.", {
@@ -160,7 +125,7 @@ const Login = () => {
                   required
                 />
               </div>
-              <div className="flex items-center justify-between">
+              {/* <div className="flex items-center justify-between">
                 <div className="flex items-start">
                   <div className="flex items-center h-5">
                     <input
@@ -185,7 +150,7 @@ const Login = () => {
                 >
                   Forgot password?
                 </a>
-              </div>
+              </div> */}
               <button
                 type="submit"
                 className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"

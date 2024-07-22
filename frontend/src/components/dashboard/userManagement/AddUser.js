@@ -1,21 +1,21 @@
 import React, { useState } from "react";
-import "../../input.css";
-import "../../index.css";
+import Slidebar from "../partial/Slidebar";
+import Main from "../partial/Main";
+import "../../../input.css";
+import "../../../index.css";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Terms from "./Terms";
 
-const Signup = () => {
-  const [showTerm, setshowTerm] = useState(false);
-  const openTerms = () => setshowTerm(true);
-  const closeTerms = () => setshowTerm(false);
-
+function AddUser() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
+    gender: "",
+    dob: "",
+    fos: "",
     phoneNumber: "",
     type: "",
     email: "",
@@ -25,10 +25,23 @@ const Signup = () => {
     createdDate: "",
     updateDate: "",
   });
-
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
+  const handleReset = () => {
+    setFormData({
+      firstName: "",
+      lastName: "",
+      gender: "",
+      dob: "",
+      fos: "",
+      phoneNumber: "",
+      type: "",
+      email: "",
+      password: "",
+      rePassword: "",
+      status: "",
+      createdDate: "",
+      updateDate: "",
+    });
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -77,16 +90,17 @@ const Signup = () => {
         });
       } else {
         try {
-          setLoading(true);
-
           const userData = {
             firstName: formData.firstName,
             lastName: formData.lastName,
+            gender: formData.gender,
+            dob: formData.dob,
+            fos: formData.fos,
             phoneNumber: formData.phoneNumber,
             type: formData.type,
             email: formData.email,
             password: formData.password,
-            status: false,
+            status: true,
             createdDate: new Date(),
             updateDate: new Date(),
           };
@@ -95,19 +109,12 @@ const Signup = () => {
             "http://localhost:3001/api/users/register",
             userData
           );
-          toast.success(
-            "User registered and is waiting approve from Administrator. Please check your email.",
-            {
-              position: "bottom-right",
-              autoClose: 4000,
-            }
-          );
-          setLoading(false);
-          setTimeout(() => {
-            navigate("/login");
-          }, 2000);
+          toast.success("User registered is Successfully!!!.", {
+            position: "bottom-right",
+            autoClose: 1000,
+          });
+          handleReset();
         } catch (error) {
-          setLoading(false);
           toast.error(
             "This email is already in use. Please try another email.",
             {
@@ -119,17 +126,15 @@ const Signup = () => {
       }
     }
   };
-
   return (
-    <section
-      className="text-left bg-gray-50 dark:bg-gray-900"
-      style={{ paddingTop: "120px", paddingBottom: "50px" }}
-    >
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+    <>
+      <Slidebar />
+      <Main />
+      <div className="ml-72 mr-8 mt-4">
+        <section className="text-left bg-gray-50 dark:bg-gray-900">
+          <div className="p-6 space-y-4 md:space-y-6 sm:p-8 bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Create an account
+              Create an new user
             </h1>
             <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -168,6 +173,65 @@ const Signup = () => {
                     placeholder="KIMSRY"
                     required
                   />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="col-span-1">
+                  <label
+                    htmlFor="type"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Gender <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    id="gender"
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  >
+                    <option value="">Select gender...</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                    <option value="O">Other</option>
+                  </select>
+                </div>
+                <div className="col-span-1">
+                  <label
+                    htmlFor="lastName"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Date of Birth (Month / Day / Year)
+                  </label>
+                  <input
+                    type="date"
+                    name="dob"
+                    id="dob"
+                    value={formData.dob}
+                    onChange={handleChange}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="col-span-1">
+                  <label
+                    htmlFor="type"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Family of Student
+                  </label>
+                  <select
+                    id="fos"
+                    name="fos"
+                    value={formData.fos}
+                    onChange={handleChange}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  >
+                    <option value="">Select Student</option>
+                    <option value="1">SORN KIMSRY</option>
+                    <option value="2">KHAN MEY</option>
+                    <option value="3">DARA SOK</option>
+                  </select>
                 </div>
               </div>
               <div>
@@ -266,63 +330,50 @@ const Signup = () => {
                   required
                 />
               </div>
-              <div className="flex items-start">
-                <div className="flex items-center h-5">
-                  <input
-                    id="terms"
-                    aria-describedby="terms"
-                    type="checkbox"
-                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                    required
-                  />
-                </div>
-                <div className="ml-3 text-sm">
-                  <label
-                    htmlFor="terms"
-                    className="font-light text-gray-500 dark:text-gray-300"
-                  >
-                    <span className="text-red-500">*</span> I accept the{" "}
-                    <a
-                      className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                      href="#"
-                      onClick={openTerms}
-                    >
-                      Terms and Conditions{" "}
-                    </a>
-                  </label>
-                </div>
 
-                <Terms show={showTerm} onClose={closeTerms}>
-                  <p>
-                    A Terms and Conditions agreement acts as a legal contract
-                    between you (the company) and the user. It's where you
-                    maintain your rights to exclude users from your app in the
-                    event that they abuse your website/app, set out the rules
-                    for using your service and note other important details and
-                    disclaimers.
-                  </p>
-                  <p>
-                    Having a Terms and Conditions agreement is completely
-                    optional. No laws require you to have one. Not even the
-                    super-strict and wide-reaching General Data Protection
-                    Regulation (GDPR).
-                  </p>
-                </Terms>
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                <div className="col-span-1 flex justify-center items-center">
+                  <button
+                    type="button"
+                    className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                  >
+                    Delete
+                  </button>
+                </div>
+                <div className="col-span-1 flex justify-center items-center">
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    className="text-white bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:focus:ring-yellow-900focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900"
+                  >
+                    Clear
+                  </button>
+                </div>
+                <div className="col-span-1 flex justify-center items-center">
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                  >
+                    Update
+                  </button>
+                </div>
+                <div className="col-span-1 flex justify-center items-center">
+                  <button
+                    type="submit"
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                  >
+                    Create
+                  </button>
+                </div>
               </div>
-              <button
-                type="submit"
-                className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-              >
-                {loading && <div className="loader"></div>}
-                Create an account
-              </button>
             </form>
           </div>
-        </div>
+          <ToastContainer />
+        </section>
       </div>
-      <ToastContainer />
-    </section>
+    </>
   );
-};
+}
 
-export default Signup;
+export default AddUser;
