@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Slidebar from "../partial/Slidebar";
 import Main from "../partial/Main";
 import "../../../input.css";
@@ -7,8 +7,48 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { format, isValid } from "date-fns";
+const FormattedDate = ({ date }) => {
+  const dateObj = new Date(date);
 
+  if (!isValid(dateObj)) {
+    return <div></div>;
+  }
+
+  const formattedDate = format(dateObj, "MM/dd/yyyy");
+
+  return <div>{formattedDate}</div>;
+};
 function ManageUsers() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const capitalize = (str) => {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1).toUpperCase();
+  };
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        // const response = await axios.get();
+        const response = await axios.get(
+          "http://localhost:3001/api/users/getUsers"
+        );
+
+        setUsers(response.data);
+        setLoading(false);
+
+        return response.data;
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      }
+    };
+
+    getUsers();
+    console.log(users);
+  }, []);
+
   return (
     <>
       <Slidebar />
@@ -87,55 +127,59 @@ function ManageUsers() {
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <td className="w-4 p-4">
-                <div className="flex items-center">
-                  <label for="1" className="font-bold">
-                    1.
-                  </label>
-                </div>
-              </td>
-              <th
-                scope="row"
-                className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                <img
-                  className="w-10 h-10 rounded-full"
-                  src="/docs/images/people/profile-picture-1.jpg"
-                  alt="Jese image"
-                />
-                <div className="ps-3">
-                  <div className="text-base font-semibold">Neil Sims</div>
-                  <div className="font-normal text-gray-500">
-                    neil.sims@flowbite.com
+            {users.map((user) => (
+              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <td className="w-4 p-4">
+                  <div className="flex items-center">
+                    <label for="1" className="font-bold">
+                      1.
+                    </label>
                   </div>
-                </div>
-              </th>
-              <td className="px-6 py-4">Male</td>
-              <td className="px-6 py-4">13/06/1993</td>
-              <td className="px-6 py-4">Student</td>
-              <td className="px-6 py-4">016571913</td>
-              <td className="px-6 py-4">
-                <button
-                  type="button"
-                  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                </td>
+                <th
+                  scope="row"
+                  className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
                 >
-                  <i class="ri-file-edit-line"></i>
-                </button>
-                <button
-                  type="button"
-                  class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                >
-                  <i class="ri-eye-line"></i>
-                </button>
-                <button
-                  type="button"
-                  class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                >
-                  <i class="ri-delete-bin-line"></i>
-                </button>
-              </td>
-            </tr>
+                  <i className="ri-user-3-line text-blue-500 text-2xl"></i>
+
+                  <div className="ps-3">
+                    <div className="text-base font-semibold">
+                      {`${capitalize(user.firstName)}
+                      ${capitalize(user.lastName)}`}
+                    </div>
+                    <div className="font-normal text-gray-500">
+                      {user.email}
+                    </div>
+                  </div>
+                </th>
+                <td className="px-6 py-4">{user.gender}</td>
+                <td className="px-6 py-4">
+                  <FormattedDate date={user.dob} />
+                </td>
+                <td className="px-6 py-4">{user.type}</td>
+                <td className="px-6 py-4">{user.phoneNumber}</td>
+                <td className="px-6 py-4">
+                  <button
+                    type="button"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                  >
+                    <i class="ri-file-edit-line"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                  >
+                    <i class="ri-eye-line"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                  >
+                    <i class="ri-delete-bin-line"></i>
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

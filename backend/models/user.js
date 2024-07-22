@@ -10,6 +10,15 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  gender: {
+    type: String,
+  },
+  dob: {
+    type: Date,
+  },
+  fos: {
+    type: String,
+  },
   phoneNumber: {
     type: String,
     required: true,

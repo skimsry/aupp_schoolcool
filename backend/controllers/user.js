@@ -1,6 +1,6 @@
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
-import createError from "../utils/appError.js";
+//import createError from "../utils/appError.js";
 import bcrypt from "bcryptjs";
 // import bcrypt from "bcrypt";
 
@@ -210,27 +210,21 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-// export const getUser = async (req, res) => {
-//   try {
-//     const userId = req.params.userId;
-//     const user = await User.findById(userId);
-
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-
-//     // Send the user's balance as the response
-//     res.status(200).json({ balance: user.balance });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// };
 
 export const signUpUser = async (req, res) => {
   try {
-    const { firstName, lastName, phoneNumber, email, password, type, status } =
-      req.body;
+    const {
+      firstName,
+      lastName,
+      gender,
+      dob,
+      fos,
+      phoneNumber,
+      email,
+      password,
+      type,
+      status,
+    } = req.body;
 
     // Check if the user already exists with the provided email
     const existingUser = await User.findOne({ email });
@@ -248,6 +242,9 @@ export const signUpUser = async (req, res) => {
     const user = new User({
       firstName,
       lastName,
+      gender,
+      dob,
+      fos,
       phoneNumber,
       email,
       password: hashedPassword,
@@ -260,6 +257,22 @@ export const signUpUser = async (req, res) => {
     // Save the user to the database
     await user.save();
     res.status(201).json({ message: "User registered successfully", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getUsers = async (req, res) => {
+  try {
+    const users = await User.find(); // Retrieve all users
+
+    if (!users.length) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    // Send all users as the response
+    res.status(200).json(users);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });

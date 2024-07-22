@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "../../../input.css";
 import "../../../index.css";
 import { useLocation, Link } from "react-router-dom";
+import { UserContext } from "../../../ctx/UserContextProvider";
 function Main() {
   const path = useLocation();
   const path_dashboard = path.pathname.startsWith("/")
@@ -12,6 +13,9 @@ function Main() {
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+  const { user } = useContext(UserContext);
+  const fullName = `${user.firstName} ${user.lastName}`;
+  const CFullName = fullName.toUpperCase();
   return (
     <main
       className="w-full md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 transition-all main"
@@ -36,6 +40,9 @@ function Main() {
           </li> */}
         </ul>
         <ul className="ml-auto flex items-center">
+          <li className="dropdown pr-4">
+            <p class="capitalize">{CFullName}</p>
+          </li>
           <li className="dropdown">
             <button
               type="button"
@@ -51,14 +58,15 @@ function Main() {
               onClick={toggleDropdown}
               className="dropdown-toggle flex items-center"
             >
-              <img
+              {/* <img
                 src="https://placehold.co/32x32"
                 alt=""
                 className="w-8 h-8 rounded block object-cover align-middle"
-              />
+              /> */}
+              <i className="ri-user-3-line "></i>
             </button>
             <ul
-              className={`dropdown-menu shadow-md shadow-black/5 z-30 py-1.5 rounded-md bg-white border border-gray-100 w-full max-w-[140px] absolute right-0 mt-2 w-40 ${
+              className={`dropdown-menu shadow-md shadow-black/5 z-30 py-1.5 rounded-md bg-white border border-gray-100  absolute right-0 mt-2 w-40 ${
                 isDropdownOpen ? "block" : "hidden"
               }`}
             >
