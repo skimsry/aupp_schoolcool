@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormattedDate from "../FormattedDate";
+import DeleteConfirm from "./DeleteConfirm";
 function ManageUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -72,6 +73,27 @@ function ManageUsers() {
     } catch (error) {
       setLoading(false);
       toast.error("Cannot delete. Please try another.", {
+        position: "bottom-right",
+        autoClose: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleActive = async (userId, e) => {
+    //e.preventDefault();
+
+    setLoading(true);
+    try {
+      const response = await axios.put(`${apiUrl}/api/users/update/${userId}`);
+      setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+      toast.success("Active User successfully.", {
+        position: "bottom-right",
+        autoClose: 2000,
+      });
+    } catch (error) {
+      setLoading(false);
+      toast.error("Cannot active this account. Please try again.", {
         position: "bottom-right",
         autoClose: 2000,
       });
@@ -205,20 +227,38 @@ function ManageUsers() {
                   >
                     <i className="ri-file-edit-line"></i>
                   </button>
-                  <button
+                  {/* <button
                     type="button"
                     className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                   >
                     <i className="ri-eye-line"></i>
-                  </button>
-                  <button
+                  </button> */}
+                  <DeleteConfirm
+                    onDelete={() => handleActive(user._id)}
+                    className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    // ico="ri-eye-line"
+                    ico={user.status ? "ri-eye-line" : "ri-eye-off-line"}
+                    // text="Do you want to active this account?"
+                    text={
+                      user.status
+                        ? "Do you want to deactive this account?"
+                        : "Do you want to active this account?"
+                    }
+                  />
+                  {/* <button
                     type="button"
                     key={user._id}
                     onClick={(e) => handleDelete(user._id, e)}
                     className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                   >
                     <i className="ri-delete-bin-line"></i>
-                  </button>
+                  </button> */}
+                  <DeleteConfirm
+                    onDelete={() => handleDelete(user._id)}
+                    className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                    ico="ri-delete-bin-line"
+                    text="Are you sure you want to delete?"
+                  />
                 </td>
               </tr>
             ))}
@@ -246,7 +286,7 @@ function ManageUsers() {
                     href="#"
                     key={i}
                     onClick={() => paginate(i + 1)}
-                    className={`flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
+                    className={`flex items-center justify-center px-4 h-10 leading-tight text-gray-500 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
                       currentPage === i + 1
                         ? "bg-blue-500 text-white"
                         : "bg-white text-blue-500"

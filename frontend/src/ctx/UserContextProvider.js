@@ -60,9 +60,17 @@ export function UserContextProvider({ children }) {
     setIsAuthenticated(false);
     setToken(null);
   }
+
   return (
     <UserContext.Provider
-      value={{ user, login, isAuthenticated, token, updateUser, logout }}
+      value={{
+        user,
+        login,
+        isAuthenticated,
+        token,
+        updateUser,
+        logout,
+      }}
     >
       {children}
     </UserContext.Provider>

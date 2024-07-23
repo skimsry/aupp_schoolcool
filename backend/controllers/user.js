@@ -312,3 +312,98 @@ export const getUsersStudent = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// export const updateUserStatus = async (req, res) => {
+//   try {
+//     const { _id } = req.params;
+
+//     const { status, ...body } = req.body;
+//     const opisiteStatus = !status; // Reassigning status variable to true
+//     const updatedUserData = { ...body, status: opisiteStatus }; // Adding status to the updated user data
+//     console.log(status);
+
+//     const updatedUser = await User.findByIdAndUpdate(_id, updatedUserData, {
+//       new: true,
+//     });
+
+//     if (!updatedUser) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     res
+//       .status(200)
+//       .json({ message: "User can access successfully", user: updatedUser });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
+export const updateUserStatus = async (req, res) => {
+  try {
+    const { _id } = req.params;
+
+    // Fetch the current user to get the current status
+    const currentUser = await User.findById(_id);
+    if (!currentUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Toggle the status
+    const newStatus = !currentUser.status;
+
+    // Prepare updated user data
+    const updatedUserData = { ...req.body, status: newStatus };
+
+    // Update the user with the new status
+    const updatedUser = await User.findByIdAndUpdate(_id, updatedUserData, {
+      new: true,
+    });
+
+    res
+      .status(200)
+      .json({ message: "User status updated successfully", user: updatedUser });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// export const getUsersByNameEmail = async (req, res) => {
+//   try {
+//     const users = await User.find();
+
+//     if (!users.length) {
+//       return res.status(404).json({ message: "No users found" });
+//     }
+
+//     // Send all users as the response
+//     res.status(200).json(users);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+export const getUsersByEmail = async (req, res) => {
+  try {
+    // const { email } = req.params;
+    const { email } = req.query;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email });
+
+    console.log(user);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Send the user as the response
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

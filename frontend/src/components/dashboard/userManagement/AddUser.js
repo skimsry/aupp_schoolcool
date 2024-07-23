@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Slidebar from "../partial/Slidebar";
 import Main from "../partial/Main";
 import "../../../input.css";
@@ -9,7 +9,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // import FormattedDate from "../FormattedDate";
 import Fos from "./Fos";
-export const PostContext = createContext();
 
 function AddUser() {
   const navigate = useNavigate();
@@ -155,7 +154,6 @@ function AddUser() {
     };
 
     getUsers();
-    //console.log(response.data);
   }, [apiUrl]);
 
   return (

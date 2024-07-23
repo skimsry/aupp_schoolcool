@@ -7,6 +7,8 @@ import {
   getUsers,
   deleteUserById,
   getUsersStudent,
+  updateUserStatus,
+  getUsersByEmail,
 } from "../../controllers/user.js";
 
 const router = Router();
@@ -16,5 +18,7 @@ router.post("/users/login", loginUser);
 router.get("/users/getUsers", getUsers);
 router.get("/users/getUsersStudent", getUsersStudent);
 router.post("/users/delete/:_id", deleteUserById);
+router.put("/users/update/:_id", updateUserStatus);
+router.get("/users/getUsersByEmail/:email", getUsersByEmail);
 
 export default router;
