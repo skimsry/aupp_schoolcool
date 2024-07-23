@@ -53,7 +53,7 @@ function Slidebar() {
                 isOrdersSelected ? "bg-gray-950 text-gray-100" : ""
               } sidebar-dropdown-toggle`}
             >
-              <i class="ri-group-line mr-3 text-lg"></i>
+              <i className="ri-group-line mr-3 text-lg"></i>
               <span className="text-sm">Users Management</span>
               <i
                 className={`ri-arrow-right-s-line ml-auto ${
@@ -98,7 +98,7 @@ function Slidebar() {
                 isWebsiteMaintenaceSelected ? "bg-gray-950 text-gray-100" : ""
               } sidebar-dropdown-toggle`}
             >
-              <i class="ri-pages-line mr-3 text-lg"></i>
+              <i className="ri-pages-line mr-3 text-lg"></i>
               <span className="text-sm">Website Maintenance</span>
               <i
                 className={`ri-arrow-right-s-line ml-auto ${

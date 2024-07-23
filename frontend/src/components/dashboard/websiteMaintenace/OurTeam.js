@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Slidebar from "../partial/Slidebar";
-import Main from "../partial/Main";
-import "../../../input.css";
-import "../../../index.css";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormattedDate from "../FormattedDate";
-function ManageUsers() {
+
+function OurTeam() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -79,13 +76,78 @@ function ManageUsers() {
       setLoading(false);
     }
   };
-
   return (
     <>
-      <Slidebar />
-      <Main />
-
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg ml-72 mr-8 mt-4 pt-4">
+      <div className="text-left flex items-center justify-center p-12">
+        <div className="mx-auto w-full">
+          <div className="bg-white overflow-hidden shadow rounded-lg border">
+            <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
+              <dl className="sm:divide-y sm:divide-gray-200">
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Profile Image
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    <input
+                      class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                      id="multiple_files"
+                      type="file"
+                      multiple
+                    />
+                  </dd>
+                </div>
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Full Name
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    <input
+                      type="text"
+                      id="first_name"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="sornkimsry@yahoo.com"
+                      required
+                    />
+                  </dd>
+                </div>
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Position
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    <input
+                      type="text"
+                      id="first_name"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="016571913"
+                      required
+                    />
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="text-white bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:focus:ring-yellow-900focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900"
+          >
+            Clear
+          </button>
+          <button
+            type="button"
+            className="mt-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          >
+            Update
+          </button>
+          <button
+            type="button"
+            className="mt-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <form className="max-w-md mx-auto mb-4 pl-4">
           <label
             htmlFor="default-search"
@@ -115,7 +177,7 @@ function ManageUsers() {
               type="search"
               id="default-search"
               className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Search for name..."
+              placeholder="Search for fullname..."
               required
             />
             <button
@@ -138,20 +200,15 @@ function ManageUsers() {
                 </div>
               </th>
               <th scope="col" className="px-6 py-3">
-                Name
+                Profile Image
               </th>
               <th scope="col" className="px-6 py-3">
-                Gender
+                Full Name
               </th>
               <th scope="col" className="px-6 py-3">
-                Date of Birth
+                Position
               </th>
-              <th scope="col" className="px-6 py-3">
-                Role
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Phone Number
-              </th>
+
               <th scope="col" className="px-6 py-3">
                 Create Date
               </th>
@@ -193,8 +250,7 @@ function ManageUsers() {
                 <td className="px-6 py-4">
                   <FormattedDate date={user.dob} />
                 </td>
-                <td className="px-6 py-4">{user.type}</td>
-                <td className="px-6 py-4">{user.phoneNumber}</td>
+
                 <td className="px-6 py-4">
                   <FormattedDate date={user.createdDate} />
                 </td>
@@ -269,9 +325,8 @@ function ManageUsers() {
           </nav>
         </div>
       </div>
-      <ToastContainer />
     </>
   );
 }
 
-export default ManageUsers;
+export default OurTeam;

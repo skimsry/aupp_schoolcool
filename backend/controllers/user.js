@@ -265,7 +265,41 @@ export const signUpUser = async (req, res) => {
 
 export const getUsers = async (req, res) => {
   try {
-    const users = await User.find(); // Retrieve all users
+    const users = await User.find().sort({ createdDate: -1 }); // Retrieve all users
+
+    if (!users.length) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    // Send all users as the response
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const deleteUserById = async (req, res) => {
+  // const { id } = req.params; // Get the user ID from the request parameters
+  const { _id } = req.params;
+  // console.log(_id);
+  try {
+    const deletedUser = await User.findByIdAndDelete(_id); // Delete the user by ID
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Send success response
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getUsersStudent = async (req, res) => {
+  try {
+    const users = await User.find({ type: 3 }).sort({ createdDate: -1 });
 
     if (!users.length) {
       return res.status(404).json({ message: "No users found" });

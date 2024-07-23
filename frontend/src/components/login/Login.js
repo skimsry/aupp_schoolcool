@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const { login } = useContext(UserContext);
-
+  const apiUrl = process.env.REACT_APP_APIURL;
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
@@ -47,10 +47,7 @@ const Login = () => {
       };
 
       // Make an HTTP POST request to your backend login endpoint
-      const response = await axios.post(
-        "http://localhost:3001/api/users/login",
-        userData
-      );
+      const response = await axios.post(`${apiUrl}/api/users/login`, userData);
 
       if (response.status === 200) {
         login(response.data.user, response.data.token);

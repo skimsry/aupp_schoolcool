@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Terms from "./Terms";
 
 const Signup = () => {
+  const apiUrl = process.env.REACT_APP_APIURL;
   const [showTerm, setshowTerm] = useState(false);
   const openTerms = () => setshowTerm(true);
   const closeTerms = () => setshowTerm(false);
@@ -92,7 +93,9 @@ const Signup = () => {
           };
 
           const response = await axios.post(
-            "http://localhost:3001/api/users/register",
+            // `${process.env.PATH_URL_CONNECT}/api/users/register`,
+            // userData
+            `${apiUrl}/api/users/register`,
             userData
           );
           toast.success(

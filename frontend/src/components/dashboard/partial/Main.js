@@ -13,7 +13,7 @@ function Main() {
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
-  const { user } = useContext(UserContext);
+  const { user, logout } = useContext(UserContext);
   const fullName = `${user.firstName} ${user.lastName}`;
   const CFullName = fullName.toUpperCase();
   return (
@@ -23,7 +23,7 @@ function Main() {
     >
       <div className="py-2 px-6 bg-white flex items-center shadow-md shadow-black/5 sticky top-0 left-0 z-30">
         <button type="button" className="text-lg text-gray-600 sidebar-toggle">
-          <i class="ri-home-office-fill"></i>
+          <i className="ri-home-office-fill"></i>
         </button>
         <ul className="flex items-center text-sm ml-4">
           <li className="mr-2">
@@ -41,7 +41,7 @@ function Main() {
         </ul>
         <ul className="ml-auto flex items-center">
           <li className="dropdown pr-4">
-            <p class="capitalize">{CFullName}</p>
+            <p className="capitalize">{CFullName}</p>
           </li>
           <li className="dropdown">
             <button
@@ -89,6 +89,7 @@ function Main() {
               <li>
                 <a
                   href="#"
+                  onClick={logout}
                   className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50"
                 >
                   Logout

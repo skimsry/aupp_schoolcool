@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, createContext } from "react";
 import Slidebar from "../partial/Slidebar";
 import Main from "../partial/Main";
 import "../../../input.css";
@@ -7,9 +7,16 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+// import FormattedDate from "../FormattedDate";
+import Fos from "./Fos";
+export const PostContext = createContext();
 
 function AddUser() {
   const navigate = useNavigate();
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const apiUrl = process.env.REACT_APP_APIURL;
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -106,7 +113,7 @@ function AddUser() {
           };
 
           const response = await axios.post(
-            "http://localhost:3001/api/users/register",
+            `${apiUrl}/api/users/register`,
             userData
           );
           toast.success("User registered is Successfully!!!.", {
@@ -126,6 +133,31 @@ function AddUser() {
       }
     }
   };
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        // const response = await axios.get();
+
+        const response = await axios.get(
+          `${apiUrl}/api/users/getUsersStudent`
+          // `http://localhost:3001/api/users/getUsers`
+        );
+        //console.log(response.data);
+        setUsers(response.data);
+        setLoading(true);
+
+        //return response.data;
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      }
+    };
+
+    getUsers();
+    //console.log(response.data);
+  }, [apiUrl]);
+
   return (
     <>
       <Slidebar />
@@ -213,7 +245,7 @@ function AddUser() {
                   />
                 </div>
 
-                <div className="col-span-1">
+                {/* <div className="col-span-1">
                   <label
                     htmlFor="type"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -225,14 +257,19 @@ function AddUser() {
                     name="fos"
                     value={formData.fos}
                     onChange={handleChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   >
                     <option value="">Select Student</option>
-                    <option value="1">SORN KIMSRY</option>
-                    <option value="2">KHAN MEY</option>
-                    <option value="3">DARA SOK</option>
+                    
+                    {users.map((user, i) => (
+                      <option value={user._id} className="">
+                        {`${user.firstName} ${user.lastName} | DOB : `}
+                        <FormattedDate date={user.dob} />
+                      </option>
+                    ))}
                   </select>
-                </div>
+                </div> */}
+                <Fos />
               </div>
               <div>
                 <label
