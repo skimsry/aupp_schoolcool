@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../ctx/UserContextProvider";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+axios.defaults.withCredentials = true;
 
 const Login = () => {
   const { login } = useContext(UserContext);
