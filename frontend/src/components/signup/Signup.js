@@ -93,9 +93,9 @@ const Signup = () => {
           };
 
           const response = await axios.post(
-            // `${process.env.PATH_URL_CONNECT}/api/users/register`,
+            // `${process.env.PATH_URL_CONNECT}api/users/register`,
             // userData
-            `${apiUrl}/api/users/register`,
+            `${apiUrl}api/users/register`,
             userData
           );
           toast.success(
