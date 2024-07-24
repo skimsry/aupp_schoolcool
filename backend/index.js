@@ -21,7 +21,8 @@ app.use(helmet());
 // Helmet with Content Security Policy settings
 app.use(
   cors({
-    origin: process.env.EXPRESS_APP_APIURL, // Allow this origin
+    origin: process.env.EXPRESS_APP_APIURL,
+    credentials: true, // Allow this origin
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
