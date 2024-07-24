@@ -127,58 +127,123 @@ const Profile = () => {
     }
   };
 
+  //   const handleUpdate = async () => {
+  //     setLoading(true);
+  //     if (
+  //       !formData.firstName ||
+  //       !formData.lastName ||
+  //       !formData.gender ||
+  //       !formData.phoneNumber
+  //     ) {
+  //       toast.error("Field (*) cannot empty. Please check again!", {
+  //         position: "bottom-right",
+  //         autoClose: 3000,
+  //       });
+  //       setLoading(false);
+  //     } else {
+  //       const checkStrongPassword = checkPasswordStrength(formData.password);
+  //       if (checkStrongPassword === "weak") {
+  //         toast.error("Your password is not strong enough. Please try again!", {
+  //           position: "bottom-right",
+  //           autoClose: 2000,
+  //         });
+  //         setLoading(false);
+  //       } else {
+
+  //         try {
+  //           const updatedUserData = {
+  //             firstName: formData.firstName,
+  //             lastName: formData.lastName,
+  //             gender: formData.gender,
+  //             dob: formData.dob,
+  //             phoneNumber: formData.phoneNumber,
+  //             password: formData.password,
+  //             updateDate: new Date(),
+  //           };
+
+  //           console.log(`Hello ${JSON.stringify(updatedUserData)}`);
+  //           const response = await axios.put(
+  //             `${apiUrl}/api/users/updateFull/${path_dashboard}`,
+  //             JSON.stringify(updatedUserData)
+  //           );
+  //           toast.success("Updated Profile successfully.", {
+  //             position: "bottom-right",
+  //             autoClose: 1000,
+  //           });
+  //         } catch (error) {
+  //           setLoading(false);
+  //           toast.error("Cannot update this Profile. Please try again.", {
+  //             position: "bottom-right",
+  //             autoClose: 2000,
+  //           });
+  //         } finally {
+  //           setLoading(false);
+  //         }
+  //       }
+  //     }
+  //   };
   const handleUpdate = async () => {
     setLoading(true);
+
+    // Check for empty required fields
     if (
       !formData.firstName ||
       !formData.lastName ||
       !formData.gender ||
       !formData.phoneNumber
     ) {
-      toast.error("Field (*) cannot empty. Please check again!", {
+      toast.error("Field (*) cannot be empty. Please check again!", {
         position: "bottom-right",
         autoClose: 3000,
       });
       setLoading(false);
-    } else {
-      const checkStrongPassword = checkPasswordStrength(formData.password);
-      if (checkStrongPassword === "weak") {
-        toast.error("Your password is not strong enough. Please try again!", {
-          position: "bottom-right",
-          autoClose: 2000,
-        });
-        setLoading(false);
-      } else {
-        //console.log(`Hello ${path_dashboard}`);
-        try {
-          const updatedUserData = {
-            // firstName: formData.firstName,
-            // lastName: formData.lastName,
-            // gender: formData.gender,
-            // dob: formData.dob,
-            // phoneNumber: formData.phoneNumber,
-            //password: formData.password,
-            updateDate: new Date(),
-          };
-          console.log(`Hello ${updatedUserData}`);
-          //   const response = await axios.put(
-          //     `${apiUrl}/api/users/updateFull/${path_dashboard}`,
-          //     updatedUserData
-          //   );
-          toast.success("Updated Profile successfully.", {
-            position: "bottom-right",
-            autoClose: 1000,
-          });
-        } catch (error) {
-          setLoading(false);
-          toast.error("Cannot update this Profile. Please try again.", {
-            position: "bottom-right",
-            autoClose: 2000,
-          });
-        } finally {
-          setLoading(false);
-        }
-      }
+      return; // Exit early if validation fails
+    }
+
+    // Check password strength
+    const passwordStrength = checkPasswordStrength(formData.password);
+    if (passwordStrength === "weak") {
+      toast.error("Your password is not strong enough. Please try again!", {
+        position: "bottom-right",
+        autoClose: 2000,
+      });
+      setLoading(false);
+      return; // Exit early if password is weak
+    }
+
+    try {
+      const updatedUserData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        gender: formData.gender,
+        dob: formData.dob,
+        phoneNumber: formData.phoneNumber,
+        password: formData.password,
+        updateDate: new Date(),
+      };
+
+      // Log the updated data for debugging
+      console.log(`Updating user data: ${JSON.stringify(updatedUserData)}`);
+
+      // Perform the API request
+      await axios.put(
+        `${apiUrl}/api/users/updateFull/${path_dashboard}`,
+        updatedUserData // No need to stringify here; axios will handle it
+      );
+
+      // Notify user of success
+      toast.success("Profile updated successfully.", {
+        position: "bottom-right",
+        autoClose: 1000,
+      });
+    } catch (error) {
+      // Handle any errors during the update
+      toast.error("Cannot update the profile. Please try again.", {
+        position: "bottom-right",
+        autoClose: 2000,
+      });
+    } finally {
+      setLoading(false); // Ensure loading state is reset
     }
   };
 
