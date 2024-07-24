@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "../../../input.css";
 import "../../../index.css";
 import logo from "../../../assets/schoolcool.png";
 import { Link, useLocation } from "react-router-dom";
+import { UserContext } from "../../../ctx/UserContextProvider";
 function Slidebar() {
   const [isOrdersSelected, setIsOrdersSelected] = useState(false);
   const [isWebsiteMaintenaceSelected, setisWebsiteMaintenaceSelected] =
     useState(false);
+  const [isSettingSelected, setisSettingSelected] = useState(false);
 
   const toggleOrdersMenu = () => {
     setIsOrdersSelected(!isOrdersSelected);
@@ -14,7 +16,11 @@ function Slidebar() {
   const toggleWebsiteMaintenacesMenu = () => {
     setisWebsiteMaintenaceSelected(!isWebsiteMaintenaceSelected);
   };
+  const toggleSettingMenu = () => {
+    setisSettingSelected(!isSettingSelected);
+  };
   const location = useLocation();
+  const { logout, user } = useContext(UserContext);
   return (
     <>
       <div className="fixed left-0 top-0 w-64 h-full bg-gray-900 p-4 z-50 sidebar-menu transition-transform">
@@ -209,7 +215,7 @@ function Slidebar() {
               </li>
             </ul>
           </li>
-          <li className="mb-1 group">
+          {/* <li className="mb-1 group">
             <a
               href="#"
               className="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
@@ -217,6 +223,48 @@ function Slidebar() {
               <i className="ri-settings-2-line mr-3 text-lg"></i>
               <span className="text-sm">Settings</span>
             </a>
+          </li> */}
+          <li className="mb-1 group">
+            <a
+              href="#"
+              onClick={toggleSettingMenu}
+              className={`flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md ${
+                isSettingSelected ? "bg-gray-950 text-gray-100" : ""
+              } sidebar-dropdown-toggle`}
+            >
+              <i className="ri-settings-2-line mr-3 text-lg"></i>
+              <span className="text-sm">Settings</span>
+              <i
+                className={`ri-arrow-right-s-line ml-auto ${
+                  isSettingSelected ? "rotate-90" : ""
+                }`}
+              ></i>
+            </a>
+            <ul
+              className={`pl-7 mt-2 ${isSettingSelected ? "block" : "hidden"}`}
+            >
+              <li
+                className={`mb-4 ${
+                  location.pathname === "/profile" ? "active" : ""
+                }`}
+              >
+                <Link
+                  to={`/profile/${user._id}`}
+                  className="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3"
+                >
+                  Profile
+                </Link>
+              </li>
+              <li className={`mb-4`}>
+                <Link
+                  to="#"
+                  onClick={logout}
+                  className="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3"
+                >
+                  Logout
+                </Link>
+              </li>
+            </ul>
           </li>
         </ul>
       </div>

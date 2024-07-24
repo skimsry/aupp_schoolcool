@@ -4,16 +4,19 @@ import Main from "../partial/Main";
 import "../../../input.css";
 import "../../../index.css";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
 import FormattedDate from "../FormattedDate";
-import DeleteConfirm from "./DeleteConfirm";
+import DeleteConfirm from "../userManagement/DeleteConfirm";
+import { UserContext } from "../../../ctx/UserContextProvider";
 // import Fos from "./Fos";
 
-function AddUser() {
+const Profile = () => {
+  const { user } = useContext(UserContext);
   const { userId } = useParams();
+
   const navigate = useNavigate();
   const dateInputRef = useRef(null);
   const [users, setUsers] = useState([]);
@@ -21,7 +24,11 @@ function AddUser() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
-  const apiUrl = process.env.REACT_APP_APIURL;
+  const path = useLocation();
+  const path_dashboard = path.pathname.startsWith("/")
+    ? path.pathname.slice(9)
+    : path.pathname;
+  //   console.log(path_dashboard);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -37,31 +44,7 @@ function AddUser() {
     createdDate: "",
     updateDate: "",
   });
-  const handleReset = () => {
-    setFormData({
-      firstName: "",
-      lastName: "",
-      gender: "",
-      dob: "",
-      fos: "",
-      phoneNumber: "",
-      type: "",
-      email: "",
-      password: "",
-      rePassword: "",
-      status: "",
-      createdDate: "",
-      updateDate: "",
-    });
-  };
-
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prevFormData) => ({
-  //     ...prevFormData,
-  //     [name]: value,
-  //   }));
-  // };
+  const apiUrl = process.env.REACT_APP_APIURL;
   const handleChange = (e) => {
     const { name, type, checked, value } = e.target;
     setFormData((prevFormData) => ({
@@ -94,104 +77,7 @@ function AddUser() {
     }
     return strength;
   };
-  // const checkFieldEmpty = () => {
-  //   if (!formData.firstName) {
-  //     toast.error("Cannot empty First Name!", {
-  //       position: "bottom-right",
-  //       autoClose: 2000,
-  //     });
-  //   }
-  //   if (!formData.lastName) {
-  //     toast.error("Cannot empty Last Name!", {
-  //       position: "bottom-right",
-  //       autoClose: 2000,
-  //     });
-  //   }
-  //   if (!formData.gender) {
-  //     toast.error("Cannot empty Gender!", {
-  //       position: "bottom-right",
-  //       autoClose: 2000,
-  //     });
-  //   }
-  //   if (!formData.email) {
-  //     toast.error("Cannot empty Your email!", {
-  //       position: "bottom-right",
-  //       autoClose: 2000,
-  //     });
-  //   }
-  //   if (!formData.phoneNumber) {
-  //     toast.error("Cannot empty Your Phone Number!", {
-  //       position: "bottom-right",
-  //       autoClose: 2000,
-  //     });
-  //   }
-  // };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // checkFieldEmpty();
-    const checkStrongPassword = checkPasswordStrength(formData.password);
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.gender ||
-      !formData.email ||
-      !formData.phoneNumber
-    ) {
-      toast.error("Field (*) cannot empty. Please check again!", {
-        position: "bottom-right",
-        autoClose: 3000,
-      });
-    } else {
-      if (checkStrongPassword === "weak") {
-        toast.error("Your password is not strong enough. Please try again!", {
-          position: "bottom-right",
-          autoClose: 2000,
-        });
-      } else {
-        if (formData.password !== formData.rePassword) {
-          toast.error("Please type Retype-Password again !!!.", {
-            position: "bottom-right",
-            autoClose: 2000,
-          });
-        } else {
-          try {
-            const userData = {
-              firstName: formData.firstName,
-              lastName: formData.lastName,
-              gender: formData.gender,
-              dob: formData.dob,
-              fos: formData.fos,
-              phoneNumber: formData.phoneNumber,
-              type: formData.type,
-              email: formData.email,
-              password: formData.password,
-              status: formData.status,
-              createdDate: new Date(),
-              updateDate: new Date(),
-            };
 
-            const response = await axios.post(
-              `${apiUrl}/api/users/register`,
-              userData
-            );
-            toast.success("User registered is Successfully!!!.", {
-              position: "bottom-right",
-              autoClose: 1000,
-            });
-            handleReset();
-          } catch (error) {
-            toast.error(
-              "This email is already in use. Please try another email.",
-              {
-                position: "bottom-right",
-                autoClose: 2000,
-              }
-            );
-          }
-        }
-      }
-    }
-  };
   const getUsers = async () => {
     try {
       // const response = await axios.get();
@@ -213,7 +99,7 @@ function AddUser() {
   const getUserById = async () => {
     try {
       const response = await axios.get(
-        `${apiUrl}/api/users/getUsersById/${userId}`
+        `${apiUrl}/api/users/getUsersById/${user._id}`
       );
       setUserById(response.data);
       // console.log(response.data.status);
@@ -240,44 +126,20 @@ function AddUser() {
       setLoading(false);
     }
   };
-  const handleDelete = async () => {
-    //e.preventDefault();
-    setLoading(true);
-    try {
-      const response = await axios.post(`${apiUrl}/api/users/delete/${userId}`);
-      // setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
-      toast.success("User deleted successfully.", {
-        position: "bottom-right",
-        autoClose: 1000,
-      });
-      setTimeout(() => {
-        navigate("/manageUsers");
-      }, 1000);
-    } catch (error) {
-      setLoading(false);
-      toast.error("Cannot delete. Please try another.", {
-        position: "bottom-right",
-        autoClose: 2000,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleUpdate = async () => {
-    // checkFieldEmpty();
     setLoading(true);
     if (
       !formData.firstName ||
       !formData.lastName ||
       !formData.gender ||
-      !formData.email ||
       !formData.phoneNumber
     ) {
       toast.error("Field (*) cannot empty. Please check again!", {
         position: "bottom-right",
         autoClose: 3000,
       });
+      setLoading(false);
     } else {
       const checkStrongPassword = checkPasswordStrength(formData.password);
       if (checkStrongPassword === "weak") {
@@ -285,35 +147,31 @@ function AddUser() {
           position: "bottom-right",
           autoClose: 2000,
         });
+        setLoading(false);
       } else {
+        //console.log(`Hello ${path_dashboard}`);
         try {
           const updatedUserData = {
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            gender: formData.gender,
-            dob: formData.dob,
-            fos: formData.fos,
-            phoneNumber: formData.phoneNumber,
-            password: formData.password,
-            type: formData.type,
-            status: formData.status,
+            // firstName: formData.firstName,
+            // lastName: formData.lastName,
+            // gender: formData.gender,
+            // dob: formData.dob,
+            // phoneNumber: formData.phoneNumber,
+            //password: formData.password,
             updateDate: new Date(),
           };
-
-          const response = await axios.put(
-            `${apiUrl}/api/users/updateFull/${userId}`, // userId should be passed here
-            updatedUserData
-          );
-          toast.success("Updated successfully.", {
+          console.log(`Hello ${updatedUserData}`);
+          //   const response = await axios.put(
+          //     `${apiUrl}/api/users/updateFull/${path_dashboard}`,
+          //     updatedUserData
+          //   );
+          toast.success("Updated Profile successfully.", {
             position: "bottom-right",
             autoClose: 1000,
           });
-          setTimeout(() => {
-            navigate("/manageUsers");
-          }, 1000);
         } catch (error) {
           setLoading(false);
-          toast.error("Cannot update this account. Please try again.", {
+          toast.error("Cannot update this Profile. Please try again.", {
             position: "bottom-right",
             autoClose: 2000,
           });
@@ -325,13 +183,11 @@ function AddUser() {
   };
 
   useEffect(() => {
-    // getUserById();
-    if (userId) {
-      getUserById();
-    } else {
-      handleReset();
-    }
+    getUserById();
     getUsers();
+    //setMyId(_id);
+    //console.log(myId);
+    //console.log(user._id);
     // Get today's date in YYYY-MM-DD format
     const today = new Date().toISOString().split("T")[0];
     if (dateInputRef.current) {
@@ -347,7 +203,7 @@ function AddUser() {
         <section className="text-left bg-gray-50 dark:bg-gray-900">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8 bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              {userId ? "Update user" : "Create an new user"}
+              Update Profile
             </h1>
 
             {/* <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}> */}
@@ -430,43 +286,22 @@ function AddUser() {
                   />
                 </div>
 
-                {/* <div className="col-span-1">
-                  <label
-                    htmlFor="type"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Family of Student
-                  </label>
-                  <select
-                    id="fos"
-                    name="fos"
-                    value={formData.fos}
-                    onChange={handleChange}
-                    className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  >
-                    <option value="">Select Student</option>
-                    
-                    {users.map((user, i) => (
-                      <option value={user._id} className="">
-                        {`${user.firstName} ${user.lastName} | DOB : `}
-                        <FormattedDate date={user.dob} />
-                      </option>
-                    ))}
-                  </select>
-                </div> */}
-                {/* <Fos /> */}
                 <div className="col-span-1">
                   <label
                     htmlFor="type"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Family of Student
+                    Family of Student{" "}
+                    <span className="text-red-500">
+                      (Only Admin can change this)
+                    </span>
                   </label>
                   <select
                     id="fos"
                     name="fos"
                     value={formData.fos}
                     onChange={handleChange}
+                    disabled
                     className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   >
                     <option value="">Select family of student</option>
@@ -485,15 +320,6 @@ function AddUser() {
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Your email <span className="text-red-500">*</span>
-                  {userId ? (
-                    <span className="text-red-500">
-                      {" ( "}
-                      Cannot change this email.
-                      {" ) "}
-                    </span>
-                  ) : (
-                    ""
-                  )}
                 </label>
                 <input
                   type="email"
@@ -503,8 +329,7 @@ function AddUser() {
                   onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="name@company.com"
-                  disabled={!!userId}
-                  required
+                  disabled
                 />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -531,13 +356,17 @@ function AddUser() {
                     htmlFor="type"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Type
+                    Type{" "}
+                    <span className="text-red-500">
+                      (Only Admin can change this)
+                    </span>
                   </label>
                   <select
                     id="type"
                     name="type"
                     value={formData.type}
                     onChange={handleChange}
+                    disabled
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   >
                     <option value="">Select type...</option>
@@ -548,22 +377,17 @@ function AddUser() {
                   </select>
                 </div>
               </div>
-
               <div>
                 <label
                   htmlFor="password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Password <span className="text-red-500">*</span>
-                  {userId ? (
-                    <span className="text-red-500">
-                      {" ( "}
-                      Default password will generate {' " '}123!@#thawat
-                      {' " '}. Please change it!{" ) "}
-                    </span>
-                  ) : (
-                    ""
-                  )}
+                  <span className="text-red-500">
+                    {" ( "}
+                    Default password will generate {' " '}123!@#thawat
+                    {' " '}. Please change it!{" ) "}
+                  </span>
                 </label>
                 <input
                   type="password"
@@ -576,29 +400,29 @@ function AddUser() {
                   required
                 />
               </div>
-              {userId ? (
+              {/* {userId ? (
                 ""
-              ) : (
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Retype-Password <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="password"
-                    name="rePassword"
-                    id="rePassword"
-                    placeholder="••••••••"
-                    value={formData.rePassword}
-                    onChange={handleChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    required
-                  />
-                </div>
-              )}
-              <div>
+              ) : ( */}
+              {/* <div>
+                <label
+                  htmlFor="password"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Retype-Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  name="rePassword"
+                  id="rePassword"
+                  placeholder="••••••••"
+                  value={formData.rePassword}
+                  onChange={handleChange}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required
+                />
+              </div>
+              )} */}
+              {/* <div>
                 <label
                   htmlFor="password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -620,62 +444,14 @@ function AddUser() {
                     {isChecked ? "On" : "Off"}
                   </span>
                 </label>
-              </div>
+              </div> */}
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                {userId ? (
-                  // <div className="col-span-1 flex justify-center items-center">
-                  //   <button
-                  //     type="button"
-                  //     className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                  //   >
-                  //     Delete
-                  //   </button>
-                  // </div>
-
-                  <DeleteConfirm
-                    onDelete={() => handleDelete()}
-                    className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                    ico="ri-delete-bin-line"
-                    text="Are you sure you want to delete?"
-                  />
-                ) : (
-                  <div className="col-span-1 flex justify-center items-center">
-                    <button
-                      type="button"
-                      onClick={handleReset}
-                      className="text-white bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:focus:ring-yellow-900focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900"
-                    >
-                      Clear
-                    </button>
-                  </div>
-                )}
-                {userId ? (
-                  // <div className="col-span-1 flex justify-center items-center">
-                  //   <button
-                  //     type="button"
-                  //     onClick={handleReset}
-                  //     className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                  //   >
-                  //     Update
-                  //   </button>
-                  // </div>
-                  <DeleteConfirm
-                    onDelete={() => handleUpdate()}
-                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                    ico="ri-edit-box-line"
-                    text="Confirm to update this account ?"
-                  />
-                ) : (
-                  <div className="col-span-1 flex justify-center items-center">
-                    <button
-                      type="button"
-                      onClick={handleSubmit}
-                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                    >
-                      Create
-                    </button>
-                  </div>
-                )}
+                <DeleteConfirm
+                  onDelete={() => handleUpdate()}
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                  ico="ri-edit-box-line"
+                  text="Confirm to update this account ?"
+                />
               </div>
               {/* </form> */}
             </div>
@@ -685,6 +461,6 @@ function AddUser() {
       </div>
     </>
   );
-}
+};
 
-export default AddUser;
+export default Profile;

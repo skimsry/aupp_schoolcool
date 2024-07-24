@@ -26,6 +26,7 @@ import Amap from "./components/dashboard/websiteMaintenace/Amap";
 import Apartner from "./components/dashboard/websiteMaintenace/Apartner";
 import Aslideshow from "./components/dashboard/websiteMaintenace/Aslideshow";
 import Ateam from "./components/dashboard/websiteMaintenace/Ateam";
+import Profile from "./components/dashboard/websiteMaintenace/Profile";
 
 import { UserContext } from "./ctx/UserContextProvider";
 
@@ -122,7 +123,10 @@ const Main = () => {
               isAuthenticated ? <Aactivites /> : <Navigate to="/login" />
             }
           />
-
+          <Route
+            path="/profile/:_id"
+            element={isAuthenticated ? <Profile /> : <Navigate to="/login" />}
+          />
           {/* <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/addNewUser" element={<AddUser />} />
           <Route path="/manageUsers" element={<ManageUsers />} />

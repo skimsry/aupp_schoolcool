@@ -415,57 +415,6 @@ export const getUsersById = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-// export const updateUserFull = async (req, res) => {
-//   try {
-//     const { _id } = req.params;
-
-//     const { firstName, lastName, gender, dob, fos, phoneNumber, type } =
-//       req.body;
-//     console.log(dob);
-//     // Fetch the current user to get the current status
-//     const currentUser = await User.findById(_id);
-//     if (!currentUser) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-
-//     // Prepare updated user data with only the desired fields
-//     // const updatedUserData = {
-//     //   firstName: firstName || currentUser.firstName,
-//     //   lastName: lastName || currentUser.lastName,
-//     //   gender: gender || currentUser.gender,
-//     //   dob: dob || currentUser.dob,
-//     //   fos: fos || currentUser.fos,
-//     //   phoneNumber: phoneNumber || currentUser.phoneNumber,
-//     //   type: type || currentUser.type,
-//     //   status: status || currentUser.status,
-//     //   updateDate: updateDate || currentUser.updateDate,
-//     // };
-//     const updatedUserData = {
-//       firstName,
-//       lastName,
-//       gender,
-//       dob,
-//       fos,
-//       phoneNumber,
-//       type,
-
-//       updateDate: new Date(),
-//     };
-
-//     // Update the user with the new status and other fields
-//     const updatedUser = await User.findByIdAndUpdate(_id, updatedUserData, {
-//       new: true,
-//     });
-
-//     res.status(200).json({
-//       message: "Updated successfully",
-//       user: updatedUser,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// };
 
 export const updateUserFull = async (req, res) => {
   try {
@@ -480,6 +429,7 @@ export const updateUserFull = async (req, res) => {
       phoneNumber,
       password,
       type,
+      status,
     } = req.body;
     console.log(_id);
     const currentUser = await User.findById(_id);
@@ -496,6 +446,7 @@ export const updateUserFull = async (req, res) => {
       phoneNumber,
       password: hashedPassword,
       type,
+      status,
       updateDate: new Date(),
     };
 
