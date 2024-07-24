@@ -26,7 +26,7 @@ export function UserContextProvider({ children }) {
     const user = JSON.parse(localStorage.getItem("schoolcool-user"));
     const token = localStorage.getItem("schoolcool-token");
     if (user) {
-      console.log(user);
+      //console.log(user);
       setUser(user);
       setIsAuthenticated(true);
       setToken(token);

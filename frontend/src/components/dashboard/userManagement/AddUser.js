@@ -7,12 +7,14 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import FormattedDate from "../FormattedDate";
+import { useParams } from "react-router-dom";
 import Fos from "./Fos";
 
 function AddUser() {
+  const { userId } = useParams();
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
+  const [userById, setUserById] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const apiUrl = process.env.REACT_APP_APIURL;
@@ -132,27 +134,41 @@ function AddUser() {
       }
     }
   };
+  const getUsers = async () => {
+    try {
+      // const response = await axios.get();
 
+      const response = await axios.get(
+        `${apiUrl}/api/users/getUsersStudent`
+        // `http://localhost:3001/api/users/getUsers`
+      );
+      //console.log(response.data);
+      setUsers(response.data);
+      setLoading(true);
+
+      return response.data;
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+    }
+  };
+  const getUserById = async () => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}/api/users/getUsersById/${userId}`
+      );
+      setUserById(response.data);
+      //setLoading(true);
+      //console.log(response.data);
+      //return response.data;
+    } catch (error) {
+      // setError(error);
+      // setLoading(false);
+    }
+    //console.log(userId);
+  };
   useEffect(() => {
-    const getUsers = async () => {
-      try {
-        // const response = await axios.get();
-
-        const response = await axios.get(
-          `${apiUrl}/api/users/getUsersStudent`
-          // `http://localhost:3001/api/users/getUsers`
-        );
-        //console.log(response.data);
-        setUsers(response.data);
-        setLoading(true);
-
-        //return response.data;
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
-
+    getUserById();
     getUsers();
   }, [apiUrl]);
 
@@ -164,7 +180,7 @@ function AddUser() {
         <section className="text-left bg-gray-50 dark:bg-gray-900">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8 bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Create an new user
+              {userId ? "Update user" : "Create an new user"}
             </h1>
             <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -175,11 +191,16 @@ function AddUser() {
                   >
                     First Name <span className="text-red-500">*</span>
                   </label>
+                  {}
                   <input
                     type="text"
                     name="firstName"
                     id="firstName"
-                    value={formData.firstName}
+                    value={
+                      userId
+                        ? `${userById.firstName} ${userById.lastName}`
+                        : `${formData.firstName}`
+                    }
                     onChange={handleChange}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="SORN"
@@ -367,40 +388,46 @@ function AddUser() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                <div className="col-span-1 flex justify-center items-center">
-                  <button
-                    type="button"
-                    className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                  >
-                    Delete
-                  </button>
-                </div>
-                <div className="col-span-1 flex justify-center items-center">
-                  <button
-                    type="button"
-                    onClick={handleReset}
-                    className="text-white bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:focus:ring-yellow-900focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900"
-                  >
-                    Clear
-                  </button>
-                </div>
-                <div className="col-span-1 flex justify-center items-center">
-                  <button
-                    type="button"
-                    onClick={handleReset}
-                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                  >
-                    Update
-                  </button>
-                </div>
-                <div className="col-span-1 flex justify-center items-center">
-                  <button
-                    type="submit"
-                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                  >
-                    Create
-                  </button>
-                </div>
+                {userId ? (
+                  <div className="col-span-1 flex justify-center items-center">
+                    <button
+                      type="button"
+                      className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ) : (
+                  <div className="col-span-1 flex justify-center items-center">
+                    <button
+                      type="button"
+                      onClick={handleReset}
+                      className="text-white bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:focus:ring-yellow-900focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                )}
+                {userId ? (
+                  <div className="col-span-1 flex justify-center items-center">
+                    <button
+                      type="button"
+                      onClick={handleReset}
+                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                    >
+                      Update
+                    </button>
+                  </div>
+                ) : (
+                  <div className="col-span-1 flex justify-center items-center">
+                    <button
+                      type="submit"
+                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                    >
+                      Create
+                    </button>
+                  </div>
+                )}
               </div>
             </form>
           </div>

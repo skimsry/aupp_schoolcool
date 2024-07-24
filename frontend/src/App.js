@@ -71,7 +71,11 @@ const Main = () => {
             element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
           />
           <Route
-            path="/addNewUser"
+            path="/updateUser/:userId"
+            element={isAuthenticated ? <AddUser /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/addNewUser/"
             element={isAuthenticated ? <AddUser /> : <Navigate to="/login" />}
           />
           <Route

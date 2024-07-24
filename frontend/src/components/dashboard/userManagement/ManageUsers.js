@@ -9,16 +9,19 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormattedDate from "../FormattedDate";
 import DeleteConfirm from "./DeleteConfirm";
+
 function ManageUsers() {
   const [users, setUsers] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
   const usersPerPage = 5;
-  const capitalize = (str) => {
-    if (!str) return "";
-    return str.charAt(0).toUpperCase() + str.slice(1).toUpperCase();
-  };
+  // const capitalize = (str) => {
+  //   if (!str) return "";
+  //   return str.charAt(0).toUpperCase() + str.slice(1).toUpperCase();
+  // };
   const apiUrl = process.env.REACT_APP_APIURL;
 
   useEffect(() => {
@@ -46,7 +49,11 @@ function ManageUsers() {
   // Pagination logic
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+  // const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+  const currentUsers = (searchResults.length > 0 ? searchResults : users).slice(
+    indexOfFirstUser,
+    indexOfLastUser
+  );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const handlePrevious = () => {
@@ -56,7 +63,15 @@ function ManageUsers() {
   };
 
   const handleNext = () => {
-    if (currentPage < Math.ceil(users.length / usersPerPage)) {
+    // if (currentPage < Math.ceil(users.length / usersPerPage)) {
+    //   setCurrentPage(currentPage + 1);
+    // }
+    if (
+      currentPage <
+      Math.ceil(
+        (searchResults.length > 0 ? searchResults : users).length / usersPerPage
+      )
+    ) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -80,13 +95,11 @@ function ManageUsers() {
       setLoading(false);
     }
   };
-  const handleActive = async (userId, e) => {
-    //e.preventDefault();
-
+  const handleActive = async (userId) => {
     setLoading(true);
     try {
       const response = await axios.put(`${apiUrl}/api/users/update/${userId}`);
-      setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+      //setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
       toast.success("Active User successfully.", {
         position: "bottom-right",
         autoClose: 2000,
@@ -101,6 +114,33 @@ function ManageUsers() {
       setLoading(false);
     }
   };
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    if (searchQuery) {
+      try {
+        const response = await axios.get(
+          `${apiUrl}/api/users/getUsersByEmail/${searchQuery}`
+        );
+        setSearchResults([response.data]);
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+        toast.error("Email not found.", {
+          position: "bottom-right",
+          autoClose: 2000,
+        });
+      }
+    } else {
+      setSearchResults([]); // Reset search results to show all users
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -108,7 +148,10 @@ function ManageUsers() {
       <Main />
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg ml-72 mr-8 mt-4 pt-4">
-        <form className="max-w-md mx-auto mb-4 pl-4">
+        <form
+          className="max-w-md mx-auto mb-4 pl-4"
+          onSubmit={handleSearchSubmit}
+        >
           <label
             htmlFor="default-search"
             className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -138,7 +181,8 @@ function ManageUsers() {
               id="default-search"
               className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Search for name..."
-              required
+              value={searchQuery}
+              onChange={handleSearchChange}
             />
             <button
               type="submit"
@@ -201,10 +245,11 @@ function ManageUsers() {
                 >
                   <i className="ri-user-3-line text-blue-500 text-2xl"></i>
                   <div className="ps-3">
-                    <div className="text-base font-semibold">
-                      {`${capitalize(user.firstName)} ${capitalize(
+                    <div className="text-base font-semibold uppercase">
+                      {/* {`${capitalize(user.firstName)} ${capitalize(
                         user.lastName
-                      )}`}
+                      )}`} */}
+                      {`${user.firstName} ${user.lastName}`}
                     </div>
                     <div className="font-normal text-gray-500">
                       {user.email}
@@ -221,12 +266,12 @@ function ManageUsers() {
                   <FormattedDate date={user.createdDate} />
                 </td>
                 <td className="px-6 py-4">
-                  <button
-                    type="button"
+                  <Link
+                    to={`/updateUser/${user._id}`}
                     className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                   >
                     <i className="ri-file-edit-line"></i>
-                  </button>
+                  </Link>
                   {/* <button
                     type="button"
                     className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
@@ -278,13 +323,18 @@ function ManageUsers() {
                 </a>
               </li>
 
-              {Array.from({
+              {/* {Array.from({
                 length: Math.ceil(users.length / usersPerPage),
+              }).map((_, i) => ( */}
+              {Array.from({
+                length: Math.ceil(
+                  (searchResults.length > 0 ? searchResults : users).length /
+                    usersPerPage
+                ),
               }).map((_, i) => (
-                <li>
+                <li key={i}>
                   <a
                     href="#"
-                    key={i}
                     onClick={() => paginate(i + 1)}
                     className={`flex items-center justify-center px-4 h-10 leading-tight text-gray-500 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
                       currentPage === i + 1

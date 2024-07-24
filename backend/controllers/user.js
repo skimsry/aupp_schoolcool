@@ -178,7 +178,7 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
     if (!user.status) {
-      console.log(user.status);
+      // console.log(user.status);
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
@@ -369,25 +369,9 @@ export const updateUserStatus = async (req, res) => {
   }
 };
 
-// export const getUsersByNameEmail = async (req, res) => {
-//   try {
-//     const users = await User.find();
-
-//     if (!users.length) {
-//       return res.status(404).json({ message: "No users found" });
-//     }
-
-//     // Send all users as the response
-//     res.status(200).json(users);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// };
 export const getUsersByEmail = async (req, res) => {
   try {
-    // const { email } = req.params;
-    const { email } = req.query;
+    const { email } = req.params;
 
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
@@ -395,9 +379,31 @@ export const getUsersByEmail = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    console.log(user);
+    // console.log(user);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    // Send the user as the response
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getUsersById = async (req, res) => {
+  const { _id } = req.params;
+  try {
+    if (!_id) {
+      return res.status(400).json({ message: "Id is required" });
+    }
+
+    // const user = await User.findById({ _id });
+    const user = await User.findById(_id);
+
+    // console.log(user);
+    if (!user) {
+      return res.status(404).json({ message: "Id is not found" });
     }
 
     // Send the user as the response

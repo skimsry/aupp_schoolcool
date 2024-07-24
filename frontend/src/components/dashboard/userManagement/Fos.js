@@ -72,7 +72,7 @@ function Fos() {
       >
         <option value="">Select Student</option>
         {users.map((user, i) => (
-          <option value={user._id} className="">
+          <option value={user._id} className="" key={user._id}>
             {`${user.firstName} ${user.lastName} | DOB : `}
             <FormattedDate date={user.dob} />
           </option>
