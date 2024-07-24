@@ -7,6 +7,11 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Career from "./about_us/Career";
+import History from "./about_us/History";
+import License from "./about_us/License";
+import Mission from "./about_us/Mission";
+import Vision from "./about_us/Vision";
 
 function AaboutUs() {
   const [activeTab, setActiveTab] = useState(0);
@@ -14,13 +19,21 @@ function AaboutUs() {
   const tabs = [
     {
       name: "History",
-      content: "",
+      content: <History />,
       icon: "ri-history-fill",
     },
-    { name: "Vision", content: "", icon: "ri-tv-2-line" },
-    { name: "Mission", content: "", icon: "ri-file-line" },
-    { name: "Career Oportunities", content: "", icon: "ri-profile-fill" },
-    { name: "License and Accreditation", content: "", icon: "ri-honour-line" },
+    { name: "Vision", content: <Vision />, icon: "ri-tv-2-line" },
+    { name: "Mission", content: <Mission />, icon: "ri-file-line" },
+    {
+      name: "Career Oportunities",
+      content: <Career />,
+      icon: "ri-profile-fill",
+    },
+    {
+      name: "License and Accreditation",
+      content: <License />,
+      icon: "ri-honour-line",
+    },
   ];
   return (
     <>

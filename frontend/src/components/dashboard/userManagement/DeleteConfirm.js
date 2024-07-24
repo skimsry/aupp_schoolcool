@@ -13,9 +13,9 @@ const DeleteConfirm = ({ onDelete, className, ico, text }) => {
         <div>
           {/* Are you sure you want to delete? */}
           {text}
-          <div>
+          <div className="mt-4 flex flex-row justify-center items-center">
             <button
-              className="mt-4 text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+              className="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
               onClick={() => {
                 onDelete();
                 closeToast();
