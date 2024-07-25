@@ -83,8 +83,8 @@ const Profile = () => {
       // const response = await axios.get();
 
       const response = await axios.get(
-        `${apiUrl}/api/users/getUsersStudent`
-        // `http://localhost:3001/api/users/getUsers`
+        `${apiUrl}api/users/getUsersStudent`
+        // `http://localhost:3001api/users/getUsers`
       );
       //console.log(response.data);
       setUsers(response.data);
@@ -99,7 +99,7 @@ const Profile = () => {
   const getUserById = async () => {
     try {
       const response = await axios.get(
-        `${apiUrl}/api/users/getUsersById/${user._id}`
+        `${apiUrl}api/users/getUsersById/${user._id}`
       );
       setUserById(response.data);
       // console.log(response.data.status);
@@ -163,7 +163,7 @@ const Profile = () => {
 
   //           console.log(`Hello ${JSON.stringify(updatedUserData)}`);
   //           const response = await axios.put(
-  //             `${apiUrl}/api/users/updateFull/${path_dashboard}`,
+  //             `${apiUrl}api/users/updateFull/${path_dashboard}`,
   //             JSON.stringify(updatedUserData)
   //           );
   //           toast.success("Updated Profile successfully.", {
@@ -227,7 +227,7 @@ const Profile = () => {
 
       // Perform the API request
       await axios.put(
-        `${apiUrl}/api/users/updateFull/${path_dashboard}`,
+        `${apiUrl}api/users/updateFull/${path_dashboard}`,
         updatedUserData // No need to stringify here; axios will handle it
       );
 

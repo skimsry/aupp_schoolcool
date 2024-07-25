@@ -171,7 +171,7 @@ function AddUser() {
             };
 
             const response = await axios.post(
-              `${apiUrl}/api/users/register`,
+              `${apiUrl}api/users/register`,
               userData
             );
             toast.success("User registered is Successfully!!!.", {
@@ -197,8 +197,8 @@ function AddUser() {
       // const response = await axios.get();
 
       const response = await axios.get(
-        `${apiUrl}/api/users/getUsersStudent`
-        // `http://localhost:3001/api/users/getUsers`
+        `${apiUrl}api/users/getUsersStudent`
+        // `http://localhost:3001api/users/getUsers`
       );
       //console.log(response.data);
       setUsers(response.data);
@@ -213,7 +213,7 @@ function AddUser() {
   const getUserById = async () => {
     try {
       const response = await axios.get(
-        `${apiUrl}/api/users/getUsersById/${userId}`
+        `${apiUrl}api/users/getUsersById/${userId}`
       );
       setUserById(response.data);
       // console.log(response.data.status);
@@ -244,7 +244,7 @@ function AddUser() {
     //e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post(`${apiUrl}/api/users/delete/${userId}`);
+      const response = await axios.post(`${apiUrl}api/users/delete/${userId}`);
       // setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
       toast.success("User deleted successfully.", {
         position: "bottom-right",
@@ -301,7 +301,7 @@ function AddUser() {
           };
 
           const response = await axios.put(
-            `${apiUrl}/api/users/updateFull/${userId}`, // userId should be passed here
+            `${apiUrl}api/users/updateFull/${userId}`, // userId should be passed here
             updatedUserData
           );
           toast.success("Updated successfully.", {

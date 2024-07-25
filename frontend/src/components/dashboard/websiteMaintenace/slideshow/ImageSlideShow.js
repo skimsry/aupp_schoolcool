@@ -24,8 +24,8 @@ function ImageSlideShow() {
         // const response = await axios.get();
 
         const response = await axios.get(
-          `${apiUrl}/api/users/getUsers`
-          // `http://localhost:3001/api/users/getUsers`
+          `${apiUrl}api/users/getUsers`
+          // `http://localhost:3001api/users/getUsers`
         );
 
         setUsers(response.data);
@@ -61,7 +61,7 @@ function ImageSlideShow() {
     //e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post(`${apiUrl}/api/users/delete/${userId}`);
+      const response = await axios.post(`${apiUrl}api/users/delete/${userId}`);
       setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
       toast.success("User deleted successfully.", {
         position: "bottom-right",

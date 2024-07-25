@@ -46,8 +46,8 @@ function Fos() {
       // const response = await axios.get();
 
       const response = await axios.get(
-        `${apiUrl}/api/users/getUsersStudent`
-        // `http://localhost:3001/api/users/getUsers`
+        `${apiUrl}api/users/getUsersStudent`
+        // `http://localhost:3001api/users/getUsers`
       );
       //console.log(response.data);
       setUsers(response.data);
