@@ -8,19 +8,9 @@ import connectToDb from "./db/index.js";
 import helmet from "helmet";
 import cors from "cors";
 // Split the environment variable into an array of allowed origins
-const allowedOrigins = process.env.EXPRESS_APP_APIURL.split(",");
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin, like mobile apps or curl requests
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+    origin: process.env.EXPRESS_APP_APIURL, // Allow this origin
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
