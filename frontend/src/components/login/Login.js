@@ -48,7 +48,7 @@ const Login = () => {
       };
 
       // Make an HTTP POST request to your backend login endpoint
-      const response = await axios.post(`${apiUrl}/api/users/login`, userData);
+      const response = await axios.post(`${apiUrl}api/users/login`, userData);
 
       if (response.status === 200) {
         login(response.data.user, response.data.token);
