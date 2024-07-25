@@ -8,13 +8,14 @@ import connectToDb from "./db/index.js";
 import helmet from "helmet";
 import cors from "cors";
 // Split the environment variable into an array of allowed origins
-app.use(
-  cors({
-    origin: process.env.EXPRESS_APP_APIURL, // Allow this origin
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+// app.use(
+//   cors({
+//     origin: process.env.EXPRESS_APP_APIURL, // Allow this origin
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
+
 // import session from "./session/index.js";
 // import home from "./routes/home/index.js";
 // import admin from "./routes/admin/index.js";
@@ -26,14 +27,23 @@ const logFile = join(__dirname, "schoolcool.log");
 const PORT = process.env.PORT || 3001;
 app.use(helmet());
 // Helmet with Content Security Policy settings
-// app.use(
-//   cors({
-//     origin: process.env.EXPRESS_APP_APIURL,
-//     credentials: true, // Allow this origin
-//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//   })
-// );
+app.use(
+  cors({
+    origin: process.env.EXPRESS_APP_APIURL,
+    credentials: true, // Allow this origin
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+// const corsOptions = {
+//   origin: "http://localhost:3000",
+//   //origin: process.env.EXPRESS_APP_APIURL,
+//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   credentials: true,
+//   optionsSuccessStatus: 204,
+// };
+
+// app.use(cors(corsOptions));
 
 app.use(compression());
 
