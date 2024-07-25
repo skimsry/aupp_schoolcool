@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon -r dotenv/config ./index.js"
   },
   "proxy": "https://aupp-schoolcool.vercel.app/",
   "keywords": [],

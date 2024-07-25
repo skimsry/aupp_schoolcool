@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../ctx/UserContextProvider";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-axios.defaults.withCredentials = true;
+//axios.defaults.withCredentials = true;
 
 const Login = () => {
   const { login } = useContext(UserContext);
@@ -48,7 +48,7 @@ const Login = () => {
       };
 
       // Make an HTTP POST request to your backend login endpoint
-      const response = await axios.post(`${apiUrl}api/users/login`, userData);
+      const response = await axios.post(`${apiUrl}/api/users/login`, userData);
 
       if (response.status === 200) {
         login(response.data.user, response.data.token);

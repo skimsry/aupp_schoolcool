@@ -30,8 +30,8 @@ function ManageUsers() {
         // const response = await axios.get();
 
         const response = await axios.get(
-          `${apiUrl}api/users/getUsers`
-          // `http://localhost:3001api/users/getUsers`
+          `${apiUrl}/api/users/getUsers`
+          // `http://localhost:3001/api/users/getUsers`
         );
 
         setUsers(response.data);
@@ -79,7 +79,7 @@ function ManageUsers() {
     //e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post(`${apiUrl}api/users/delete/${userId}`);
+      const response = await axios.post(`${apiUrl}/api/users/delete/${userId}`);
       setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
       toast.success("User deleted successfully.", {
         position: "bottom-right",
@@ -98,7 +98,7 @@ function ManageUsers() {
   const handleActive = async (userId) => {
     setLoading(true);
     try {
-      const response = await axios.put(`${apiUrl}api/users/update/${userId}`);
+      const response = await axios.put(`${apiUrl}/api/users/update/${userId}`);
       //setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
       toast.success("Active User successfully.", {
         position: "bottom-right",
@@ -124,7 +124,7 @@ function ManageUsers() {
     if (searchQuery) {
       try {
         const response = await axios.get(
-          `${apiUrl}api/users/getUsersByEmail/${searchQuery}`
+          `${apiUrl}/api/users/getUsersByEmail/${searchQuery}`
         );
         setSearchResults([response.data]);
         setLoading(false);
