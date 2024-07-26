@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const DeleteConfirm = ({ onDelete, className, ico, text }) => {
+const DeleteConfirm = ({ onDelete, className, ico, text, labelButton }) => {
   const handleDelete = () => {
     toast.warn(
       ({ closeToast }) => (
@@ -44,6 +44,7 @@ const DeleteConfirm = ({ onDelete, className, ico, text }) => {
     >
       {/* <i className="ri-delete-bin-line"></i> */}
       <i className={ico}></i>
+      {labelButton}
     </button>
   );
 };

@@ -60,7 +60,7 @@ function AddUser() {
       email: "",
       password: "",
       rePassword: "",
-      status: "",
+      status: false,
       createdDate: "",
       updateDate: "",
     });
@@ -330,6 +330,7 @@ function AddUser() {
           setTimeout(() => {
             if (userId === user._id) {
               updateUser(response.data.user, response.data.token);
+              logout();
             }
             navigate("/manageUsers");
           }, 1000);
@@ -348,6 +349,12 @@ function AddUser() {
 
   useEffect(() => {
     // getUserById();
+    // if (userId) {
+    //   getUserById();
+    // } else {
+    //   handleReset();
+    // }
+
     if (userId) {
       getUserById();
     } else {
@@ -361,11 +368,29 @@ function AddUser() {
       dateInputRef.current.setAttribute("max", today);
     }
     //if (userStudent) {
-    //getUserStudent();
-    //console.log(userStudent);
+    getUserStudent();
+    console.log(userStudent);
 
+    // setFormData({
+    //   status: false,
+    // });
+    setFormData({
+      firstName: "",
+      lastName: "",
+      gender: "",
+      dob: "",
+      fos: "",
+      phoneNumber: "",
+      type: "",
+      email: "",
+      password: "",
+      rePassword: "",
+      status: false,
+      createdDate: "",
+      updateDate: "",
+    });
     //}
-  }, [apiUrl, userId, userStudent]);
+  }, [apiUrl, userId]);
 
   return (
     <>
@@ -498,7 +523,7 @@ function AddUser() {
                     className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   >
                     <option value="">Select family of student</option>
-                    {/* {users.map((user, i) => (
+                    {/* {userStudent.map((user, i) => (
                       <option value={user._id} key={user._id}>
                         {`${user.firstName} ${user.lastName} | DOB : `}
                         <FormattedDate date={user.dob} />
@@ -665,7 +690,11 @@ function AddUser() {
                   </span>
                 </label>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+              <div
+                className={`grid grid-cols-1 ${
+                  userId ? "md:grid-cols-8" : "md:grid-cols-9"
+                } gap-4`}
+              >
                 {userId ? (
                   // <div className="col-span-1 flex justify-center items-center">
                   //   <button
@@ -679,8 +708,9 @@ function AddUser() {
                   <DeleteConfirm
                     onDelete={() => handleDelete()}
                     className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                    ico="ri-delete-bin-line"
+                    ico="ri-delete-bin-line text-lg"
                     text="Are you sure you want to delete?"
+                    labelButton=" Delete"
                   />
                 ) : (
                   <div className="col-span-1 flex justify-center items-center">
@@ -689,7 +719,7 @@ function AddUser() {
                       onClick={handleReset}
                       className="text-white bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:focus:ring-yellow-900focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900"
                     >
-                      Clear
+                      <i class="ri-brush-3-line text-lg"></i> Clear
                     </button>
                   </div>
                 )}
@@ -706,8 +736,9 @@ function AddUser() {
                   <DeleteConfirm
                     onDelete={() => handleUpdate()}
                     className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                    ico="ri-edit-box-line"
+                    ico="ri-edit-box-line text-lg"
                     text="Confirm to update this account ?"
+                    labelButton=" Update"
                   />
                 ) : (
                   <div className="col-span-1 flex justify-center items-center">
@@ -716,7 +747,7 @@ function AddUser() {
                       onClick={handleSubmit}
                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                     >
-                      Create
+                      <i class="ri-save-3-line text-lg"></i> Create
                     </button>
                   </div>
                 )}

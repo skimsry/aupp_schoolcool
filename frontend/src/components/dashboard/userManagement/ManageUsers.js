@@ -20,6 +20,7 @@ function ManageUsers() {
   const [searchQuery, setSearchQuery] = useState("");
   const usersPerPage = 5;
   const { user, logout } = useContext(UserContext);
+
   // const capitalize = (str) => {
   //   if (!str) return "";
   //   return str.charAt(0).toUpperCase() + str.slice(1).toUpperCase();
@@ -109,6 +110,7 @@ function ManageUsers() {
         if (userId === user._id) {
           logout();
         }
+        setSearchResults([]);
       }, 2000);
     } catch (error) {
       setLoading(false);
@@ -125,13 +127,46 @@ function ManageUsers() {
     try {
       const response = await axios.put(`${apiUrl}api/users/update/${userId}`);
       //setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
-      //testing
+      //test
+      if (userId === user._id) {
+        logout();
+      }
+      //end
       getUsers();
-      const updatedUser = response.data;
-      setUsers((prevUsers) =>
-        prevUsers.map((user) => (user._id === userId ? updatedUser : user))
-      );
-      //end testing
+      // const updatedUser = response.data;
+      // setUsers((prevUsers) =>
+      //   prevUsers.map((user) => (user._id === userId ? updatedUser : user))
+      // );
+      //new code
+      // handleSearchSubmit();
+      // if (searchQuery) {
+      //   setSearchResults([response.data]);
+      // }
+
+      if (searchResults.length > 0) {
+        if (searchQuery) {
+          try {
+            const response = await axios.get(
+              `${apiUrl}api/users/getUsersByEmail/${searchQuery}`
+            );
+
+            setSearchResults([response.data]);
+            setLoading(false);
+          } catch (error) {
+            setError(error);
+            setLoading(false);
+            toast.error("Email not found.", {
+              position: "bottom-right",
+              autoClose: 2000,
+            });
+          }
+        } else {
+          setSearchResults([]); // Reset search results to show all users
+          setLoading(false);
+        }
+      }
+
+      //end new code
       toast.success("Active User successfully.", {
         position: "bottom-right",
         autoClose: 2000,
@@ -159,6 +194,9 @@ function ManageUsers() {
           `${apiUrl}api/users/getUsersByEmail/${searchQuery}`
         );
         setSearchResults([response.data]);
+        //adding code
+        setCurrentPage(1);
+        //stop
         setLoading(false);
       } catch (error) {
         setError(error);
@@ -179,7 +217,7 @@ function ManageUsers() {
       <Slidebar />
       <Main />
 
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg ml-72 mr-8 mt-4 pt-4">
+      <div className="shadow-md sm:rounded-lg ml-72 mr-8">
         <form
           className="max-w-md mx-auto mb-4 pl-4"
           onSubmit={handleSearchSubmit}
@@ -321,6 +359,7 @@ function ManageUsers() {
                 <td className="px-6 py-4">
                   <Link
                     to={`/updateUser/${user._id}`}
+                    //to={`/addNewUser/${user._id}`}
                     className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                   >
                     <i className="ri-file-edit-line"></i>
@@ -417,16 +456,20 @@ function ManageUsers() {
             </ul>
           </nav>
         </div>
-        <div className="flex justify-end">
-          <ul className="inline-flex -space-x-px text-base h-10 mb-4 pr-8">
-            <li className="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg dark:border-gray-700 dark:text-gray-400">
-              Total Users :
-            </li>
-            <li className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 border border-gray-300 rounded-e-lg dark:text-gray-400 bg-blue-700 text-white">
-              {users.length}
-            </li>
-          </ul>
-        </div>
+        {searchResults.length > 0 ? (
+          <div className="h-10"></div>
+        ) : (
+          <div className="flex justify-end">
+            <ul className="inline-flex -space-x-px text-base h-10 mb-4 pr-8">
+              <li className="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg dark:border-gray-700 dark:text-gray-400">
+                Total Users :
+              </li>
+              <li className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 border border-gray-300 rounded-e-lg dark:text-gray-400 bg-blue-700 text-white">
+                {users.length}
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
       <ToastContainer />
     </>

@@ -4,7 +4,7 @@ import "../../../index.css";
 import { useLocation, Link } from "react-router-dom";
 import { UserContext } from "../../../ctx/UserContextProvider";
 //import axios from "axios";
-function Main() {
+const Main = () => {
   const path = useLocation();
   const path_dashboard = path.pathname.startsWith("/")
     ? path.pathname.slice(1)
@@ -22,6 +22,8 @@ function Main() {
   const apiUrl = process.env.REACT_APP_APIURL;
   const fullName = `${user.firstName} ${user.lastName}`;
   const CFullName = fullName.toUpperCase();
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [showTooltip2, setShowTooltip2] = useState(false);
   // const getUserById = async () => {
   //   try {
   //     const response = await axios.get(
@@ -77,28 +79,73 @@ function Main() {
           <li className="dropdown pr-4">
             <p className="capitalize">{CFullName}</p>
           </li>
-          <li className="dropdown">
+          {/* <li className="dropdown">
             <button
               type="button"
               className="dropdown-toggle text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-gray-600"
             >
               <i className="ri-notification-3-line"></i>
             </button>
-          </li>
-
-          <li className="dropdown ml-3 relative">
+          </li> */}
+          <div className="relative">
             <button
               type="button"
               onClick={toggleDropdown}
+              onMouseEnter={() => setShowTooltip2(true)}
+              onMouseLeave={() => setShowTooltip2(false)}
               className="dropdown-toggle flex items-center"
             >
-              {/* <img
-                src="https://placehold.co/32x32"
-                alt=""
-                className="w-8 h-8 rounded block object-cover align-middle"
-              /> */}
+              <i className="ri-notification-3-line"></i>
+            </button>
+            {showTooltip2 && (
+              <div
+                role="tooltip"
+                className="absolute right-full top-0 mr-2 z-10 inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm "
+              >
+                Notification
+              </div>
+            )}
+          </div>
+          <li className="dropdown ml-3 relative">
+            {/* <button
+              type="button"
+              onClick={toggleDropdown}
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+              className="dropdown-toggle flex items-center"
+            >
+              
               <i className="ri-user-3-line "></i>
             </button>
+            {showTooltip && (
+              <div
+                id="tooltip-left"
+                role="tooltip"
+                className="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+              >
+                Profile Account
+                <div className="tooltip-arrow" data-popper-arrow></div>
+              </div>
+            )} */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={toggleDropdown}
+                onMouseEnter={() => setShowTooltip(true)}
+                onMouseLeave={() => setShowTooltip(false)}
+                className="dropdown-toggle flex items-center"
+              >
+                <i className="ri-user-3-line "></i>
+              </button>
+              {showTooltip && (
+                <div
+                  role="tooltip"
+                  className="absolute right-full top-0 mr-1 z-10 inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm "
+                >
+                  Profile
+                </div>
+              )}
+            </div>
             <ul
               className={`dropdown-menu shadow-md shadow-black/5 z-30 py-1.5 rounded-md bg-white border border-gray-100  absolute right-0 mt-2 w-40 ${
                 isDropdownOpen ? "block" : "hidden"
@@ -128,6 +175,6 @@ function Main() {
       </div>
     </main>
   );
-}
+};
 
 export default Main;

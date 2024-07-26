@@ -39,7 +39,7 @@ const App = () => {
 };
 
 const Main = () => {
-  const { isAuthenticated } = useContext(UserContext);
+  const { isAuthenticated, token } = useContext(UserContext);
   const location = useLocation();
   const showHeader = [
     "/",
@@ -49,12 +49,14 @@ const Main = () => {
     "/login",
     "/signup",
   ].includes(location.pathname);
-
+  // if (token === undefined) {
+  //   return null; // or loading indicator/spinner/etc
+  // }
   return (
     <div className="App">
       <div className="header-section">{showHeader && <Header />}</div>
       <div className="container">
-        <Routes>
+        {/* <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/announcement" element={<Announcement />} />
           <Route path="/about_us" element={<AboutUs />} />
@@ -127,19 +129,56 @@ const Main = () => {
             path="/profile/:_id"
             element={isAuthenticated ? <Profile /> : <Navigate to="/login" />}
           />
-          {/* <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/addNewUser" element={<AddUser />} />
-          <Route path="/manageUsers" element={<ManageUsers />} />
+        </Routes> */}
+        {isAuthenticated ? (
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/announcement" element={<Announcement />} />
+            <Route path="/about_us" element={<AboutUs />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/signup" element={<Signup />} />
 
-          <Route path="/adim_about_us" element={<AaboutUs />} />
-          <Route path="/admin_announcement" element={<Aannoucement />} />
-          <Route path="/admin_contact" element={<Acontact />} />
-          <Route path="/admin_map" element={<Amap />} />
-          <Route path="/admin_partners" element={<Apartner />} />
-          <Route path="/admin_slideshow" element={<Aslideshow />} />
-          <Route path="/admin_teams" element={<Ateam />} />
-          <Route path="/admin_activities" element={<Aactivites />} /> */}
-        </Routes>
+            <Route path="/login" element={<Navigate to="/dashboard" />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/updateUser/:userId" element={<AddUser />} />
+            <Route path="/addNewUser" element={<AddUser />} />
+            {/* <Route path="/addNewUser/:userId?" element={<AddUser />} /> */}
+            <Route path="/manageUsers" element={<ManageUsers />} />
+            <Route path="/adim_about_us" element={<AaboutUs />} />
+            <Route path="/admin_announcement" element={<Aannoucement />} />
+            <Route path="/admin_contact" element={<Acontact />} />
+            <Route path="/admin_map" element={<Amap />} />
+            <Route path="/admin_partners" element={<Apartner />} />
+            <Route path="/admin_slideshow" element={<Aslideshow />} />
+            <Route path="/admin_teams" element={<Ateam />} />
+            <Route path="/admin_activities" element={<Aactivites />} />
+            <Route path="/profile/:_id" element={<Profile />} />
+          </Routes>
+        ) : (
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/announcement" element={<Announcement />} />
+            <Route path="/about_us" element={<AboutUs />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/signup" element={<Signup />} />
+
+            <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={<Navigate to="/login" />} />
+            <Route path="/updateUser/:userId" element={<Login />} />
+            <Route path="/addNewUser/:?" element={<Login />} />
+            {/* <Route path="/addNewUser/:userId?" element={<Login />} /> */}
+            <Route path="/manageUsers" element={<Login />} />
+            <Route path="/adim_about_us" element={<Login />} />
+            <Route path="/admin_announcement" element={<Login />} />
+            <Route path="/admin_contact" element={<Login />} />
+            <Route path="/admin_map" element={<Login />} />
+            <Route path="/admin_partners" element={<Login />} />
+            <Route path="/admin_slideshow" element={<Login />} />
+            <Route path="/admin_teams" element={<Login />} />
+            <Route path="/admin_activities" element={<Login />} />
+            <Route path="/profile/:_id" element={<Login />} />
+          </Routes>
+        )}
       </div>
       <div className="footer-section">{showHeader && <Footer />}</div>
     </div>

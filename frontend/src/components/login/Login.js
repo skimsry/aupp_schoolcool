@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import "../../input.css";
 import "../../index.css";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import { UserContext } from "../../ctx/UserContextProvider";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
