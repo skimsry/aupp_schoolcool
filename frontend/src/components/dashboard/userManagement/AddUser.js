@@ -10,9 +10,19 @@ import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
 import FormattedDate from "../FormattedDate";
 import DeleteConfirm from "./DeleteConfirm";
+import { UserContext } from "../../../ctx/UserContextProvider";
 // import Fos from "./Fos";
 
 function AddUser() {
+  const {
+    userStudent,
+    setUserStudent,
+    logout,
+    user,
+    updateUser,
+    getUserStudent,
+  } = useContext(UserContext);
+  //console.log(userStudent._id);
   const { userId } = useParams();
   const navigate = useNavigate();
   const dateInputRef = useRef(null);
@@ -33,7 +43,8 @@ function AddUser() {
     email: "",
     password: "",
     rePassword: "",
-    status: "",
+    // status: "",
+    status: false,
     createdDate: "",
     updateDate: "",
   });
@@ -67,6 +78,7 @@ function AddUser() {
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: type === "checkbox" ? checked : value,
+      // [name]: checked,
     }));
     setIsChecked(e.target.checked);
   };
@@ -179,6 +191,7 @@ function AddUser() {
               autoClose: 1000,
             });
             handleReset();
+            getUserStudent();
           } catch (error) {
             toast.error(
               "This email is already in use. Please try another email.",
@@ -192,24 +205,25 @@ function AddUser() {
       }
     }
   };
-  const getUsers = async () => {
-    try {
-      // const response = await axios.get();
+  //export this function to userContext by add export
+  // const getUsers = async () => {
+  //   try {
+  //     // const response = await axios.get();
 
-      const response = await axios.get(
-        `${apiUrl}api/users/getUsersStudent`
-        // `http://localhost:3001api/users/getUsers`
-      );
-      //console.log(response.data);
-      setUsers(response.data);
-      setLoading(true);
+  //     const response = await axios.get(
+  //       `${apiUrl}api/users/getUsersStudent`
+  //       // `http://localhost:3001api/users/getUsers`
+  //     );
+  //     //console.log(response.data);
+  //     setUsers(response.data);
+  //     setLoading(true);
 
-      return response.data;
-    } catch (error) {
-      setError(error);
-      setLoading(false);
-    }
-  };
+  //     return response.data;
+  //   } catch (error) {
+  //     setError(error);
+  //     setLoading(false);
+  //   }
+  // };
   const getUserById = async () => {
     try {
       const response = await axios.get(
@@ -251,7 +265,12 @@ function AddUser() {
         autoClose: 1000,
       });
       setTimeout(() => {
-        navigate("/manageUsers");
+        // navigate("/manageUsers");
+        if (userId !== user._id) {
+          navigate("/manageUsers");
+        } else {
+          logout();
+        }
       }, 1000);
     } catch (error) {
       setLoading(false);
@@ -309,6 +328,9 @@ function AddUser() {
             autoClose: 1000,
           });
           setTimeout(() => {
+            if (userId === user._id) {
+              updateUser(response.data.user, response.data.token);
+            }
             navigate("/manageUsers");
           }, 1000);
         } catch (error) {
@@ -331,13 +353,19 @@ function AddUser() {
     } else {
       handleReset();
     }
-    getUsers();
+    //getUsers();
+
     // Get today's date in YYYY-MM-DD format
     const today = new Date().toISOString().split("T")[0];
     if (dateInputRef.current) {
       dateInputRef.current.setAttribute("max", today);
     }
-  }, [apiUrl, userId]);
+    //if (userStudent) {
+    //getUserStudent();
+    //console.log(userStudent);
+
+    //}
+  }, [apiUrl, userId, userStudent]);
 
   return (
     <>
@@ -470,7 +498,13 @@ function AddUser() {
                     className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   >
                     <option value="">Select family of student</option>
-                    {users.map((user, i) => (
+                    {/* {users.map((user, i) => (
+                      <option value={user._id} key={user._id}>
+                        {`${user.firstName} ${user.lastName} | DOB : `}
+                        <FormattedDate date={user.dob} />
+                      </option>
+                    ))} */}
+                    {userStudent.map((user, i) => (
                       <option value={user._id} key={user._id}>
                         {`${user.firstName} ${user.lastName} | DOB : `}
                         <FormattedDate date={user.dob} />
@@ -607,6 +641,16 @@ function AddUser() {
                 </label>
 
                 <label className="inline-flex items-center cursor-pointer ">
+                  {/* <input
+                    type="checkbox"
+                    // value={userId ? formData.status : false}
+                    value={formData.status}
+                    onChange={handleChange}
+                    className="sr-only peer"
+                    name="status"
+                    // checked={userId ? formData.status : false}
+                    checked={formData.status}
+                  /> */}
                   <input
                     type="checkbox"
                     value={formData.status}

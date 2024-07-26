@@ -5,9 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon -r dotenv/config ./index.js"
   },
-  "proxy": "https://aupp-schoolcool.vercel.app/",
+  "proxy": "http://localhost:3000/",
   "keywords": [],
   "author": "",
   "license": "ISC",

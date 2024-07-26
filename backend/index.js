@@ -35,21 +35,20 @@ app.use(helmet());
 //     allowedHeaders: ["Content-Type", "Authorization"],
 //   })
 // );
+
+// connect backend with frontend
 const corsOptions = {
   origin: process.env.EXPRESS_APP_APIURL,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
 };
-
 app.use(cors(corsOptions));
-
-app.use(compression());
 
 // Serve static files from the React app
 // import path from "path";
 // app.use(express.static(path.join(__dirname, "../frontend/build")));
-
+app.use(compression());
 app.get("/api", (req, res) => {
   res.send({ message: "Hello from the server!" });
 });

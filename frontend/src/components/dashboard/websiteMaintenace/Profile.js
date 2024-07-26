@@ -14,8 +14,9 @@ import { UserContext } from "../../../ctx/UserContextProvider";
 // import Fos from "./Fos";
 
 const Profile = () => {
-  const { user } = useContext(UserContext);
-  const { userId } = useParams();
+  // const { user, setUser, updateUser } = useContext(UserContext);
+  const { user, updateUser } = useContext(UserContext);
+  //const { userId } = useParams();
 
   const navigate = useNavigate();
   const dateInputRef = useRef(null);
@@ -223,14 +224,15 @@ const Profile = () => {
       };
 
       // Log the updated data for debugging
-      console.log(`Updating user data: ${JSON.stringify(updatedUserData)}`);
+      //console.log(`Updating user data: ${JSON.stringify(updatedUserData)}`);
 
       // Perform the API request
-      await axios.put(
+      const response = await axios.put(
         `${apiUrl}api/users/updateFull/${path_dashboard}`,
         updatedUserData // No need to stringify here; axios will handle it
       );
-
+      updateUser(response.data.user, response.data.token);
+      //setUser(updatedUserData);
       // Notify user of success
       toast.success("Profile updated successfully.", {
         position: "bottom-right",
@@ -258,7 +260,7 @@ const Profile = () => {
     if (dateInputRef.current) {
       dateInputRef.current.setAttribute("max", today);
     }
-  }, [apiUrl, userId]);
+  }, [apiUrl]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Slidebar from "../partial/Slidebar";
 import Main from "../partial/Main";
 import "../../../input.css";
@@ -9,6 +9,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormattedDate from "../FormattedDate";
 import DeleteConfirm from "./DeleteConfirm";
+import { UserContext } from "../../../ctx/UserContextProvider";
 
 function ManageUsers() {
   const [users, setUsers] = useState([]);
@@ -18,33 +19,52 @@ function ManageUsers() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const usersPerPage = 5;
+  const { user, logout } = useContext(UserContext);
   // const capitalize = (str) => {
   //   if (!str) return "";
   //   return str.charAt(0).toUpperCase() + str.slice(1).toUpperCase();
   // };
   const apiUrl = process.env.REACT_APP_APIURL;
+  const getUsers = async () => {
+    try {
+      // const response = await axios.get();
 
+      const response = await axios.get(
+        `${apiUrl}api/users/getUsers`
+        // `http://localhost:3001api/users/getUsers`
+      );
+
+      setUsers(response.data);
+      setLoading(false);
+
+      //return response.data;
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const getUsers = async () => {
-      try {
-        // const response = await axios.get();
+    // const getUsers = async () => {
+    //   try {
+    //     // const response = await axios.get();
 
-        const response = await axios.get(
-          `${apiUrl}api/users/getUsers`
-          // `http://localhost:3001api/users/getUsers`
-        );
+    //     const response = await axios.get(
+    //       `${apiUrl}api/users/getUsers`
+    //       // `http://localhost:3001api/users/getUsers`
+    //     );
 
-        setUsers(response.data);
-        setLoading(false);
+    //     setUsers(response.data);
+    //     setLoading(false);
 
-        //return response.data;
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
+    //     //return response.data;
+    //   } catch (error) {
+    //     setError(error);
+    //     setLoading(false);
+    //   }
+    // };
 
     getUsers();
+    //console.log(users);
   }, [apiUrl]);
   // Pagination logic
   const indexOfLastUser = currentPage * usersPerPage;
@@ -85,6 +105,11 @@ function ManageUsers() {
         position: "bottom-right",
         autoClose: 2000,
       });
+      setTimeout(() => {
+        if (userId === user._id) {
+          logout();
+        }
+      }, 2000);
     } catch (error) {
       setLoading(false);
       toast.error("Cannot delete. Please try another.", {
@@ -100,6 +125,13 @@ function ManageUsers() {
     try {
       const response = await axios.put(`${apiUrl}api/users/update/${userId}`);
       //setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+      //testing
+      getUsers();
+      const updatedUser = response.data;
+      setUsers((prevUsers) =>
+        prevUsers.map((user) => (user._id === userId ? updatedUser : user))
+      );
+      //end testing
       toast.success("Active User successfully.", {
         position: "bottom-right",
         autoClose: 2000,
@@ -256,11 +288,32 @@ function ManageUsers() {
                     </div>
                   </div>
                 </th>
-                <td className="px-6 py-4">{user.gender}</td>
+                {/* <td className="px-6 py-4">{user.gender}</td> */}
+                <td className="px-6 py-4">
+                  {user.gender === "M"
+                    ? "Male"
+                    : user.gender === "F"
+                    ? "Female"
+                    : user.gender === "O"
+                    ? "Other"
+                    : ""}
+                </td>
+
                 <td className="px-6 py-4">
                   <FormattedDate date={user.dob} />
                 </td>
-                <td className="px-6 py-4">{user.type}</td>
+                {/* <td className="px-6 py-4">{user.type}</td> */}
+                <td className="px-6 py-4">
+                  {user.type === 1
+                    ? "Administrator"
+                    : user.type === 2
+                    ? "Teacher"
+                    : user.type === 3
+                    ? "Student"
+                    : user.type === 4
+                    ? "Parent"
+                    : ""}
+                </td>
                 <td className="px-6 py-4">{user.phoneNumber}</td>
                 <td className="px-6 py-4">
                   <FormattedDate date={user.createdDate} />
@@ -272,24 +325,30 @@ function ManageUsers() {
                   >
                     <i className="ri-file-edit-line"></i>
                   </Link>
-                  {/* <button
-                    type="button"
-                    className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                  >
-                    <i className="ri-eye-line"></i>
-                  </button> */}
-                  <DeleteConfirm
+
+                  {/* <DeleteConfirm
                     onDelete={() => handleActive(user._id)}
                     className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                    // ico="ri-eye-line"
                     ico={user.status ? "ri-eye-line" : "ri-eye-off-line"}
-                    // text="Do you want to active this account?"
                     text={
                       user.status
                         ? "Do you want to deactive this account?"
                         : "Do you want to active this account?"
                     }
+                  /> */}
+                  {/* {users.map((user) => ( */}
+                  <DeleteConfirm
+                    key={user._id}
+                    onDelete={() => handleActive(user._id)}
+                    className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    ico={user.status ? "ri-eye-line" : "ri-eye-off-line"}
+                    text={
+                      user.status
+                        ? "Do you want to deactivate this account?"
+                        : "Do you want to activate this account?"
+                    }
                   />
+                  {/* ))} */}
                   {/* <button
                     type="button"
                     key={user._id}
@@ -310,7 +369,7 @@ function ManageUsers() {
           </tbody>
         </table>
 
-        <div className="flex justify-center mt-4 mb-4">
+        <div className="flex justify-center mt-4">
           <nav aria-label="Page navigation example">
             <ul className="inline-flex -space-x-px text-base h-10">
               <li>
@@ -357,6 +416,16 @@ function ManageUsers() {
               </li>
             </ul>
           </nav>
+        </div>
+        <div className="flex justify-end">
+          <ul className="inline-flex -space-x-px text-base h-10 mb-4 pr-8">
+            <li className="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg dark:border-gray-700 dark:text-gray-400">
+              Total Users :
+            </li>
+            <li className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 border border-gray-300 rounded-e-lg dark:text-gray-400 bg-blue-700 text-white">
+              {users.length}
+            </li>
+          </ul>
         </div>
       </div>
       <ToastContainer />
