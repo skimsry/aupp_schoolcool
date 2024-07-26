@@ -529,12 +529,12 @@ function AddUser() {
                         <FormattedDate date={user.dob} />
                       </option>
                     ))} */}
-                    {userStudent.map((user, i) => (
+                    {/* {userStudent.map((user, i) => (
                       <option value={user._id} key={user._id}>
                         {`${user.firstName} ${user.lastName} | DOB : `}
                         <FormattedDate date={user.dob} />
                       </option>
-                    ))}
+                    ))} */}
                   </select>
                 </div>
               </div>
