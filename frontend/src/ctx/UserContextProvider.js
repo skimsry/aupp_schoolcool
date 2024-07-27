@@ -10,6 +10,16 @@ export function UserContextProvider({ children }) {
   const [userStudent, setUserStudent] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [token, setToken] = useState(null);
+  //map
+  const [sMap, setSMap] = useState([]);
+  const getSMap = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}api/map/getMap`);
+      setSMap(response.data);
+    } catch (error) {
+      console.error("Failed to fetch map data.", error);
+    }
+  };
 
   // const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,6 +69,7 @@ export function UserContextProvider({ children }) {
       setToken(token);
       //getuserStudent
       getUserStudent();
+      getSMap();
     }
   }, []);
 
@@ -106,6 +117,9 @@ export function UserContextProvider({ children }) {
         userStudent,
         setUserStudent,
         getUserStudent,
+        getSMap,
+        sMap,
+        setSMap,
       }}
     >
       {children}

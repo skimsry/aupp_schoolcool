@@ -11,7 +11,12 @@ import {
   getUsersById,
   updateUserFull,
 } from "../../controllers/user.js";
-import { addMap, getMap, updateMap } from "../../controllers/map.js";
+import {
+  addMap,
+  getMap,
+  updateMap,
+  // updateMapStatus,
+} from "../../controllers/map.js";
 
 const router = Router();
 //user
