@@ -32,6 +32,7 @@ function AddUser() {
   const [error, setError] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const apiUrl = process.env.REACT_APP_APIURL;
+  const [userStudent2, setUserStudent2] = useState([]);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -105,6 +106,20 @@ function AddUser() {
       strength = "weak";
     }
     return strength;
+  };
+  const getUserStudent2 = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(`${apiUrl}api/users/getUsersStudent`);
+
+      setUserStudent2(response.data);
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
   };
   // const checkFieldEmpty = () => {
   //   if (!formData.firstName) {
@@ -191,7 +206,8 @@ function AddUser() {
               autoClose: 1000,
             });
             handleReset();
-            getUserStudent();
+            // getUserStudent();
+            getUserStudent2();
           } catch (error) {
             toast.error(
               "This email is already in use. Please try another email.",
@@ -230,10 +246,7 @@ function AddUser() {
         `${apiUrl}api/users/getUsersById/${userId}`
       );
       setUserById(response.data);
-      // console.log(response.data.status);
-      //setLoading(true);
-      //console.log(response.data);
-      //return response.data;
+
       setFormData({
         firstName: response.data.firstName,
         lastName: response.data.lastName,
@@ -348,13 +361,6 @@ function AddUser() {
   };
 
   useEffect(() => {
-    // getUserById();
-    // if (userId) {
-    //   getUserById();
-    // } else {
-    //   handleReset();
-    // }
-
     if (userId) {
       getUserById();
     } else {
@@ -368,9 +374,10 @@ function AddUser() {
       dateInputRef.current.setAttribute("max", today);
     }
     //if (userStudent) {
-    getUserStudent();
-    console.log(userStudent);
+    // getUserStudent();
+    // console.log(userStudent);
 
+    getUserStudent2();
     // setFormData({
     //   status: false,
     // });
@@ -529,12 +536,12 @@ function AddUser() {
                         <FormattedDate date={user.dob} />
                       </option>
                     ))} */}
-                    {/* {userStudent.map((user, i) => (
+                    {userStudent2.map((user, i) => (
                       <option value={user._id} key={user._id}>
                         {`${user.firstName} ${user.lastName} | DOB : `}
                         <FormattedDate date={user.dob} />
                       </option>
-                    ))} */}
+                    ))}
                   </select>
                 </div>
               </div>
