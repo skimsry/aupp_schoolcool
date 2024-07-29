@@ -3,12 +3,12 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import FormattedDate from "../FormattedDate";
-import Slidebar from "../partial/Slidebar";
-import Main from "../partial/Main";
-import DeleteConfirm from "../userManagement/DeleteConfirm";
+import FormattedDate from "../../FormattedDate";
+import Slidebar from "../../partial/Slidebar";
+import Main from "../../partial/Main";
+import DeleteConfirm from "../../userManagement/DeleteConfirm";
 const apiUrl = process.env.REACT_APP_APIURL;
-const OurTeam = () => {
+const OurActivity = () => {
   const [profileimg, setProfileimag] = useState(null);
   const [name, setName] = useState("");
   const [alert, setAlert] = useState(false);
@@ -23,7 +23,7 @@ const OurTeam = () => {
   const teamsPerPage = 5;
   const getTeam = async () => {
     try {
-      const response = await axios.get(`${apiUrl}api/team/getTeam`);
+      const response = await axios.get(`${apiUrl}api/activities/getActivities`);
 
       setTeams(response.data);
     } catch (error) {}
@@ -63,17 +63,16 @@ const OurTeam = () => {
     } else {
       setAlert(true);
       try {
-        const response = await axios.post(`${apiUrl}api/team/register`, {
-          name,
-          position,
-          profileimg,
+        const response = await axios.post(`${apiUrl}api/activities/register`, {
+          title: name,
+          content: position,
+          imgcover: profileimg,
         });
 
         toast.success("Updated successfully.", {
           position: "bottom-right",
           autoClose: 1000,
         });
-        //setProfileimag(response.data);
 
         handleReset();
         getTeam();
@@ -84,7 +83,6 @@ const OurTeam = () => {
           autoClose: 2000,
         });
       } finally {
-        //setLoading(false);
         setAlert(false);
       }
     }
@@ -116,14 +114,13 @@ const OurTeam = () => {
     if (searchQuery) {
       try {
         const response = await axios.get(
-          `${apiUrl}api/team/getTeamByName/${searchQuery}`
+          `${apiUrl}api/activities/getActivitiesByName/${searchQuery}`
         );
         // setSearchResults([response.data]);
         setSearchResults(response.data);
-
         setCurrentPage(1);
       } catch (error) {
-        toast.error("team not found.", {
+        toast.error("This activity not found.", {
           position: "bottom-right",
           autoClose: 2000,
         });
@@ -135,9 +132,11 @@ const OurTeam = () => {
 
   const handleDelete = async (userId, e) => {
     try {
-      const response = await axios.post(`${apiUrl}api/team/delete/${userId}`);
+      const response = await axios.post(
+        `${apiUrl}api/activities/delete/${userId}`
+      );
       setTeams((prevteams) => prevteams.filter((user) => user._id !== userId));
-      toast.success("Member deleted successfully.", {
+      toast.success("This Activity deleted successfully.", {
         position: "bottom-right",
         autoClose: 2000,
       });
@@ -158,9 +157,9 @@ const OurTeam = () => {
   const handleEdit = (user) => {
     setEditteam(true);
     setCurrentTeamId(user._id);
-    setName(user.name);
-    setPosition(user.position);
-    setProfileimag(user.profileimg);
+    setName(user.title);
+    setPosition(user.content);
+    setProfileimag(user.imgcover);
     if (fileInputRef.current) {
       fileInputRef.current.value = null;
     }
@@ -177,11 +176,11 @@ const OurTeam = () => {
       setAlert(true);
       try {
         const response = await axios.put(
-          `${apiUrl}api/team/updateTeam/${currentTeamId}`,
+          `${apiUrl}api/activities/updateActivities/${currentTeamId}`,
           {
-            name,
-            position,
-            profileimg,
+            title: name,
+            content: position,
+            imgcover: profileimg,
           }
         );
 
@@ -217,8 +216,8 @@ const OurTeam = () => {
               <dl className="sm:divide-y sm:divide-gray-200">
                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt className="text-sm font-medium text-gray-500">
-                    Profile Photo{" "}
-                    <span className="text-red-500">* (256px X 256px)</span>
+                    Cover image{" "}
+                    <span className="text-red-500">* (920px X 613px)</span>
                   </dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                     <input
@@ -233,7 +232,7 @@ const OurTeam = () => {
                 </div>
                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt className="text-sm font-medium text-gray-500">
-                    Fullname <span className="text-red-500">*</span>
+                    Title <span className="text-red-500">*</span>
                   </dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                     <input
@@ -242,23 +241,24 @@ const OurTeam = () => {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="SORN KIMSRY"
+                      placeholder=""
                       required
                     />
                   </dd>
                 </div>
                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt className="text-sm font-medium text-gray-500">
-                    Position <span className="text-red-500">*</span>
+                    Content <span className="text-red-500">*</span>
                   </dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    <input
+                    <textarea
                       type="text"
                       id="first_name"
                       value={position}
+                      rows="4"
                       onChange={(e) => setPosition(e.target.value)}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="Web Developer"
+                      placeholder=""
                       required
                     />
                   </dd>
@@ -334,7 +334,7 @@ const OurTeam = () => {
               type="search"
               id="default-search"
               className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Search for Fullname..."
+              placeholder="Search for title..."
               value={searchQuery}
               onChange={handleSearchChange}
             />
@@ -358,17 +358,17 @@ const OurTeam = () => {
                 </div>
               </th>
               <th scope="col" className="px-6 py-3">
-                Profile Photo
+                Cover image
               </th>
               <th scope="col" className="px-6 py-3">
-                Fullname
+                Title
               </th>
               <th scope="col" className="px-6 py-3">
-                Position
+                Content
               </th>
 
               <th scope="col" className="px-6 py-3">
-                Register Date
+                Post Date
               </th>
               <th scope="col" className="px-6 py-3">
                 Action
@@ -388,17 +388,12 @@ const OurTeam = () => {
                     </label>
                   </div>
                 </td>
-                <td className="px-6 py-4">
-                  <img
-                    id={user._id}
-                    src={user.profileimg}
-                    alt={user.name}
-                    className="h-24 w-24"
-                  />
+                <td className="px-6 py-4 w-48">
+                  <img id={user._id} src={user.imgcover} alt={user.name} />
                 </td>
-                <td className="px-6 py-4">{user.name}</td>
+                <td className="px-6 py-4 w-56">{user.title}</td>
 
-                <td className="px-6 py-4">{user.position}</td>
+                <td className="px-6 py-4 w-96">{user.content}</td>
                 <td className="px-6 py-4">
                   <FormattedDate date={user.createdDate} />
                 </td>
@@ -474,7 +469,7 @@ const OurTeam = () => {
           <div className="flex justify-end">
             <ul className="inline-flex -space-x-px text-base h-10 mb-4 pr-8">
               <li className="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg dark:border-gray-700 dark:text-gray-400">
-                Total Message :
+                Total Announcement :
               </li>
               <li className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 border border-gray-300 rounded-e-lg dark:text-gray-400 bg-blue-700 text-white">
                 {teams.length}
@@ -489,4 +484,4 @@ const OurTeam = () => {
   );
 };
 
-export default OurTeam;
+export default OurActivity;

@@ -52,7 +52,10 @@ export const getPartnerByName = async (req, res) => {
     }
 
     // const partner = await Partner.findOne({ name });
-    const partner = await Partner.find({ name });
+    // const partner = await Partner.find({ name });
+    const partner = await Partner.find({
+      name: { $regex: name, $options: "i" },
+    });
 
     if (!partner) {
       return res.status(404).json({ message: "Partner not found" });

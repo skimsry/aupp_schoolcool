@@ -236,6 +236,7 @@ const Main = () => {
     "/adim_about_us",
     "/admin_announcement",
     "/admin_contact",
+    "/login",
   ].includes(location.pathname);
 
   return (

@@ -62,7 +62,10 @@ export const getMessageByEmail = async (req, res) => {
       return res.status(400).json({ message: "Email is required" });
     }
 
-    const user = await Secondcontact.findOne({ email });
+    // const user = await Secondcontact.findOne({ email });
+    const user = await Secondcontact.find({
+      email: { $regex: name, $options: "i" },
+    });
 
     // console.log(user);
     if (!user) {

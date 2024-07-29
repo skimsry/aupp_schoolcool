@@ -1,49 +1,40 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+// import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormattedDate from "../../FormattedDate";
+import DeleteConfirm from "../../userManagement/DeleteConfirm";
+const apiUrl = process.env.REACT_APP_APIURL;
 
-function ImageSlideShow() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const ImageSlideShow = () => {
+  const [logoimg, setLogoimg] = useState(null);
+  const [name, setName] = useState("");
+  const [alert, setAlert] = useState(false);
+  const [description, setDescription] = useState("");
+  const fileInputRef = useRef(null);
+
+  const [partners, setPartners] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 5;
-  const capitalize = (str) => {
-    if (!str) return "";
-    return str.charAt(0).toUpperCase() + str.slice(1).toUpperCase();
+  const [searchQuery, setSearchQuery] = useState("");
+  const partnersPerPage = 5;
+  const getPartner = async () => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}api/imgslideshow/getImgslideshow`
+      );
+
+      setPartners(response.data);
+    } catch (error) {}
   };
-  const apiUrl = process.env.REACT_APP_APIURL;
 
-  useEffect(() => {
-    const getUsers = async () => {
-      try {
-        // const response = await axios.get();
-
-        const response = await axios.get(
-          `${apiUrl}api/users/getUsers`
-          // `http://localhost:3001api/users/getUsers`
-        );
-
-        setUsers(response.data);
-        setLoading(false);
-
-        //return response.data;
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
-
-    getUsers();
-  }, [apiUrl]);
   // Pagination logic
-  const indexOfLastUser = currentPage * usersPerPage;
-  const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+  const indexOfLastUser = currentPage * partnersPerPage;
+  const indexOfFirstUser = indexOfLastUser - partnersPerPage;
+  const currentpartners = (
+    searchResults.length > 0 ? searchResults : partners
+  ).slice(indexOfFirstUser, indexOfLastUser);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const handlePrevious = () => {
@@ -51,71 +42,207 @@ function ImageSlideShow() {
       setCurrentPage(currentPage - 1);
     }
   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!logoimg || !name || !description) {
+      toast.error("Cannot empty fields *.", {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+    } else {
+      setAlert(true);
+      try {
+        const response = await axios.post(
+          `${apiUrl}api/imgslideshow/register`,
+          {
+            name,
+            description,
+            imgslideshow: logoimg,
+          }
+        );
 
+        toast.success("Register successfully.", {
+          position: "bottom-right",
+          autoClose: 1000,
+        });
+        //setLogoimg(response.data);
+
+        handleReset();
+        getPartner();
+      } catch (error) {
+        //setLoading(false);
+        toast.error("Cannot update. Please try again.", {
+          position: "bottom-right",
+          autoClose: 2000,
+        });
+      } finally {
+        //setLoading(false);
+      }
+    }
+  };
+  const handleFileChange = (e) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setLogoimg(reader.result);
+    };
+    reader.readAsDataURL(e.target.files[0]);
+  };
+  const handleReset = () => {
+    setLogoimg(null);
+    setName("");
+    setDescription("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null;
+    }
+    setAlert(false);
+  };
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault();
+
+    if (searchQuery) {
+      try {
+        const response = await axios.get(
+          `${apiUrl}api/imgslideshow/getImgslideshowByName/${searchQuery}`
+        );
+        // setSearchResults([response.data]);
+        setSearchResults(response.data);
+
+        setCurrentPage(1);
+      } catch (error) {
+        toast.error("Partner not found.", {
+          position: "bottom-right",
+          autoClose: 2000,
+        });
+      }
+    } else {
+      setSearchResults([]);
+    }
+  };
   const handleNext = () => {
-    if (currentPage < Math.ceil(users.length / usersPerPage)) {
+    if (
+      currentPage <
+      Math.ceil(
+        (searchResults.length > 0 ? searchResults : partners).length /
+          partnersPerPage
+      )
+    ) {
       setCurrentPage(currentPage + 1);
     }
   };
   const handleDelete = async (userId, e) => {
-    //e.preventDefault();
-    setLoading(true);
     try {
-      const response = await axios.post(`${apiUrl}api/users/delete/${userId}`);
-      setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
-      toast.success("User deleted successfully.", {
+      const response = await axios.post(
+        `${apiUrl}api/imgslideshow/delete/${userId}`
+      );
+      setPartners((prevpartners) =>
+        prevpartners.filter((user) => user._id !== userId)
+      );
+      toast.success("Slideshow image deleted successfully.", {
         position: "bottom-right",
         autoClose: 2000,
       });
+
+      setSearchResults([]);
     } catch (error) {
-      setLoading(false);
       toast.error("Cannot delete. Please try another.", {
         position: "bottom-right",
         autoClose: 2000,
       });
     } finally {
-      setLoading(false);
     }
   };
+  useEffect(() => {
+    getPartner();
+  }, [apiUrl]);
   return (
     <>
-      <form className="flex items-center mb-4">
-        <label for="simple-search" className="sr-only">
-          Search
-        </label>
-        <div className="relative w-full">
-          <input
-            type="file"
-            id="simple-search"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          <svg
-            className="w-4 h-4"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zM7 3v4h4V3M7 15h10"
-            />
-          </svg>
+      <div className="text-left flex items-center justify-center p-12">
+        <div className="mx-auto w-full">
+          <div className="bg-white overflow-hidden shadow rounded-lg border">
+            <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
+              <dl className="sm:divide-y sm:divide-gray-200">
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Slideshow Image{" "}
+                    <span className="text-red-500">* (1920px X 1080px)</span>
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    <input
+                      class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                      id="multiple_files"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      type="file"
+                      multiple
+                    />
+                  </dd>
+                </div>
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Name <span className="text-red-500">*</span>
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    <input
+                      type="text"
+                      id="first_name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="American University of Phnom Penh (AUPP)"
+                      required
+                    />
+                  </dd>
+                </div>
+                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Description <span className="text-red-500">*</span>
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    <textarea
+                      id="message"
+                      rows="4"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="Write your description here..."
+                    ></textarea>
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+          {alert ? (
+            <p className="text-red-500 pt-4">
+              * Please wait less than 3 minutes. Because of upload image....
+            </p>
+          ) : (
+            ""
+          )}
 
-          <span className="sr-only">Save</span>
-        </button>
-      </form>
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <form className="max-w-md mx-auto mb-4 pl-4">
+          <button
+            type="button"
+            onClick={handleReset}
+            className="text-white bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:focus:ring-yellow-900focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900"
+          >
+            Clear
+          </button>
+          <button
+            type="button"
+            onClick={handleSubmit}
+            className="mt-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+      <div className="shadow-md sm:rounded-lg">
+        <form
+          className="max-w-md mx-auto mb-4 pl-4"
+          onSubmit={handleSearchSubmit}
+        >
           <label
             htmlFor="default-search"
             className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -144,8 +271,9 @@ function ImageSlideShow() {
               type="search"
               id="default-search"
               className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Search for fullname..."
-              required
+              placeholder="Search for name..."
+              value={searchQuery}
+              onChange={handleSearchChange}
             />
             <button
               type="submit"
@@ -170,11 +298,14 @@ function ImageSlideShow() {
                 Slideshow Image
               </th>
               <th scope="col" className="px-6 py-3">
-                File Name
+                Name
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Description
               </th>
 
               <th scope="col" className="px-6 py-3">
-                Create Date
+                Upload Date
               </th>
               <th scope="col" className="px-6 py-3">
                 Action
@@ -182,7 +313,7 @@ function ImageSlideShow() {
             </tr>
           </thead>
           <tbody>
-            {currentUsers.map((user, i) => (
+            {currentpartners.map((user, i) => (
               <tr
                 key={user._id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -194,55 +325,34 @@ function ImageSlideShow() {
                     </label>
                   </div>
                 </td>
-                <th
-                  scope="row"
-                  className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  <i className="ri-user-3-line text-blue-500 text-2xl"></i>
-                  <div className="ps-3">
-                    <div className="text-base font-semibold">
-                      {`${capitalize(user.firstName)} ${capitalize(
-                        user.lastName
-                      )}`}
-                    </div>
-                    <div className="font-normal text-gray-500">
-                      {user.email}
-                    </div>
-                  </div>
-                </th>
-                <td className="px-6 py-4">{user.gender}</td>
+                <td className="px-6 py-4">
+                  <img
+                    id={user._id}
+                    src={user.imgslideshow}
+                    alt={user.name}
+                    className="h-24 w-48"
+                  />
+                </td>
+                <td className="px-6 py-4">{user.name}</td>
 
+                <td className="px-6 py-4">{user.description}</td>
                 <td className="px-6 py-4">
                   <FormattedDate date={user.createdDate} />
                 </td>
                 <td className="px-6 py-4">
-                  <button
-                    type="button"
-                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                  >
-                    <i className="ri-file-edit-line"></i>
-                  </button>
-                  <button
-                    type="button"
-                    className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                  >
-                    <i className="ri-eye-line"></i>
-                  </button>
-                  <button
-                    type="button"
-                    key={user._id}
-                    onClick={(e) => handleDelete(user._id, e)}
+                  <DeleteConfirm
+                    onDelete={() => handleDelete(user._id)}
                     className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                  >
-                    <i className="ri-delete-bin-line"></i>
-                  </button>
+                    ico="ri-delete-bin-line"
+                    text="Are you sure you want to delete?"
+                  />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        <div className="flex justify-center mt-4 mb-4">
+        <div className="flex justify-center mt-4">
           <nav aria-label="Page navigation example">
             <ul className="inline-flex -space-x-px text-base h-10">
               <li>
@@ -256,14 +366,16 @@ function ImageSlideShow() {
               </li>
 
               {Array.from({
-                length: Math.ceil(users.length / usersPerPage),
+                length: Math.ceil(
+                  (searchResults.length > 0 ? searchResults : partners).length /
+                    partnersPerPage
+                ),
               }).map((_, i) => (
-                <li>
+                <li key={i}>
                   <a
                     href="#"
-                    key={i}
                     onClick={() => paginate(i + 1)}
-                    className={`flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
+                    className={`flex items-center justify-center px-4 h-10 leading-tight text-gray-500 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
                       currentPage === i + 1
                         ? "bg-blue-500 text-white"
                         : "bg-white text-blue-500"
@@ -285,9 +397,25 @@ function ImageSlideShow() {
             </ul>
           </nav>
         </div>
+        {searchResults.length > 0 ? (
+          <div className="h-10"></div>
+        ) : (
+          <div className="flex justify-end">
+            <ul className="inline-flex -space-x-px text-base h-10 mb-4 pr-8">
+              <li className="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg dark:border-gray-700 dark:text-gray-400">
+                Total Message :
+              </li>
+              <li className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 border border-gray-300 rounded-e-lg dark:text-gray-400 bg-blue-700 text-white">
+                {partners.length}
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
+
+      <ToastContainer />
     </>
   );
-}
+};
 
 export default ImageSlideShow;
