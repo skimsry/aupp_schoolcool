@@ -1,12 +1,18 @@
-import React from "react";
-import "../../input.css";
-import "../../index.css";
-import ATC from "../../assets/ATC.png";
-import UA from "../../assets/UA.png";
-import AUPPHS from "../../assets/AUPPHS-FA.png";
-import Fort from "../../assets/Fort-Hays.png";
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+const apiUrl = process.env.REACT_APP_APIURL;
 const Partners = () => {
+  const [partners, setPartners] = useState([]);
+  const getPartner = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}api/partner/getPartner`);
+
+      setPartners(response.data);
+    } catch (error) {}
+  };
+  useEffect(() => {
+    getPartner();
+  }, [apiUrl]);
   return (
     <div className="flex flex-col items-center bg-white py-8">
       <hr className="w-48 h-1 mx-auto my-4 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-700"></hr>
@@ -14,27 +20,16 @@ const Partners = () => {
         <h2 className="text-3xl font-bold tracking-tight text-blue-800 sm:text-4xl pb-10">
           Our Partners
         </h2>
-        <div className="flex justify-center space-x-8">
-          <div className="flex flex-col items-center">
-            <img
-              src={UA}
-              alt="The University of Arizona"
-              className="h-48 mb-2"
-            />
-          </div>
-          <div className="flex flex-col items-center">
-            <img
-              src={Fort}
-              alt="FORT HAYS STATE UNIVERSITY"
-              className="h-48 mb-2"
-            />
-          </div>
-          <div className="flex flex-col items-center">
-            <img src={AUPPHS} alt="AUPP HIGH SCHOOL" className="h-48 mb-2" />
-          </div>
-          <div className="flex flex-col items-center">
-            <img src={ATC} alt="AUPP TECHNOLOGY CENTER" className="h-48 mb-2" />
-          </div>
+        <div className="grid grid-cols-4 gap-4 justify-center">
+          {partners.map((partners) => (
+            <div className="flex flex-col items-center" key={partners._id}>
+              <img
+                src={partners.logoimg}
+                alt={partners.name}
+                className="h-48 mb-2"
+              />
+            </div>
+          ))}
         </div>
       </div>
     </div>

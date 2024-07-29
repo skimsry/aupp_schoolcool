@@ -10,8 +10,14 @@ export function UserContextProvider({ children }) {
   const [userStudent, setUserStudent] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [token, setToken] = useState(null);
-  //map
+  // const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [sMap, setSMap] = useState([]);
+  const [showAboutus, setShowAboutus] = useState([]);
+  const [showContact, setShowContact] = useState([]);
+  const apiUrl = process.env.REACT_APP_APIURL;
+  //map
   const getSMap = async () => {
     try {
       const response = await axios.get(`${apiUrl}api/map/getMap`);
@@ -20,11 +26,27 @@ export function UserContextProvider({ children }) {
       console.error("Failed to fetch map data.", error);
     }
   };
-
-  // const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const apiUrl = process.env.REACT_APP_APIURL;
+  //aboutus
+  const getAboutus = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}api/aboutus/getAboutus`);
+      setShowAboutus(response.data);
+    } catch (error) {
+      console.error("Failed to fetch map data.", error);
+    }
+  };
+  //aboutus
+  const getContact = async () => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}api/fastcontact/getFastcontact`
+      );
+      setShowContact(response.data);
+    } catch (error) {
+      console.error("Failed to fetch fast contact data.", error);
+    }
+  };
+  //get user
   const getUserStudent = async () => {
     setLoading(true);
     setError(null);
@@ -69,8 +91,9 @@ export function UserContextProvider({ children }) {
       setToken(token);
       //getuserStudent
       getUserStudent();
-      getSMap();
     }
+    getSMap();
+    getAboutus();
   }, []);
 
   function login(user, token) {
@@ -120,6 +143,12 @@ export function UserContextProvider({ children }) {
         getSMap,
         sMap,
         setSMap,
+        showAboutus,
+        setShowAboutus,
+        getAboutus,
+        showContact,
+        setShowContact,
+        getContact,
       }}
     >
       {children}

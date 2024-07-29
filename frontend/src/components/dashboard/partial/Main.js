@@ -1,10 +1,11 @@
 import React, { useState, useContext, useEffect } from "react";
 import "../../../input.css";
 import "../../../index.css";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../../../ctx/UserContextProvider";
 //import axios from "axios";
 const Main = () => {
+  const navigate = useNavigate();
   const path = useLocation();
   const path_dashboard = path.pathname.startsWith("/")
     ? path.pathname.slice(1)
@@ -55,6 +56,11 @@ const Main = () => {
     //getUserById();
     // console.log(`${user.firstName}`);
   }, [apiUrl]);
+
+  const handleLogout = () => {
+    navigate("/login");
+    logout();
+  };
   return (
     <main className="fixed left-0 top-0 right-0 w-full md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 transition-all main">
       <div className="py-2 px-6 bg-white flex items-center shadow-md shadow-black/5 sticky top-0 left-0 z-30">
@@ -163,7 +169,7 @@ const Main = () => {
               <li>
                 <a
                   href="#"
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50"
                 >
                   Logout

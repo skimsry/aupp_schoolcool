@@ -7,6 +7,8 @@ import compression from "compression";
 import connectToDb from "./db/index.js";
 import helmet from "helmet";
 import cors from "cors";
+import bodyParser from "body-parser";
+//import multer from "multer";
 // Split the environment variable into an array of allowed origins
 // app.use(
 //   cors({
@@ -22,6 +24,7 @@ import cors from "cors";
 import api from "./routes/api/index.js";
 
 const app = express();
+app.use(bodyParser.json({ limit: "50mb" })); // To handle large payloads
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const logFile = join(__dirname, "schoolcool.log");
 const PORT = process.env.PORT || 3001;
@@ -72,6 +75,20 @@ app.use(morgan(":method - :url - :date - :response-time ms"));
 app.use("/api", api);
 // app.use("/", home);
 
+// Set storage engine
+// Set up Multer for file uploads
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "uploads/");
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, Date.now() + "-" + file.originalname);
+//   },
+// });
+
+// const upload = multer({ storage });
+app.use("/uploads", express.static("uploads"));
+//end multer
 Promise.all([connectToDb()])
   .then(() =>
     app.listen(PORT, () =>

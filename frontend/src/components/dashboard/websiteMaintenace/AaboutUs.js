@@ -12,11 +12,17 @@ import History from "./about_us/History";
 import License from "./about_us/License";
 import Mission from "./about_us/Mission";
 import Vision from "./about_us/Vision";
+import CoverAboutus from "./about_us/CoverAboutus";
 
 function AaboutUs() {
   const [activeTab, setActiveTab] = useState(0);
 
   const tabs = [
+    {
+      name: "Cover Text",
+      content: <CoverAboutus />,
+      icon: "ri-t-box-line",
+    },
     {
       name: "History",
       content: <History />,

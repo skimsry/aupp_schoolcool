@@ -2,9 +2,10 @@ import React, { useState, useContext } from "react";
 import "../../../input.css";
 import "../../../index.css";
 import logo from "../../../assets/schoolcool.png";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../../../ctx/UserContextProvider";
 function Slidebar() {
+  const navigate = useNavigate();
   const [isOrdersSelected, setIsOrdersSelected] = useState(false);
   const [isWebsiteMaintenaceSelected, setisWebsiteMaintenaceSelected] =
     useState(false);
@@ -21,6 +22,10 @@ function Slidebar() {
   };
   const location = useLocation();
   const { logout, user } = useContext(UserContext);
+  const handleLogout = () => {
+    navigate("/login");
+    logout();
+  };
   return (
     <>
       <div className="fixed left-0 top-0 w-64 h-full bg-gray-900 p-4 z-50 sidebar-menu transition-transform">
@@ -258,7 +263,7 @@ function Slidebar() {
               <li className={`mb-4`}>
                 <Link
                   to="#"
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3"
                 >
                   Logout

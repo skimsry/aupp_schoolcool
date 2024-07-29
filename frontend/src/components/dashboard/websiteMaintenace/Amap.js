@@ -186,7 +186,7 @@ function Amap() {
   //     });
   //   }
   // };
-  console.log(sMap);
+  //console.log(sMap);
   const handleSubmit = async (mapId, linkMap) => {
     // const emptyFields = showMap.filter((map) => map.linkMap.trim() === "");
     const emptyFields = sMap.filter((map) => map.linkMap.trim() === "");

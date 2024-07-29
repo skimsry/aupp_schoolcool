@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import "../../input.css";
 import "../../index.css";
 import "../../components/header/header.css";
 import logo from "../../assets/schoolcool.png";
 import { Link, useLocation } from "react-router-dom";
-
+import { UserContext } from "../../ctx/UserContextProvider";
+const apiUrl = process.env.REACT_APP_APIURL;
 const Header = () => {
+  const { showContact, setShowContact, getContact } = useContext(UserContext);
   const location = useLocation();
+  useEffect(() => {
+    getContact();
+  }, [apiUrl]);
   return (
     <div className="fixed-header">
       <nav className="bg-white border-gray-200 dark:bg-gray-900">
@@ -21,12 +26,16 @@ const Header = () => {
             </span>
           </Link>
           <div className="flex items-center space-x-6 rtl:space-x-reverse">
-            <a
-              href="tel:016571913"
-              className="text-sm  text-gray-500 dark:text-white hover:underline"
-            >
-              (+855) 16 571 913
-            </a>
+            {showContact.map((fcontact) => (
+              <a
+                href="#"
+                key={fcontact._id}
+                className="text-sm  text-gray-500 dark:text-white hover:underline"
+              >
+                {fcontact.phone}
+              </a>
+            ))}
+
             <Link
               to="/signup"
               className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
