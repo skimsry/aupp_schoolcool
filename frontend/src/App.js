@@ -198,9 +198,13 @@ import Apartner from "./components/dashboard/websiteMaintenace/Apartner";
 import Aslideshow from "./components/dashboard/websiteMaintenace/Aslideshow";
 import Ateam from "./components/dashboard/websiteMaintenace/Ateam";
 import Profile from "./components/dashboard/websiteMaintenace/Profile";
+import ClassEnrollment from "./components/dashboard/schoolManagement/ClassEnrollment";
+import ManageScore from "./components/dashboard/schoolManagement/ManageScore";
+import ManageAttendant from "./components/dashboard/schoolManagement/ManageAttendant";
 
 import { UserContext } from "./ctx/UserContextProvider";
 import Slidebar from "./components/dashboard/partial/Slidebar";
+import Course from "./components/dashboard/schoolManagement/Course";
 
 const App = () => {
   return (
@@ -237,6 +241,10 @@ const Main = () => {
     "/admin_announcement",
     "/admin_contact",
     "/login",
+    "/admin_course",
+    "/admin_class_enrollment",
+    "/admin_manage_score",
+    "/admin_manage_attendant",
   ].includes(location.pathname);
 
   return (
@@ -248,80 +256,6 @@ const Main = () => {
       )}
 
       <div className="container">
-        {/* <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/announcement" element={<Announcement />} />
-          <Route path="/about_us" element={<AboutUs />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route
-            path="/login"
-            element={
-              !isAuthenticated ? <Login /> : <Navigate to="/dashboard" />
-            }
-          />
-          <Route path="/signup" element={<Signup />} />
-
-          <Route
-            path="/dashboard"
-            element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/updateUser/:userId"
-            element={isAuthenticated ? <AddUser /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/addNewUser/"
-            element={isAuthenticated ? <AddUser /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/manageUsers"
-            element={
-              isAuthenticated ? <ManageUsers /> : <Navigate to="/login" />
-            }
-          />
-          <Route
-            path="/adim_about_us"
-            element={isAuthenticated ? <AaboutUs /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/admin_announcement"
-            element={
-              isAuthenticated ? <Aannoucement /> : <Navigate to="/login" />
-            }
-          />
-          <Route
-            path="/admin_contact"
-            element={isAuthenticated ? <Acontact /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/admin_map"
-            element={isAuthenticated ? <Amap /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/admin_partners"
-            element={isAuthenticated ? <Apartner /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/admin_slideshow"
-            element={
-              isAuthenticated ? <Aslideshow /> : <Navigate to="/login" />
-            }
-          />
-          <Route
-            path="/admin_teams"
-            element={isAuthenticated ? <Ateam /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/admin_activities"
-            element={
-              isAuthenticated ? <Aactivites /> : <Navigate to="/login" />
-            }
-          />
-          <Route
-            path="/profile/:_id"
-            element={isAuthenticated ? <Profile /> : <Navigate to="/login" />}
-          />
-        </Routes> */}
         {isAuthenticated ? (
           <Routes>
             <Route path="/" element={<Home />} />
@@ -345,6 +279,16 @@ const Main = () => {
             <Route path="/admin_teams" element={<Ateam />} />
             <Route path="/admin_activities" element={<Aactivites />} />
             <Route path="/profile/:_id" element={<Profile />} />
+            <Route path="/admin_course" element={<Course />} />
+            <Route
+              path="/admin_class_enrollment"
+              element={<ClassEnrollment />}
+            />
+            <Route path="/admin_manage_score" element={<ManageScore />} />
+            <Route
+              path="/admin_manage_attendant"
+              element={<ManageAttendant />}
+            />
           </Routes>
         ) : (
           <Routes>
@@ -368,6 +312,10 @@ const Main = () => {
             <Route path="/admin_teams" element={<Login />} />
             <Route path="/admin_activities" element={<Login />} />
             <Route path="/profile/:_id" element={<Login />} />
+            <Route path="/admin_course" element={<Login />} />
+            <Route path="/admin_class_enrollment" element={<Login />} />
+            <Route path="/admin_manage_score" element={<Login />} />
+            <Route path="/admin_manage_attendant" element={<Login />} />
           </Routes>
         )}
       </div>

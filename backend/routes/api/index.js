@@ -10,6 +10,7 @@ import {
   getUsersByEmail,
   getUsersById,
   updateUserFull,
+  getUsersTeacher,
 } from "../../controllers/user.js";
 import { addMap, getMap, updateMap } from "../../controllers/map.js";
 import {
@@ -78,6 +79,35 @@ import {
   deleteActivityById,
   updateActivityById,
 } from "../../controllers/activity.js";
+import {
+  addCourse,
+  getCourse,
+  getCourseByName,
+  deleteCourseById,
+  updateCourseById,
+} from "../../controllers/course.js";
+import {
+  addClassEnrollment,
+  getClassEnrollment,
+  getClassEnrollmentByName,
+  deleteClassEnrollmentById,
+  updateClassEnrollmentById,
+  getClassEnrollmentById,
+} from "../../controllers/classenrollment.js";
+// import { combineUC } from "../../controllers/courseuser.js";
+import {
+  addManagescore,
+  getManagescore,
+  deleteScoreById,
+  updateScoreById,
+  getScoreByName,
+  getScoreById,
+} from "../../controllers/managescore.js";
+import {
+  addAttendant,
+  getAttendentByToday,
+  updateAttendentStatus,
+} from "../../controllers/attendent.js";
 const router = Router();
 
 //user
@@ -90,6 +120,7 @@ router.put("/users/update/:_id", updateUserStatus);
 router.get("/users/getUsersByEmail/:email", getUsersByEmail);
 router.get("/users/getUsersById/:_id", getUsersById);
 router.put("/users/updateFull/:_id", updateUserFull);
+router.get("/users/getUsersTeacher", getUsersTeacher);
 //map
 router.post("/map/register", addMap);
 router.get("/map/getMap", getMap);
@@ -152,4 +183,39 @@ router.get("/activities/getActivities", getActivity);
 router.get("/activities/getActivitiesByName/:title", getActivityByName);
 router.post("/activities/delete/:_id", deleteActivityById);
 router.put("/activities/updateActivities/:_id", updateActivityById);
+//course
+router.post("/course/register", addCourse);
+router.get("/course/getCourse", getCourse);
+router.get("/course/getCourseByName/:coursename", getCourseByName);
+router.post("/course/delete/:_id", deleteCourseById);
+router.put("/course/updateCourse/:_id", updateCourseById);
+//classenrollment
+router.post("/classenrollment/register", addClassEnrollment);
+router.get("/classenrollment/getClassenrollment", getClassEnrollment);
+router.get(
+  "/classenrollment/getClassenrollmentByName/:course_name",
+  getClassEnrollmentByName
+);
+router.post("/classenrollment/delete/:_id", deleteClassEnrollmentById);
+router.put(
+  "/classenrollment/updateClassenrollment/:_id",
+  updateClassEnrollmentById
+);
+router.get(
+  "/classenrollment/getClassenrollmentById/:course_id",
+  getClassEnrollmentById
+);
+//combine user and Course
+// router.get("/combineuc/:id/course", combineUC);
+//managescore
+router.post("/score/register", addManagescore);
+router.get("/score/getScore", getManagescore);
+router.get("/score/getScoreByName/:studentname", getScoreByName);
+router.post("/score/delete/:_id", deleteScoreById);
+router.put("/score/updateScore/:_id", updateScoreById);
+router.get("/score/getScoreById/:course_id", getScoreById);
+//attendant
+router.post("/attendent/register", addAttendant);
+router.get("/attendent/getAttendantToday", getAttendentByToday);
+router.put("/attendent/updateAttendentStatus/:_id", updateAttendentStatus);
 export default router;

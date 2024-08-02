@@ -9,6 +9,7 @@ function Slidebar() {
   const [isOrdersSelected, setIsOrdersSelected] = useState(false);
   const [isWebsiteMaintenaceSelected, setisWebsiteMaintenaceSelected] =
     useState(false);
+  const [isSchoolSelected, setisSchoolSelected] = useState(false);
   const [isSettingSelected, setisSettingSelected] = useState(false);
 
   const toggleOrdersMenu = () => {
@@ -16,6 +17,9 @@ function Slidebar() {
   };
   const toggleWebsiteMaintenacesMenu = () => {
     setisWebsiteMaintenaceSelected(!isWebsiteMaintenaceSelected);
+  };
+  const toggleSchoolMenu = () => {
+    setisSchoolSelected(!isSchoolSelected);
   };
   const toggleSettingMenu = () => {
     setisSettingSelected(!isSettingSelected);
@@ -220,15 +224,80 @@ function Slidebar() {
               </li>
             </ul>
           </li>
-          {/* <li className="mb-1 group">
+          <li className="mb-1 group">
             <a
               href="#"
-              className="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100"
+              onClick={toggleSchoolMenu}
+              className={`flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md ${
+                isSchoolSelected ? "bg-gray-950 text-gray-100" : ""
+              } sidebar-dropdown-toggle`}
             >
-              <i className="ri-settings-2-line mr-3 text-lg"></i>
-              <span className="text-sm">Settings</span>
+              <i className="ri-school-line mr-3 text-lg"></i>
+              <span className="text-sm">School Management</span>
+              <i
+                className={`ri-arrow-right-s-line ml-auto ${
+                  isSchoolSelected ? "rotate-90" : ""
+                }`}
+              ></i>
             </a>
-          </li> */}
+            <ul
+              className={`pl-7 mt-2 ${isSchoolSelected ? "block" : "hidden"}`}
+            >
+              <li
+                className={`mb-4 ${
+                  location.pathname === "/admin_course" ? "active" : ""
+                }`}
+              >
+                <Link
+                  to="/admin_course"
+                  className="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3"
+                >
+                  Manage Course
+                </Link>
+              </li>
+              <li
+                className={`mb-4 ${
+                  location.pathname === "/admin_class_enrollment"
+                    ? "active"
+                    : ""
+                }`}
+              >
+                <Link
+                  to="/admin_class_enrollment"
+                  className="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3"
+                >
+                  Class Enrollment
+                </Link>
+              </li>
+              <li
+                className={`mb-4 ${
+                  location.pathname === "/admin_manage_score" ? "active" : ""
+                }`}
+              >
+                <Link
+                  to="/admin_manage_score"
+                  className="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3"
+                >
+                  Manage Score
+                </Link>
+              </li>
+              <li
+                className={`mb-4 ${
+                  location.pathname === "/admin_manage_attendant"
+                    ? "active"
+                    : ""
+                }`}
+              >
+                <Link
+                  to="/admin_manage_attendant"
+                  className="text-gray-300 text-sm flex items-center hover:text-gray-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-gray-300 before:mr-3"
+                >
+                  Manage Attendant
+                </Link>
+              </li>
+            </ul>
+          </li>
+
           <li className="mb-1 group">
             <a
               href="#"

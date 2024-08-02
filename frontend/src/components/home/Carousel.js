@@ -49,7 +49,7 @@ const Carousel = ({ autoSlide = true, autoSlideInterval = 10000 }) => {
     if (!autoSlide) return;
     const slideInterval = setInterval(next, autoSlideInterval);
     return () => clearInterval(slideInterval);
-  }, [autoSlide, autoSlideInterval, apiUrl]);
+  }, [autoSlide, autoSlideInterval, apiUrl, getImgslideshow]);
   return (
     <div className="overflow-hidden relative">
       <div

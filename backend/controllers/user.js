@@ -301,7 +301,10 @@ export const deleteUserById = async (req, res) => {
 
 export const getUsersStudent = async (req, res) => {
   try {
-    const users = await User.find({ type: 3 }).sort({ createdDate: -1 });
+    const users = await User.find({ type: 3, status: true }).sort({
+      createdDate: -1,
+    });
+    // const users = await User.find({ type: 3 }).sort({ firstName: 1 });
 
     if (!users.length) {
       return res.status(404).json({ message: "No users found" });
@@ -459,6 +462,24 @@ export const updateUserFull = async (req, res) => {
       message: "Updated successfully",
       user: updatedUser,
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getUsersTeacher = async (req, res) => {
+  try {
+    const users = await User.find({ type: 2, status: true }).sort({
+      createdDate: -1,
+    });
+    //const users = await User.find({ type: 2 }).sort({ firstName: 1 });
+
+    if (!users.length) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    // Send all users as the response
+    res.status(200).json(users);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
