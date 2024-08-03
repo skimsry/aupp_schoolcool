@@ -379,8 +379,16 @@ function ManageUsers() {
                   <DeleteConfirm
                     key={user._id}
                     onDelete={() => handleActive(user._id)}
-                    className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                    ico={user.status ? "ri-eye-line" : "ri-eye-off-line"}
+                    className={`py-2.5 px-5 me-2 mb-2 text-sm font-medium focus:outline-none ${
+                      user.status
+                        ? "bg-green-500 text-white"
+                        : "bg-white text-gray-900"
+                    } rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700`}
+                    ico={
+                      user.status
+                        ? "ri-user-follow-line"
+                        : "ri-user-unfollow-line"
+                    }
                     text={
                       user.status
                         ? "Do you want to deactivate this account?"

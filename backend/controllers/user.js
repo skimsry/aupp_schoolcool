@@ -382,8 +382,8 @@ export const getUsersByEmail = async (req, res) => {
       return res.status(400).json({ message: "Email is required" });
     }
 
-    // const user = await User.findOne({ email });
-    const user = await User.find({ email: { $regex: name, $options: "i" } });
+    const user = await User.findOne({ email });
+    //const user = await User.find({ email: { $regex: email, $options: "i" } });
 
     // console.log(user);
     if (!user) {

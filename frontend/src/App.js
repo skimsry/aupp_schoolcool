@@ -203,7 +203,7 @@ import ManageScore from "./components/dashboard/schoolManagement/ManageScore";
 import ManageAttendant from "./components/dashboard/schoolManagement/ManageAttendant";
 
 import { UserContext } from "./ctx/UserContextProvider";
-import Slidebar from "./components/dashboard/partial/Slidebar";
+//import Slidebar from "./components/dashboard/partial/Slidebar";
 import Course from "./components/dashboard/schoolManagement/Course";
 
 const App = () => {
@@ -215,7 +215,8 @@ const App = () => {
 };
 
 const Main = () => {
-  const { isAuthenticated, token } = useContext(UserContext);
+  //const { isAuthenticated, token } = useContext(UserContext);
+  const { isAuthenticated } = useContext(UserContext);
   const location = useLocation();
   const showHeader = [
     "/",
@@ -226,43 +227,58 @@ const Main = () => {
     "/signup",
   ].includes(location.pathname);
 
-  const showHeader2 = [
-    "/manageUsers",
-    "/profile/:_id",
-    "/admin_activities",
-    "/admin_teams",
-    "/admin_slideshow",
-    "/admin_partners",
-    "/admin_map",
-    "/updateUser/:userId",
-    "/addNewUser",
-    "/manageUsers",
-    "/adim_about_us",
-    "/admin_announcement",
-    "/admin_contact",
-    "/login",
-    "/admin_course",
-    "/admin_class_enrollment",
-    "/admin_manage_score",
-    "/admin_manage_attendant",
-  ].includes(location.pathname);
+  // const showHeader2 = [
+  //   "/manageUsers",
+  //   "/profile/:_id",
+  //   "/admin_activities",
+  //   "/admin_teams",
+  //   "/admin_slideshow",
+  //   "/admin_partners",
+  //   "/admin_map",
+  //   "/updateUser/:userId",
+  //   "/addNewUser",
+  //   "/manageUsers",
+  //   "/adim_about_us",
+  //   "/admin_announcement",
+  //   "/admin_contact",
+  //   "/login",
+  //   "/admin_course",
+  //   "/admin_class_enrollment",
+  //   "/admin_manage_score",
+  //   "/admin_manage_attendant",
+  //   // "/signup",
+  // ].includes(location.pathname);
 
   return (
     <div className="App">
-      {isAuthenticated ? (
+      {/* {isAuthenticated ? (
         <div className="header-section">{showHeader && <Header />}</div>
       ) : (
         <div className="header-section">{showHeader2 && <Header />}</div>
-      )}
+      )} */}
 
+      {/* {isAuthenticated ? (
+        <div className="header-section">{showHeader && <Header />}</div>
+      ) : (
+        // <div className="header-section">{showHeader2 && <Header />}</div>
+        <div></div>
+      )} */}
+      <div className="header-section">{showHeader && <Header />}</div>
       <div className="container">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/announcement" element={<Announcement />} />
+          <Route path="/about_us" element={<AboutUs />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/signup" element={<Signup />} />
+        </Routes>
         {isAuthenticated ? (
           <Routes>
-            <Route path="/" element={<Home />} />
+            {/* <Route path="/" element={<Home />} />
             <Route path="/announcement" element={<Announcement />} />
             <Route path="/about_us" element={<AboutUs />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/signup" element={<Signup />} />
+            <Route path="/signup" element={<Signup />} /> */}
 
             <Route path="/login" element={<Navigate to="/dashboard" />} />
             <Route path="/dashboard" element={<Dashboard />} />
@@ -292,11 +308,11 @@ const Main = () => {
           </Routes>
         ) : (
           <Routes>
-            <Route path="/" element={<Home />} />
+            {/* <Route path="/" element={<Home />} />
             <Route path="/announcement" element={<Announcement />} />
             <Route path="/about_us" element={<AboutUs />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/signup" element={<Signup />} />
+            <Route path="/signup" element={<Signup />} /> */}
 
             <Route path="/login" element={<Login />} />
             <Route path="/dashboard" element={<Navigate to="/login" />} />

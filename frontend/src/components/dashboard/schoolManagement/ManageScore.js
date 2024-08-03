@@ -302,9 +302,9 @@ const ManageScore = () => {
           coursename: selectedText,
           student_id: formData.student_id,
           studentname: selectedText2,
-          assignment: formData.assignment,
-          midterm: formData.midterm,
-          final: formData.final,
+          assignment: parseInt(formData.assignment, 10),
+          midterm: parseInt(formData.midterm, 10),
+          final: parseInt(formData.final, 10),
           updateDate: new Date(),
         };
 
