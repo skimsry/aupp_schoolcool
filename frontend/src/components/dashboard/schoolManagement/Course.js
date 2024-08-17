@@ -13,6 +13,7 @@ const Course = () => {
   const edateInputRef = useRef(null);
   const [alert, setAlert] = useState(false);
   const [userTeacher, setUserTeacher] = useState([]);
+  const [isChecked, setIsChecked] = useState(false);
   const [formData, setFormData] = useState({
     coursename: "",
     description: "",
@@ -20,6 +21,7 @@ const Course = () => {
     edate: "",
     teacherid: "",
     room: "",
+    status: false,
   });
   //   const fileInputRef = useRef(null);
   const [teams, setTeams] = useState([]);
@@ -99,7 +101,7 @@ const Course = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.coursename) {
-      toast.error("Cannot empty fields *.", {
+      toast.error("Cannot empty course name fields *.", {
         position: "bottom-right",
         autoClose: 3000,
       });
@@ -113,6 +115,7 @@ const Course = () => {
           edate: formData.edate,
           teacherid: formData.teacherid,
           room: formData.room,
+          status: formData.status,
           createdDate: new Date(),
           updateDate: new Date(),
         };
@@ -148,6 +151,7 @@ const Course = () => {
       edate: "",
       teacherid: "",
       room: "",
+      status: false,
       createdDate: "",
       updateDate: "",
     });
@@ -209,7 +213,70 @@ const Course = () => {
       edate: user.edate,
       teacherid: user.teacherid,
       room: user.room,
+      status: user.status,
     });
+  };
+  const handleActive = async (userId) => {
+    //setLoading(true);
+    try {
+      const response = await axios.put(`${apiUrl}api/course/update/${userId}`);
+      //setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+      //test
+      // if (userId === user._id) {
+      //   logout();
+      // }
+      //end
+
+      //getUsers();
+      getTeam();
+
+      // const updatedUser = response.data;
+      // setUsers((prevUsers) =>
+      //   prevUsers.map((user) => (user._id === userId ? updatedUser : user))
+      // );
+      //new code
+      // handleSearchSubmit();
+      // if (searchQuery) {
+      //   setSearchResults([response.data]);
+      // }
+
+      if (searchResults.length > 0) {
+        if (searchQuery) {
+          try {
+            const response = await axios.get(
+              `${apiUrl}api/course/getCourseByName/${searchQuery}`
+            );
+
+            setSearchResults([response.data]);
+            //setLoading(false);
+          } catch (error) {
+            // setError(error);
+            // setLoading(false);
+            toast.error("Email not found.", {
+              position: "bottom-right",
+              autoClose: 2000,
+            });
+          }
+        } else {
+          setSearchResults([]); // Reset search results to show all users
+          //setLoading(false);
+        }
+      }
+
+      //end new code
+      toast.success("Active Course successfully.", {
+        position: "bottom-right",
+        autoClose: 2000,
+      });
+    } catch (error) {
+      //setLoading(false);
+      toast.error("Cannot active this course. Please try again.", {
+        position: "bottom-right",
+        autoClose: 2000,
+      });
+    } finally {
+      //setLoading(false);
+    }
   };
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -228,6 +295,7 @@ const Course = () => {
           edate: formData.edate,
           teacherid: formData.teacherid,
           room: formData.room,
+          status: formData.status,
           updateDate: new Date(),
         };
 
@@ -252,12 +320,21 @@ const Course = () => {
       }
     }
   };
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prevFormData) => ({
+  //     ...prevFormData,
+  //     [name]: value,
+  //   }));
+  // };
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, type, checked, value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
+      // [name]: checked,
     }));
+    setIsChecked(e.target.checked);
   };
   useEffect(() => {
     getTeam();
@@ -280,7 +357,8 @@ const Course = () => {
           <div className="mx-auto w-full">
             <div className="bg-white overflow-hidden shadow rounded-lg border">
               <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
-                <dl className="sm:divide-y sm:divide-gray-200">
+                {/* <dl className="sm:divide-y sm:divide-gray-200"> */}
+                <dl>
                   <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <dt className="text-sm font-medium text-gray-500">
                       Course Name <span className="text-red-500">*</span>
@@ -402,6 +480,29 @@ const Course = () => {
                       />
                     </dd>
                   </div>
+                  <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <label
+                      htmlFor="password"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Active Course?
+                    </label>
+
+                    <label className="inline-flex items-center cursor-pointer ">
+                      <input
+                        type="checkbox"
+                        value={formData.status}
+                        onChange={handleChange}
+                        className="sr-only peer"
+                        name="status"
+                        checked={formData.status}
+                      />
+                      <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                      <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                        {isChecked ? "On" : "Off"}
+                      </span>
+                    </label>
+                  </div>
                 </dl>
               </div>
             </div>
@@ -499,21 +600,21 @@ const Course = () => {
                 <th scope="col" className="px-6 py-3">
                   Description
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Start Date
                 </th>
 
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   End Date
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Teacher Respone
                 </th>
 
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Room | Class
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center w-60">
                   Action
                 </th>
               </tr>
@@ -531,17 +632,19 @@ const Course = () => {
                       </label>
                     </div>
                   </td>
-                  <td className="px-6 py-4">{user.coursename}</td>
+                  <td className="px-6 py-4 text-blue-500 font-bold">
+                    {user.coursename}
+                  </td>
                   <td className="px-6 py-4">{user.description}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-center">
                     <FormattedDate date={user.sdate} />
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-center">
                     <FormattedDate date={user.edate} />
                   </td>
 
                   {/* <td className="px-6 py-4">{user.teacherid}</td> */}
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-center">
                     <td className="px-6 py-4 uppercase">
                       {
                         userTeacher.find(
@@ -556,9 +659,9 @@ const Course = () => {
                     </td>
                   </td>
 
-                  <td className="px-6 py-4">{user.room}</td>
+                  <td className="px-6 py-4 text-center">{user.room}</td>
 
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-center">
                     <button
                       type="button"
                       key={user._id}
@@ -567,6 +670,21 @@ const Course = () => {
                     >
                       <i className="ri-file-edit-line"></i>
                     </button>
+                    <DeleteConfirm
+                      key={user._id}
+                      onDelete={() => handleActive(user._id)}
+                      className={`py-2.5 px-5 me-2 mb-2 text-sm font-medium focus:outline-none ${
+                        user.status
+                          ? "bg-green-500 text-white"
+                          : "bg-white text-gray-900"
+                      } rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700`}
+                      ico={user.status ? "ri-eye-line" : "ri-eye-off-line"}
+                      text={
+                        user.status
+                          ? "Do you want to deactivate this course?"
+                          : "Do you want to activate this course?"
+                      }
+                    />
                     <DeleteConfirm
                       onDelete={() => handleDelete(user._id)}
                       className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"

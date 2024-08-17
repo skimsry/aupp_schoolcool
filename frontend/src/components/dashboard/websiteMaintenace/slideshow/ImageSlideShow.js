@@ -333,7 +333,9 @@ const ImageSlideShow = () => {
                     className="h-24 w-48"
                   />
                 </td>
-                <td className="px-6 py-4">{user.name}</td>
+                <td className="px-6 py-4 text-blue-500 font-bold">
+                  {user.name}
+                </td>
 
                 <td className="px-6 py-4">{user.description}</td>
                 <td className="px-6 py-4">

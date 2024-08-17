@@ -3,32 +3,11 @@ import axios from "axios";
 import { ChevronLeft, ChevronRight } from "react-feather";
 import TextCarousel from "./TextCarousel";
 const apiUrl = process.env.REACT_APP_APIURL;
-// import slideshow from "../../assets/Welcome-Back.jpg";
-// const slides = [
-//   {
-//     src: slideshow,
-//     caption: "First Slide",
-//     description: "This is the first slide",
-//   },
-//   {
-//     src: slideshow,
-//     caption: "Second Slide",
-//     description: "This is the second slide",
-//   },
-//   {
-//     src: slideshow,
-//     caption: "Third Slide",
-//     description: "This is the third slide",
-//   },
-//   {
-//     src: slideshow,
-//     caption: "Fourth Slide",
-//     description: "This is the fourth slide",
-//   },
-// ];
+
 const Carousel = ({ autoSlide = true, autoSlideInterval = 10000 }) => {
   const [curr, setCurr] = useState(0);
   const [imgslideshow, setImgslideshow] = useState([]);
+  const [isTransitioning, setIsTransitioning] = useState(true);
   const getImgslideshow = async () => {
     try {
       const response = await axios.get(
@@ -39,21 +18,57 @@ const Carousel = ({ autoSlide = true, autoSlideInterval = 10000 }) => {
       console.error("Failed to fetch map data.", error);
     }
   };
-  const prev = () =>
-    setCurr((curr) => (curr === 0 ? imgslideshow.length - 1 : curr - 1));
-  const next = () =>
-    setCurr((curr) => (curr === imgslideshow.length - 1 ? 0 : curr + 1));
+  // const prev = () =>
+  //   setCurr((curr) => (curr === 0 ? imgslideshow.length - 1 : curr - 1));
+  // const next = () =>
+  //   setCurr((curr) => (curr === imgslideshow.length - 1 ? 0 : curr + 1));
+  const prev = () => {
+    if (curr === 0) {
+      setCurr(imgslideshow.length - 1);
+      setIsTransitioning(false);
+      setTimeout(() => {
+        setIsTransitioning(true);
+      }, 50);
+    } else {
+      setCurr(curr - 1);
+    }
+  };
+
+  const next = () => {
+    if (curr === imgslideshow.length - 1) {
+      setCurr(0);
+      setIsTransitioning(false);
+      setTimeout(() => {
+        setIsTransitioning(true);
+      }, 50);
+    } else {
+      setCurr(curr + 1);
+    }
+  };
 
   useEffect(() => {
     getImgslideshow();
+    // if (!autoSlide) return;
+    // const slideInterval = setInterval(next, autoSlideInterval);
+    // return () => clearInterval(slideInterval);
     if (!autoSlide) return;
-    const slideInterval = setInterval(next, autoSlideInterval);
+
+    const slideInterval = setInterval(() => {
+      next();
+    }, autoSlideInterval);
+
     return () => clearInterval(slideInterval);
-  }, [autoSlide, autoSlideInterval, apiUrl, getImgslideshow]);
+  }, [autoSlide, autoSlideInterval, curr, imgslideshow.length]);
   return (
     <div className="overflow-hidden relative">
-      <div
+      {/* <div
         className="flex transition-transform ease-out duration-500"
+        style={{ transform: `translateX(-${curr * 100}%)` }}
+      > */}
+      <div
+        className={`flex ${
+          isTransitioning ? "transition-transform ease-out duration-500" : ""
+        }`}
         style={{ transform: `translateX(-${curr * 100}%)` }}
       >
         {imgslideshow.map((image, index) => (

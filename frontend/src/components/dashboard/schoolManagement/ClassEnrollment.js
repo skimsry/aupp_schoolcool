@@ -29,7 +29,12 @@ const ClassEnrollment = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [userById, setUserById] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
   const teamsPerPage = 5;
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-GB");
+  };
   const getTeam = async () => {
     try {
       const response = await axios.get(
@@ -60,7 +65,7 @@ const ClassEnrollment = () => {
   //   };
   const getCourse = async () => {
     try {
-      const response = await axios.get(`${apiUrl}api/course/getCourse`);
+      const response = await axios.get(`${apiUrl}api/course/getCourseStatus`);
 
       setOurCourse(response.data);
     } catch (error) {
@@ -136,6 +141,27 @@ const ClassEnrollment = () => {
     } else {
       setAlert(true);
       try {
+        //check register exist
+        // Check if the course_id and student_id combination already exists
+        const checkResponse = await axios.get(
+          `${apiUrl}api/classenrollment/check`,
+          {
+            params: {
+              course_id: formData.course_id,
+              student_id: formData.student_id,
+            },
+          }
+        );
+
+        if (checkResponse.data.exists) {
+          toast.error("This student is already enrolled in the course.", {
+            position: "bottom-right",
+            autoClose: 3000,
+          });
+          setAlert(false);
+          return;
+        }
+        //end check
         const courseData = {
           course_id: formData.course_id,
           course_name: selectedText,
@@ -290,10 +316,29 @@ const ClassEnrollment = () => {
       [name]: value,
     }));
 
+    // if (type === "select-one") {
+    //   const selectedOptionText = e.target.options[e.target.selectedIndex].text;
+    //   setSelectedText(selectedOptionText);
+    // }
     if (type === "select-one") {
       const selectedOptionText = e.target.options[e.target.selectedIndex].text;
-      setSelectedText(selectedOptionText);
+      const marketingText = selectedOptionText.split(" || ")[0].trim();
+      setSelectedText(marketingText);
     }
+  };
+  const filterStudents = (selectedCourseId) => {
+    // Get the list of student IDs enrolled in the selected course
+    const enrolledStudentIds = teams
+      .filter((enrollment) => enrollment.course_id === selectedCourseId)
+      .map((enrollment) => enrollment.student_id);
+
+    // Filter out the students based on the selected course
+    const filtered = userStudent.filter(
+      (student) => !enrolledStudentIds.includes(student._id)
+    );
+
+    // Update the state with the filtered list
+    setFilteredStudents(filtered);
   };
   useEffect(() => {
     getTeam();
@@ -310,6 +355,12 @@ const ClassEnrollment = () => {
       edateInputRef.current.setAttribute("min", today);
     }
   }, [apiUrl, selectedText]);
+  useEffect(() => {
+    if (teams.length && userStudent.length) {
+      filterStudents(formData.course_id);
+    }
+  }, [teams, userStudent]);
+
   return (
     <>
       <Slidebar />
@@ -340,7 +391,17 @@ const ClassEnrollment = () => {
                             key={user._id}
                             className="capitalize"
                           >
-                            {user.coursename}
+                            {user.coursename} || {" Teacher : "}
+                            {
+                              userTeacher.find(
+                                (teacher) => teacher._id === user.teacherid
+                              )?.firstName
+                            }{" "}
+                            {
+                              userTeacher.find(
+                                (teacher) => teacher._id === user.teacherid
+                              )?.lastName
+                            }
                           </option>
                         ))}
                       </select>
@@ -361,13 +422,24 @@ const ClassEnrollment = () => {
                       >
                         <option value="">Select student name...</option>
 
-                        {userStudent.map((user, i) => (
+                        {/* {userStudent.map((user, i) => (
                           <option
                             value={user._id}
                             key={user._id}
                             className="uppercase"
                           >
                             {`${user.firstName} ${user.lastName}`}
+                          </option>
+                        ))} */}
+                        {filteredStudents.map((user) => (
+                          <option
+                            value={user._id}
+                            key={user._id}
+                            className="capitalize"
+                          >
+                            {`${user.firstName} ${user.lastName}`} ||{" "}
+                            {"Date of Birth : "}
+                            {formatDate(user.dob)}
                           </option>
                         ))}
                       </select>
@@ -467,19 +539,19 @@ const ClassEnrollment = () => {
                 <th scope="col" className="px-6 py-3">
                   Course Name
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Student Name
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Teacher Respone
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Register Date
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Update Date
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Action
                 </th>
               </tr>
@@ -498,9 +570,11 @@ const ClassEnrollment = () => {
                     </div>
                   </td>
 
-                  <td className="px-6 py-4 capitalize">{user.course_name}</td>
+                  <td className="px-6 py-4 capitalize text-blue-500 font-bold">
+                    {user.course_name}
+                  </td>
 
-                  <td className="px-6 py-4 uppercase">
+                  <td className="px-6 py-4 uppercase text-center">
                     {
                       userStudent.find(
                         (student) => student._id === user.student_id
@@ -512,7 +586,7 @@ const ClassEnrollment = () => {
                       )?.lastName
                     }
                   </td>
-                  <td className="px-6 py-4 uppercase">
+                  <td className="px-6 py-4 uppercase text-center">
                     {
                       userTeacher.find(
                         (teacher) =>
@@ -532,13 +606,13 @@ const ClassEnrollment = () => {
                       )?.lastName
                     }
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-center">
                     <FormattedDate date={user.createdDate} />
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-center">
                     <FormattedDate date={user.updateDate} />
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-center">
                     <button
                       type="button"
                       key={user._id}

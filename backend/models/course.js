@@ -17,12 +17,11 @@ const courseSchema = new mongoose.Schema({
   teacherid: {
     type: String,
   },
-  // teacherid: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "User",
-  // },
   room: {
     type: String,
+  },
+  status: {
+    type: Boolean,
   },
   createdDate: { type: Date, default: Date.now },
   updateDate: { type: Date, default: Date.now },

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../input.css";
 import "../../index.css";
 import axios from "axios";
@@ -12,6 +12,7 @@ const Signup = () => {
   const [showTerm, setshowTerm] = useState(false);
   const openTerms = () => setshowTerm(true);
   const closeTerms = () => setshowTerm(false);
+  const [gpassword, setGpassword] = useState("");
 
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -29,7 +30,42 @@ const Signup = () => {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [dtoc, setdtoc] = useState([]);
+  const getToc = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}api/toc/getToc`);
 
+      setdtoc(response.data);
+    } catch (error) {}
+  };
+  useEffect(() => {
+    getToc();
+  }, []);
+  const generatePassword = () => {
+    let charset = "";
+    charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    charset += "abcdefghijklmnopqrstuvwxyz";
+    charset += "0123456789";
+    charset += "!@#$%^&*";
+
+    let password = "";
+    for (let i = 0; i < 8; i++) {
+      password += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    setGpassword(password);
+    setFormData({
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      phoneNumber: formData.phoneNumber,
+      type: formData.type,
+      email: formData.email,
+      password: password,
+      rePassword: password,
+      status: false,
+      createdDate: new Date(),
+      updateDate: new Date(),
+    });
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -108,7 +144,7 @@ const Signup = () => {
           setLoading(false);
           setTimeout(() => {
             navigate("/login");
-          }, 2000);
+          }, 4000);
         } catch (error) {
           setLoading(false);
           toast.error(
@@ -200,7 +236,7 @@ const Signup = () => {
                     Phone Number <span className="text-red-500">*</span>
                   </label>
                   <input
-                    type="tel"
+                    type="number"
                     name="phoneNumber"
                     id="phoneNumber"
                     value={formData.phoneNumber}
@@ -238,7 +274,15 @@ const Signup = () => {
                   htmlFor="password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Password <span className="text-red-500">*</span>
+                  Password <span className="text-red-500">* </span>
+                  <button
+                    type="button"
+                    onClick={generatePassword}
+                    class="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Password Generate
+                  </button>
+                  <span class="text-red-600"> {gpassword} </span>
                 </label>
                 <input
                   type="password"
@@ -306,7 +350,10 @@ const Signup = () => {
                 </div>
 
                 <Terms show={showTerm} onClose={closeTerms}>
-                  <p>
+                  {dtoc.map((dtoc, index) => (
+                    <p key={dtoc._id}>{dtoc.text}</p>
+                  ))}
+                  {/* <p>
                     A Terms and Conditions agreement acts as a legal contract
                     between you (the company) and the user. It's where you
                     maintain your rights to exclude users from your app in the
@@ -319,7 +366,7 @@ const Signup = () => {
                     optional. No laws require you to have one. Not even the
                     super-strict and wide-reaching General Data Protection
                     Regulation (GDPR).
-                  </p>
+                  </p> */}
                 </Terms>
               </div>
               <button

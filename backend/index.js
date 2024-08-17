@@ -28,6 +28,9 @@ app.use(bodyParser.json({ limit: "50mb" })); // To handle large payloads
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const logFile = join(__dirname, "schoolcool.log");
 const PORT = process.env.PORT || 3001;
+//test
+app.use("/uploads", express.static("uploads"));
+//end test
 app.use(helmet());
 // Helmet with Content Security Policy settings
 // app.use(

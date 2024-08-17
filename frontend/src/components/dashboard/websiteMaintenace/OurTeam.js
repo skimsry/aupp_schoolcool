@@ -360,17 +360,17 @@ const OurTeam = () => {
               <th scope="col" className="px-6 py-3">
                 Profile Photo
               </th>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3 text-center">
                 Fullname
               </th>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3 text-center">
                 Position
               </th>
 
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3 text-center">
                 Register Date
               </th>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3 text-center">
                 Action
               </th>
             </tr>
@@ -396,13 +396,15 @@ const OurTeam = () => {
                     className="h-24 w-24"
                   />
                 </td>
-                <td className="px-6 py-4">{user.name}</td>
+                <td className="px-6 py-4 text-blue-500 text-center font-bold">
+                  {user.name}
+                </td>
 
-                <td className="px-6 py-4">{user.position}</td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-center">{user.position}</td>
+                <td className="px-6 py-4 text-center">
                   <FormattedDate date={user.createdDate} />
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-center">
                   <button
                     type="button"
                     key={user._id}

@@ -115,6 +115,7 @@ export function UserContextProvider({ children }) {
     // Set the user and token in state
     setUser(user);
     setToken(token);
+    setIsAuthenticated(true);
   }
 
   function logout() {

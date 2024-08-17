@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,13 +8,18 @@ import FormattedDate from "../FormattedDate";
 import Slidebar from "../partial/Slidebar";
 import Main from "../partial/Main";
 import DeleteConfirm from "../userManagement/DeleteConfirm";
+import { UserContext } from "../../../ctx/UserContextProvider";
 const apiUrl = process.env.REACT_APP_APIURL;
 const ManageScore = () => {
+  const { user, token } = useContext(UserContext);
+  const UserID = user._id;
+  const decodedToken = jwtDecode(token);
+  const UserType = decodedToken.type;
   const sdateInputRef = useRef(null);
   const edateInputRef = useRef(null);
   const [alert, setAlert] = useState(false);
   const [userStudent, setUserStudent] = useState([]);
-  //const [userTeacher, setUserTeacher] = useState([]);
+  const [userTeacher, setUserTeacher] = useState([]);
   const [ourCourse, setOurCourse] = useState([]);
   //const [studentfromcourse, setStudentfromcourse] = useState();
   const [selectedText, setSelectedText] = useState("");
@@ -35,15 +41,46 @@ const ManageScore = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
   //const [userById, setUserById] = useState([]);
   const teamsPerPage = 5;
-
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-GB");
+  };
   const getTeam = async () => {
     try {
       const response = await axios.get(`${apiUrl}api/score/getScore`);
 
       setTeams(response.data);
+      setFilteredStudents(response.data);
     } catch (error) {}
+  };
+  const getTeamTeacher = async () => {
+    // console.log("ourCourse:", ourCourse);
+    // console.log("UserID:", UserID);
+    // const courseIds = ourCourse
+    //   .filter((item) => item.teacherid === UserID)
+    //   .map((course) => course._id);
+    //console.log(UserID);
+    try {
+      const courseIds = ourCourse
+        .filter((item) => item.teacherid === UserID)
+        .map((course) => course._id);
+      const response = await axios.get(
+        `${apiUrl}api/score/getScoreFromTeacherByCriteria`,
+        {
+          params: {
+            course_id: courseIds.join(","),
+          },
+        }
+      );
+
+      setTeams(response.data);
+      setFilteredStudents(response.data);
+    } catch (error) {}
+    //console.log(courseIds);
   };
   const handleChange2 = async (e) => {
     const { name, value, type } = e.target;
@@ -51,10 +88,15 @@ const ManageScore = () => {
       ...prevFormData,
       [name]: value,
     }));
-
+    setSelectedCourseId(e.target.value);
+    // if (type === "select-one") {
+    //   const selectedOptionText = e.target.options[e.target.selectedIndex].text;
+    //   setSelectedText(selectedOptionText);
+    // }
     if (type === "select-one") {
       const selectedOptionText = e.target.options[e.target.selectedIndex].text;
-      setSelectedText(selectedOptionText);
+      const marketingText = selectedOptionText.split(" || ")[0].trim();
+      setSelectedText(marketingText);
     }
 
     try {
@@ -72,9 +114,14 @@ const ManageScore = () => {
       [name]: value,
     }));
 
+    // if (type === "select-one") {
+    //   const selectedOptionText = e.target.options[e.target.selectedIndex].text;
+    //   setSelectedText2(selectedOptionText);
+    // }
     if (type === "select-one") {
       const selectedOptionText = e.target.options[e.target.selectedIndex].text;
-      setSelectedText2(selectedOptionText);
+      const marketingText = selectedOptionText.split(" || ")[0].trim();
+      setSelectedText2(marketingText);
     }
   };
 
@@ -87,25 +134,33 @@ const ManageScore = () => {
     } finally {
     }
   };
-
   const getCourse = async () => {
     try {
-      const response = await axios.get(`${apiUrl}api/course/getCourse`);
+      const response = await axios.get(`${apiUrl}api/course/getCourseStatus`);
 
       setOurCourse(response.data);
     } catch (error) {
     } finally {
     }
   };
-  // const getTeacher = async () => {
+  // const getCourse = async () => {
   //   try {
-  //     const response = await axios.get(`${apiUrl}api/users/getUsersTeacher`);
+  //     const response = await axios.get(`${apiUrl}api/course/getCourse`);
 
-  //     setUserTeacher(response.data);
+  //     setOurCourse(response.data);
   //   } catch (error) {
   //   } finally {
   //   }
   // };
+  const getTeacher = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}api/users/getUsersTeacher`);
+
+      setUserTeacher(response.data);
+    } catch (error) {
+    } finally {
+    }
+  };
   //   const getUserById = async (userId) => {
   //     try {
   //       const response = await axios.get(
@@ -158,15 +213,27 @@ const ManageScore = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // console.log(
+    //   parseFloat(formData.assignment) +
+    //     parseFloat(formData.midterm) +
+    //     parseFloat(formData.final)
+    // );
     if (
-      formData.assignment > 20 ||
-      formData.midterm > 30 ||
-      formData.final > 50
+      // formData.assignment > 20 ||
+      // formData.midterm > 30 ||
+      // formData.final > 50
+      parseFloat(formData.assignment) +
+        parseFloat(formData.midterm) +
+        parseFloat(formData.final) >
+      100
     ) {
-      toast.error("Please check score limitation.", {
-        position: "bottom-right",
-        autoClose: 3000,
-      });
+      toast.error(
+        "Please check total score limitation. Cannot bigger than 100.",
+        {
+          position: "bottom-right",
+          autoClose: 3000,
+        }
+      );
     } else {
       if (!formData.course_id || !formData.student_id) {
         toast.error("Cannot empty fields *.", {
@@ -181,9 +248,12 @@ const ManageScore = () => {
             coursename: selectedText,
             student_id: formData.student_id,
             studentname: selectedText2,
-            assignment: parseInt(formData.assignment, 10),
-            midterm: parseInt(formData.midterm, 10),
-            final: parseInt(formData.final, 10),
+            // assignment: parseInt(formData.assignment, 10),
+            // midterm: parseInt(formData.midterm, 10),
+            // final: parseInt(formData.final, 10),
+            assignment: parseFloat(formData.assignment),
+            midterm: parseFloat(formData.midterm),
+            final: parseFloat(formData.final),
             createdDate: new Date(),
             updateDate: new Date(),
           };
@@ -229,6 +299,7 @@ const ManageScore = () => {
     setAlert(false);
     setSelectedText("");
     setSelectedText2("");
+    // setFilteredStudents("");
   };
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -265,6 +336,7 @@ const ManageScore = () => {
         autoClose: 2000,
       });
       setSearchResults([]);
+      setFilteredStudents([]);
     } catch (error) {
       toast.error("Cannot delete. Please try another.", {
         position: "bottom-right",
@@ -289,7 +361,18 @@ const ManageScore = () => {
   };
   const handleUpdate = async (e) => {
     e.preventDefault();
-    if (!formData.student_id || !formData.course_id) {
+
+    if (
+      parseFloat(formData.assignment) +
+        parseFloat(formData.midterm) +
+        parseFloat(formData.final) >
+      100
+    ) {
+      toast.error("Please check score limitation. Cannot bigger than 100.", {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+    } else if (!formData.student_id || !formData.course_id) {
       toast.error("Cannot have empty fields *.", {
         position: "bottom-right",
         autoClose: 3000,
@@ -302,9 +385,12 @@ const ManageScore = () => {
           coursename: selectedText,
           student_id: formData.student_id,
           studentname: selectedText2,
-          assignment: parseInt(formData.assignment, 10),
-          midterm: parseInt(formData.midterm, 10),
-          final: parseInt(formData.final, 10),
+          // assignment: parseInt(formData.assignment, 10),
+          // midterm: parseInt(formData.midterm, 10),
+          // final: parseInt(formData.final, 10),
+          assignment: parseFloat(formData.assignment),
+          midterm: parseFloat(formData.midterm),
+          final: parseFloat(formData.final),
           updateDate: new Date(),
         };
 
@@ -336,17 +422,36 @@ const ManageScore = () => {
       [name]: value,
     }));
   };
-
+  const filteredResults = filteredStudents.filter(
+    (item) =>
+      !userStudent.some(
+        (student) =>
+          student._id === item.student_id &&
+          student.course_id === selectedCourseId
+      )
+  );
+  const checkPermissionCourse = (UserType) => {
+    switch (UserType) {
+      case 1:
+        return getCourse();
+      case 2:
+        return getCourse();
+      default:
+        return;
+    }
+  };
   useEffect(() => {
-    getTeam();
-    //getStudentfromcourse();
+    checkPermissionCourse(UserType);
+
     getUsersStudent();
-    //getTeacher();
+    getTeacher();
     getCourse();
-    //console.log(studentfromcourse);
-    //console.log(userTeacher);
-    //console.log(teams2);
-    //console.log(userStudent);
+    if (UserType === 1) {
+      getTeam();
+    } else {
+      getTeamTeacher();
+    }
+    // console.log(formData.course_id);
     const today = new Date().toISOString().split("T")[0];
     if (sdateInputRef.current) {
       sdateInputRef.current.setAttribute("min", today);
@@ -354,7 +459,12 @@ const ManageScore = () => {
     if (edateInputRef.current) {
       edateInputRef.current.setAttribute("min", today);
     }
-  }, [apiUrl, selectedText, teams2]);
+  }, [apiUrl, selectedText, teams2, getTeamTeacher]);
+  // useEffect(() => {
+  //   if (teams.length && userStudent.length) {
+  //     filterStudents(formData.course_id);
+  //   }
+  // }, [teams, userStudent]);
   return (
     <>
       <Slidebar />
@@ -379,11 +489,53 @@ const ManageScore = () => {
                       >
                         <option value="">Select course name...</option>
 
-                        {ourCourse.map((user, i) => (
+                        {/* {ourCourse.map((user, i) => (
                           <option value={user._id} key={user._id} className="">
                             {user.coursename}
                           </option>
-                        ))}
+                        ))} */}
+                        {UserType === 1 &&
+                          ourCourse.map((user, i) => (
+                            <option
+                              value={user._id}
+                              key={user._id}
+                              className="capitalize"
+                            >
+                              {user.coursename} || {" Teacher : "}
+                              {
+                                userTeacher.find(
+                                  (teacher) => teacher._id === user.teacherid
+                                )?.firstName
+                              }{" "}
+                              {
+                                userTeacher.find(
+                                  (teacher) => teacher._id === user.teacherid
+                                )?.lastName
+                              }
+                            </option>
+                          ))}
+                        {UserType === 2 &&
+                          ourCourse
+                            .filter((item) => item.teacherid === UserID)
+                            .map((user, i) => (
+                              <option
+                                value={user._id}
+                                key={user._id}
+                                className="capitalize"
+                              >
+                                {user.coursename} || {" Teacher : "}
+                                {
+                                  userTeacher.find(
+                                    (teacher) => teacher._id === user.teacherid
+                                  )?.firstName
+                                }{" "}
+                                {
+                                  userTeacher.find(
+                                    (teacher) => teacher._id === user.teacherid
+                                  )?.lastName
+                                }
+                              </option>
+                            ))}
                       </select>
                     </dd>
                   </div>
@@ -402,14 +554,8 @@ const ManageScore = () => {
                       >
                         <option value="">Select student name...</option>
 
-                        {/* {userStudent.map((user, i) => (
-                          <option value={user._id} key={user._id} className="">
-                            {`${user.firstName} ${user.lastName}`}
-                          </option>
-                        ))} */}
-                        {teams2.map((user, i) => (
+                        {/* {teams2.map((user, i) => (
                           <option value={user.student_id} key={user._id}>
-                            {/* {user.student_id} */}
                             {
                               userStudent.find(
                                 (student) => student._id === user.student_id
@@ -421,14 +567,83 @@ const ManageScore = () => {
                               )?.lastName
                             }
                           </option>
-                        ))}
+                        ))} */}
+                        {UserType === 1 &&
+                          teams2
+                            .filter(
+                              (user) =>
+                                !filteredResults.some(
+                                  (item) =>
+                                    item.student_id === user.student_id &&
+                                    item.course_id === user.course_id
+                                )
+                            )
+                            .map((user, i) => (
+                              <option
+                                value={user.student_id}
+                                key={user._id}
+                                className="capitalize"
+                              >
+                                {
+                                  userStudent.find(
+                                    (student) => student._id === user.student_id
+                                  )?.firstName
+                                }{" "}
+                                {
+                                  userStudent.find(
+                                    (student) => student._id === user.student_id
+                                  )?.lastName
+                                }{" "}
+                                ||{" Date of Birth : "}
+                                {formatDate(
+                                  userStudent.find(
+                                    (student) => student._id === user.student_id
+                                  )?.dob
+                                )}
+                              </option>
+                            ))}
+                        {UserType === 2 &&
+                          teams2
+                            .filter(
+                              (user) =>
+                                !filteredResults.some(
+                                  (item) =>
+                                    item.student_id === user.student_id &&
+                                    item.course_id === user.course_id
+                                )
+                            )
+                            .map((user, i) => (
+                              <option
+                                value={user.student_id}
+                                key={user._id}
+                                className="capitalize"
+                              >
+                                {
+                                  userStudent.find(
+                                    (student) => student._id === user.student_id
+                                  )?.firstName
+                                }{" "}
+                                {
+                                  userStudent.find(
+                                    (student) => student._id === user.student_id
+                                  )?.lastName
+                                }{" "}
+                                ||{" Date of Birth : "}
+                                {formatDate(
+                                  userStudent.find(
+                                    (student) => student._id === user.student_id
+                                  )?.dob
+                                )}
+                              </option>
+                            ))}
                       </select>
                     </dd>
                   </div>
                   <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <dt className="text-sm font-medium text-gray-500">
-                      Assignment{" "}
-                      <sup className="text-blue-500">Score &#x2264; 20 </sup>
+                      Assignment
+                      {/* {" "}
+                      <sup className="text-blue-500">Score &#x2264; 20 </sup> */}
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                       <input
@@ -443,8 +658,9 @@ const ManageScore = () => {
                   </div>
                   <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <dt className="text-sm font-medium text-gray-500">
-                      Midterm{" "}
-                      <sup className="text-blue-500">Score &#x2264; 30</sup>
+                      Midterm Exam
+                      {/* {" "}
+                      <sup className="text-blue-500">Score &#x2264; 30</sup> */}
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                       <input
@@ -459,8 +675,9 @@ const ManageScore = () => {
                   </div>
                   <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <dt className="text-sm font-medium text-gray-500">
-                      Final{" "}
-                      <sup className="text-blue-500">Score &#x2264; 50</sup>
+                      Final Exam
+                      {/* {" "}
+                      <sup className="text-blue-500">Score &#x2264; 50</sup> */}
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                       <input
@@ -570,22 +787,22 @@ const ManageScore = () => {
                 <th scope="col" className="px-6 py-3">
                   Course Name
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Assignment
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Midterm
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Final
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Total
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Grade
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Action
                 </th>
               </tr>
@@ -603,7 +820,7 @@ const ManageScore = () => {
                       </label>
                     </div>
                   </td>
-                  <td className="px-6 py-4 uppercase">
+                  <td className="px-6 py-4 uppercase text-blue-500 font-bold">
                     {/* {
                       userStudent.find(
                         (student) => student._id === user.student_id
@@ -638,27 +855,27 @@ const ManageScore = () => {
                       )?.lastName
                     }
                   </td> */}
-                  <td className="px-6 py-4 text-center font-black">
+                  <td className="px-6 py-4 text-center font-black text-center">
                     {user.assignment}
                   </td>
-                  <td className="px-6 py-4 text-center font-black">
+                  <td className="px-6 py-4 text-center font-black text-center">
                     {user.midterm}
                   </td>
-                  <td className="px-6 py-4 text-center font-black">
+                  <td className="px-6 py-4 text-center font-black text-center">
                     {user.final}
                   </td>
-                  <td className="px-6 py-4 text-center text-blue-500 font-extrabold">
+                  <td className="px-6 py-4 text-center text-blue-500 font-extrabold text-center">
                     {user.total}
                   </td>
                   <td
                     className={`px-6 py-4 text-center ${
                       user.grade === "F" ? "text-red-700" : "text-blue-700"
-                    } font-extrabold`}
+                    } font-extrabold text-center`}
                   >
                     {user.grade}
                   </td>
 
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-center">
                     <button
                       type="button"
                       key={user._id}

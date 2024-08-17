@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 import FormattedDate from "../FormattedDate";
 import DeleteConfirm from "./DeleteConfirm";
 import { UserContext } from "../../../ctx/UserContextProvider";
+
 // import Fos from "./Fos";
 
 function AddUser() {
@@ -30,9 +31,14 @@ function AddUser() {
   const [userById, setUserById] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [alert, setAlert] = useState(false);
+  const [pass, setPass] = useState("");
+  const [email, setEmail] = useState("");
   const [isChecked, setIsChecked] = useState(false);
   const apiUrl = process.env.REACT_APP_APIURL;
   const [userStudent2, setUserStudent2] = useState([]);
+  const [gpassword, setGpassword] = useState("");
+  const [gpassword2, setGpassword2] = useState("");
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -49,6 +55,34 @@ function AddUser() {
     createdDate: "",
     updateDate: "",
   });
+  const generatePassword = () => {
+    let charset = "";
+    charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    charset += "abcdefghijklmnopqrstuvwxyz";
+    charset += "0123456789";
+    charset += "!@#$%^&*";
+
+    let password = "";
+    for (let i = 0; i < 8; i++) {
+      password += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    setGpassword(password);
+    setFormData({
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      gender: formData.gender,
+      dob: formData.dob,
+      fos: formData.fos,
+      phoneNumber: formData.phoneNumber,
+      type: formData.type,
+      email: formData.email,
+      password: password,
+      rePassword: password,
+      status: formData.status,
+      createdDate: new Date(),
+      updateDate: new Date(),
+    });
+  };
   const handleReset = () => {
     setFormData({
       firstName: "",
@@ -65,6 +99,8 @@ function AddUser() {
       createdDate: "",
       updateDate: "",
     });
+    setGpassword("");
+    setEmail("");
   };
 
   // const handleChange = (e) => {
@@ -153,6 +189,94 @@ function AddUser() {
   //     });
   //   }
   // };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   // checkFieldEmpty();
+  //   const checkStrongPassword = checkPasswordStrength(formData.password);
+  //   if (
+  //     !formData.firstName ||
+  //     !formData.lastName ||
+  //     !formData.gender ||
+  //     !formData.email ||
+  //     !formData.phoneNumber
+  //   ) {
+  //     toast.error("Field (*) cannot empty. Please check again!", {
+  //       position: "bottom-right",
+  //       autoClose: 3000,
+  //     });
+  //   } else {
+  //     if (checkStrongPassword === "weak") {
+  //       toast.error("Your password is not strong enough. Please try again!", {
+  //         position: "bottom-right",
+  //         autoClose: 2000,
+  //       });
+  //     } else {
+  //       if (formData.password !== formData.rePassword) {
+  //         toast.error("Please type Retype-Password again !!!.", {
+  //           position: "bottom-right",
+  //           autoClose: 2000,
+  //         });
+  //       } else {
+  //         try {
+  //           const userData = {
+  //             firstName: formData.firstName,
+  //             lastName: formData.lastName,
+  //             gender: formData.gender,
+  //             dob: formData.dob,
+  //             fos: formData.fos,
+  //             phoneNumber: formData.phoneNumber,
+  //             type: formData.type,
+  //             email: formData.email,
+  //             password: formData.password,
+  //             status: formData.status,
+  //             createdDate: new Date(),
+  //             updateDate: new Date(),
+  //           };
+
+  //           const response = await axios.post(
+  //             `${apiUrl}api/users/register`,
+  //             userData
+  //           );
+  //           toast.success("User registered is Successfully!!!.", {
+  //             position: "bottom-right",
+  //             autoClose: 1000,
+  //           });
+  //           handleReset();
+  //           // getUserStudent();
+  //           getUserStudent2();
+  //         } catch (error) {
+  //           toast.error(
+  //             "This email is already in use. Please try another email.",
+  //             {
+  //               position: "bottom-right",
+  //               autoClose: 2000,
+  //             }
+  //           );
+  //         }
+  //       }
+  //     }
+  //   }
+  // };
+
+  //export this function to userContext by add export
+  // const getUsers = async () => {
+  //   try {
+  //     // const response = await axios.get();
+
+  //     const response = await axios.get(
+  //       `${apiUrl}api/users/getUsersStudent`
+  //       // `http://localhost:3001api/users/getUsers`
+  //     );
+  //     //console.log(response.data);
+  //     setUsers(response.data);
+  //     setLoading(true);
+
+  //     return response.data;
+  //   } catch (error) {
+  //     setError(error);
+  //     setLoading(false);
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
     // checkFieldEmpty();
@@ -207,6 +331,9 @@ function AddUser() {
             });
             handleReset();
             // getUserStudent();
+            setEmail(formData.email);
+            setGpassword2(formData.password);
+            setAlert(true);
             getUserStudent2();
           } catch (error) {
             toast.error(
@@ -221,25 +348,7 @@ function AddUser() {
       }
     }
   };
-  //export this function to userContext by add export
-  // const getUsers = async () => {
-  //   try {
-  //     // const response = await axios.get();
 
-  //     const response = await axios.get(
-  //       `${apiUrl}api/users/getUsersStudent`
-  //       // `http://localhost:3001api/users/getUsers`
-  //     );
-  //     //console.log(response.data);
-  //     setUsers(response.data);
-  //     setLoading(true);
-
-  //     return response.data;
-  //   } catch (error) {
-  //     setError(error);
-  //     setLoading(false);
-  //   }
-  // };
   const getUserById = async () => {
     try {
       const response = await axios.get(
@@ -367,7 +476,8 @@ function AddUser() {
       handleReset();
     }
     //getUsers();
-
+    // generatePassword();
+    // console.log(gpassword);
     // Get today's date in YYYY-MM-DD format
     const today = new Date().toISOString().split("T")[0];
     if (dateInputRef.current) {
@@ -405,6 +515,20 @@ function AddUser() {
       <Main />
       <div className="ml-72 mr-8 mt-4">
         <section className="text-left bg-gray-50 dark:bg-gray-900">
+          {alert ? (
+            <div
+              className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+              role="alert"
+            >
+              <span className="font-medium">Success create!</span> Default
+              password is <span className="text-red-600"> {gpassword2} </span>{" "}
+              of email <span className="text-red-600"> {email} </span>. Please
+              update password after login.
+            </div>
+          ) : (
+            <div></div>
+          )}
+
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8 bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               {userId ? "Update user" : "Create an new user"}
@@ -582,7 +706,7 @@ function AddUser() {
                     Phone Number <span className="text-red-500">*</span>
                   </label>
                   <input
-                    type="tel"
+                    type="number"
                     name="phoneNumber"
                     id="phoneNumber"
                     value={formData.phoneNumber}
@@ -606,11 +730,16 @@ function AddUser() {
                     onChange={handleChange}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   >
-                    <option value="">Select type...</option>
-                    <option value="1">Administrator</option>
-                    <option value="2">Teacher</option>
-                    <option value="3">Student</option>
-                    <option value="4">Parent</option>
+                    {!formData.fos ? (
+                      <>
+                        <option value="">Select type...</option>
+                        <option value="1">Administrator</option>
+                        <option value="2">Teacher</option>
+                        <option value="3">Student</option>
+                      </>
+                    ) : (
+                      <option value="4">Parent</option>
+                    )}
                   </select>
                 </div>
               </div>
@@ -620,8 +749,15 @@ function AddUser() {
                   htmlFor="password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Password <span className="text-red-500">*</span>
-                  {userId ? (
+                  Password <span className="text-red-500">* </span>
+                  <button
+                    type="button"
+                    onClick={generatePassword}
+                    class="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Password Generate
+                  </button>
+                  {/* {userId ? (
                     <span className="text-red-500">
                       {" ( "}
                       Default password will generate {' " '}123!@#thawat
@@ -629,7 +765,8 @@ function AddUser() {
                     </span>
                   ) : (
                     ""
-                  )}
+                  )} */}
+                  <span class="text-red-600"> {gpassword} </span>
                 </label>
                 <input
                   type="password"

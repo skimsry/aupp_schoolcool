@@ -26,12 +26,14 @@
     "express": "^4.19.2",
     "express-session": "^1.17.3",
     "express-validator": "^7.0.1",
+    "fs": "^0.0.1-security",
     "helmet": "^7.1.0",
     "ioredis": "^5.4.1",
     "joi": "^17.13.3",
     "joi-password-complexity": "^5.2.0",
     "jsonwebtoken": "^9.0.2",
     "memorystore": "^1.6.7",
+    "mkdirp": "^3.0.1",
     "moment": "^2.30.1",
     "mongodb": "^6.1.0",
     "mongoose": "^7.5.3",
@@ -40,10 +42,13 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^8.0.0",
+    "path": "^0.12.7",
     "pug": "^3.0.2",
     "react-slick": "^0.29.0",
     "redis": "^4.6.14",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "url": "^0.11.4",
+    "util": "^0.12.5"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

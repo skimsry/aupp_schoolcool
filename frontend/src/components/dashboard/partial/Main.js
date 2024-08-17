@@ -71,7 +71,7 @@ const Main = () => {
           <li className="mr-2">
             <Link
               to={`/${path_dashboard}`}
-              className="text-gray-400 hover:text-gray-600 font-medium capitalize"
+              className="text-blue-800 hover:text-gray-600 font-medium capitalize font-bold text-xl"
             >
               {path_dashboard}
             </Link>
@@ -85,15 +85,8 @@ const Main = () => {
           <li className="dropdown pr-4">
             <p className="capitalize">{CFullName}</p>
           </li>
-          {/* <li className="dropdown">
-            <button
-              type="button"
-              className="dropdown-toggle text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-gray-600"
-            >
-              <i className="ri-notification-3-line"></i>
-            </button>
-          </li> */}
-          <div className="relative">
+
+          {/* <div className="relative">
             <button
               type="button"
               onClick={toggleDropdown}
@@ -103,6 +96,25 @@ const Main = () => {
             >
               <i className="ri-notification-3-line"></i>
             </button>
+            {showTooltip2 && (
+              <div
+                role="tooltip"
+                className="absolute right-full top-0 mr-2 z-10 inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm "
+              >
+                Notification
+              </div>
+            )}
+          </div> */}
+          <div className="relative">
+            <Link
+              to="/admin_alert"
+              // onClick={toggleDropdown}
+              onMouseEnter={() => setShowTooltip2(true)}
+              onMouseLeave={() => setShowTooltip2(false)}
+              className="dropdown-toggle flex items-center"
+            >
+              <i className="ri-notification-3-line"></i>
+            </Link>
             {showTooltip2 && (
               <div
                 role="tooltip"
@@ -168,7 +180,7 @@ const Main = () => {
 
               <li>
                 <a
-                  href="#"
+                  href="/login"
                   onClick={handleLogout}
                   className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50"
                 >

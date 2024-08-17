@@ -1,8 +1,6 @@
 import { Schema, model, mongoose } from "mongoose";
-//import bcrypt from "bcrypt";
 
 const userSchema = new Schema({
-  // const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: true,
@@ -36,15 +34,16 @@ const userSchema = new Schema({
   },
   type: {
     type: Number,
+    // default: 4, // Default to 'user'
   },
   status: {
     type: Boolean,
+    // default: true, // Default to active
   },
   createdDate: { type: Date, default: Date.now },
   updateDate: { type: Date, default: Date.now },
 });
 
 const User = model("User", userSchema);
-// const User = mongoose.model("User", userSchema);
 
 export default User;

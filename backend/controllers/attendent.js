@@ -10,7 +10,7 @@ export const addAttendant = async (req, res) => {
       course_id,
       coursename,
       attendantdate: new Date(),
-      isattend: true,
+      isattend: false,
       createdDate: new Date(),
       updateDate: new Date(),
     });
@@ -160,6 +160,229 @@ export const updateAttendentStatus = async (req, res) => {
       message: "Attendent status updated successfully",
       user: updatedUser,
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getAttendentByAll = async (req, res) => {
+  try {
+    const studentId = await Attendant.find().sort({ attendantdate: -1 });
+    res.status(200).json(studentId);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getAttendentByName = async (req, res) => {
+  try {
+    const { studentname } = req.params;
+    const studentId = await Attendant.find({
+      studentname: { $regex: studentname, $options: "i" },
+    });
+    res.status(200).json(studentId);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getAttendentById = async (req, res) => {
+  try {
+    const { _id } = req.params;
+    const studentId = await Attendant.findOne({ _id });
+    res.status(200).json(studentId);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+// export const getAttendentByCriteria = async (req, res) => {
+//   try {
+//     const { studentname, coursename, startDate, endDate } = req.query;
+
+//     // Validate date range
+//     if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+//       return res
+//         .status(400)
+//         .json({ message: "startDate cannot be greater than endDate" });
+//     }
+
+//     // Build the search criteria
+//     const criteria = {};
+//     if (studentname) {
+//       criteria.studentname = { $regex: studentname, $options: 'i' };
+//     }
+//     if (coursename) {
+//       criteria.coursename = { $regex: coursename, $options: 'i' };
+//     }
+//     if (startDate && endDate) {
+//       criteria.attendantdate = {
+//         $gte: new Date(startDate),
+//         $lte: new Date(endDate),
+//       };
+//     } else if (startDate) {
+//       criteria.attendantdate = { $gte: new Date(startDate) };
+//     } else if (endDate) {
+//       criteria.attendantdate = { $lte: new Date(endDate) };
+//     }
+
+//     // Perform the search with the criteria
+//     const attendants = await Attendant.find(criteria);
+
+//     res.status(200).json(attendants);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
+// export const getAttendentByCriteria = async (req, res) => {
+//   try {
+//     const { studentname, coursename, startDate, endDate } = req.query;
+
+//     // Validate date range
+//     if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+//       return res
+//         .status(400)
+//         .json({ message: "startDate cannot be greater than endDate" });
+//     }
+
+//     // Build the search criteria
+//     const criteria = {};
+//     if (studentname) {
+//       criteria.studentname = { $regex: studentname, $options: "i" };
+//     }
+//     if (coursename) {
+//       criteria.coursename = { $regex: coursename, $options: "i" };
+//     }
+//     if (startDate && endDate) {
+//       criteria.attendantdate = {
+//         $gte: new Date(startDate).toLocaleDateString(),
+//         $lte: new Date(endDate).toLocaleDateString(),
+//       };
+//     } else if (startDate) {
+//       criteria.attendantdate = { $gte: new Date(startDate) };
+//     } else if (endDate) {
+//       criteria.attendantdate = { $lte: new Date(endDate) };
+//     }
+
+//     // Perform the search with the criteria
+//     const attendants = await Attendant.find(criteria);
+
+//     res.status(200).json(attendants);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
+export const getAttendentByCriteria = async (req, res) => {
+  try {
+    const { student_id, course_id, startDate, endDate } = req.query;
+
+    // Validate date range
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+      return res
+        .status(400)
+        .json({ message: "startDate cannot be greater than endDate" });
+    }
+
+    // Build the search criteria
+    const criteria = {};
+    if (student_id) {
+      criteria.student_id = student_id;
+    }
+    if (course_id) {
+      criteria.course_id = course_id;
+    }
+    if (startDate && endDate) {
+      criteria.attendantdate = {
+        $gte: new Date(startDate).toLocaleDateString(),
+        $lte: new Date(endDate).toLocaleDateString(),
+      };
+    } else if (startDate) {
+      criteria.attendantdate = { $gte: new Date(startDate) };
+    } else if (endDate) {
+      criteria.attendantdate = { $lte: new Date(endDate) };
+    }
+
+    // Perform the search with the criteria
+    const attendants = await Attendant.find(criteria);
+
+    res.status(200).json(attendants);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getAttendentToday = async (req, res) => {
+  try {
+    // Get the start and end of today
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+
+    // Find users with status true who registered today
+    const users = await Attendant.find({
+      // status: true,
+      createdDate: { $gte: startOfToday, $lt: endOfToday },
+    });
+
+    if (users.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No active attendant found today" });
+    }
+
+    // Send all active users registered today as the response
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error fetching active course registered today:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getAttendentByCriteria2 = async (req, res) => {
+  try {
+    const { course_id, student_id, isattend, startDate, endDate } = req.query;
+
+    // Validate date range
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+      return res
+        .status(400)
+        .json({ message: "startDate cannot be greater than endDate" });
+    }
+
+    // Build the search criteria
+    const criteria = {};
+
+    if (course_id) {
+      criteria.course_id = { $regex: new RegExp(`^${course_id}$`, "i") };
+    }
+    if (student_id) {
+      criteria.student_id = { $regex: new RegExp(`^${student_id}$`, "i") };
+    }
+
+    if (isattend) {
+      criteria.isattend = isattend === "true";
+    }
+
+    if (startDate && endDate) {
+      criteria.attendantdate = {
+        $gte: new Date(startDate).toLocaleDateString(),
+        $lte: new Date(endDate).toLocaleDateString(),
+      };
+    } else if (startDate) {
+      criteria.attendantdate = { $gte: new Date(startDate) };
+    } else if (endDate) {
+      criteria.attendantdate = { $lte: new Date(endDate) };
+    }
+    // Perform the search with the criteria
+    const course = await Attendant.find(criteria);
+
+    res.status(200).json(course);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });

@@ -297,17 +297,17 @@ const Apartner = () => {
                 <th scope="col" className="px-6 py-3">
                   Logo Company
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Company Name
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Description
                 </th>
 
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Upload Date
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 text-center">
                   Action
                 </th>
               </tr>
@@ -325,21 +325,23 @@ const Apartner = () => {
                       </label>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-center">
                     <img
                       id={user._id}
                       src={user.logoimg}
                       alt={user.name}
-                      className="h-24 w-24"
+                      className="h-24 w-24 text-center"
                     />
                   </td>
-                  <td className="px-6 py-4">{user.name}</td>
+                  <td className="px-6 py-4 text-center text-blue-500 font-bold">
+                    {user.name}
+                  </td>
 
-                  <td className="px-6 py-4">{user.description}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-center">{user.description}</td>
+                  <td className="px-6 py-4 text-center">
                     <FormattedDate date={user.createdDate} />
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-center">
                     <DeleteConfirm
                       onDelete={() => handleDelete(user._id)}
                       className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"

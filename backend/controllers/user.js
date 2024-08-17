@@ -191,6 +191,8 @@ export const loginUser = async (req, res) => {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
+        type: user.type,
+        fos: user.fos,
       },
       process.env.JWT_SECRET
     );
@@ -204,7 +206,7 @@ export const loginUser = async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         phoneNumber: user.phoneNumber,
-        type: user.type,
+        // type: user.type,
       },
     });
   } catch (error) {
@@ -213,6 +215,59 @@ export const loginUser = async (req, res) => {
   }
 };
 
+// export const signUpUser = async (req, res) => {
+//   try {
+//     const {
+//       firstName,
+//       lastName,
+//       gender,
+//       dob,
+//       fos,
+//       phoneNumber,
+//       email,
+//       password,
+//       type,
+//       status,
+//     } = req.body;
+//     // console.log(email);
+//     // Check if the user already exists with the provided email
+//     const existingUser = await User.findOne({ email });
+
+//     if (existingUser) {
+//       return res
+//         .status(400)
+//         .json({ message: "User already exists with this email" });
+//     }
+
+//     // Hash the user's password and security answer
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     // Create a new user
+//     const user = new User({
+//       firstName,
+//       lastName,
+//       gender,
+//       dob,
+//       fos,
+//       phoneNumber,
+//       email,
+//       password: hashedPassword,
+//       type,
+//       status,
+//       createdDate: new Date(),
+//       updateDate: new Date(),
+//     });
+
+//     // Save the user to the database
+//     await user.save();
+//     res.status(201).json({ message: "User registered successfully", user });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
+//change agorithm of signup
 export const signUpUser = async (req, res) => {
   try {
     const {
@@ -457,9 +512,20 @@ export const updateUserFull = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(_id, updatedUserData, {
       new: true,
     });
-
+    const token = jwt.sign(
+      {
+        _id: updatedUser._id,
+        email: updatedUser.email,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        type: updatedUser.type,
+        fos: updatedUser.fos,
+      },
+      process.env.JWT_SECRET
+    );
     res.status(200).json({
       message: "Updated successfully",
+      token,
       user: updatedUser,
     });
   } catch (error) {
@@ -480,6 +546,175 @@ export const getUsersTeacher = async (req, res) => {
 
     // Send all users as the response
     res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getUsersByType = async (req, res) => {
+  try {
+    const type = Number(req.query.type);
+    // console.log("Converted Type:", type);
+
+    if (isNaN(type)) {
+      return res.status(400).json({ message: "Invalid type provided" });
+    }
+
+    // const users = await User.find({ type: type, status: true }).sort({
+    //   firstName: 1,
+    // });
+    let query = { status: true };
+
+    if (type !== 7) {
+      query.type = type;
+    }
+
+    const users = await User.find(query).sort({
+      firstName: 1,
+    });
+
+    if (!users.length) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getUsersActive = async (req, res) => {
+  try {
+    const users = await User.find({ status: true });
+
+    if (users.length === 0) {
+      return res.status(404).json({ message: "No active users found" });
+    }
+
+    // Send all users as the response
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getUsersToday = async (req, res) => {
+  try {
+    // Get the start and end of today
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+
+    // Find users with status true who registered today
+    const users = await User.find({
+      // status: true,
+      createdDate: { $gte: startOfToday, $lt: endOfToday },
+    });
+
+    if (users.length === 0) {
+      return res.status(404).json({ message: "No active users found today" });
+    }
+
+    // Send all active users registered today as the response
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error fetching active users registered today:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getUsersParent = async (req, res) => {
+  try {
+    const users = await User.find({ type: 4, status: true }).sort({
+      createdDate: -1,
+    });
+    //const users = await User.find({ type: 2 }).sort({ firstName: 1 });
+
+    if (!users.length) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    // Send all users as the response
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getUsersAdmin = async (req, res) => {
+  try {
+    const users = await User.find({ type: 1, status: true }).sort({
+      createdDate: -1,
+    });
+    //const users = await User.find({ type: 2 }).sort({ firstName: 1 });
+
+    if (!users.length) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    // Send all users as the response
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getUsersNo = async (req, res) => {
+  try {
+    const users = await User.find({ type: null, status: true }).sort({
+      createdDate: -1,
+    });
+    //const users = await User.find({ type: 2 }).sort({ firstName: 1 });
+
+    if (!users.length) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    // Send all users as the response
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getUsersByCriteria = async (req, res) => {
+  try {
+    const { type, gender, status, startDate, endDate } = req.query;
+
+    // Validate date range
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+      return res
+        .status(400)
+        .json({ message: "startDate cannot be greater than endDate" });
+    }
+
+    // Build the search criteria
+    const criteria = {};
+    if (type) {
+      criteria.type = Number(type);
+    }
+    if (gender) {
+      criteria.gender = { $regex: new RegExp(`^${gender}$`, "i") };
+    }
+    if (status) {
+      criteria.status = status === "true";
+    }
+    if (startDate && endDate) {
+      criteria.createdDate = {
+        $gte: new Date(startDate).toLocaleDateString(),
+        $lte: new Date(endDate).toLocaleDateString(),
+      };
+    } else if (startDate) {
+      criteria.createdDate = { $gte: new Date(startDate) };
+    } else if (endDate) {
+      criteria.createdDate = { $lte: new Date(endDate) };
+    }
+    //console.log(criteria);
+    // Perform the search with the criteria
+    const user = await User.find(criteria);
+
+    res.status(200).json(user);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });

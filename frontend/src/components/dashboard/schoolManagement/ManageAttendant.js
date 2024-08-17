@@ -1,16 +1,23 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormattedDate from "../FormattedDate";
 import Slidebar from "../partial/Slidebar";
 import Main from "../partial/Main";
+import { UserContext } from "../../../ctx/UserContextProvider";
 
 const apiUrl = process.env.REACT_APP_APIURL;
 const ManageAttendant = () => {
+  const { user, token } = useContext(UserContext);
+  const UserID = user._id;
+  const decodedToken = jwtDecode(token);
+  const UserType = decodedToken.type;
   const [userStudent, setUserStudent] = useState([]);
   const [attendantStudent, setAttendantStudent] = useState([]);
   const [ourCourse, setOurCourse] = useState([]);
+  const [userTeacher, setUserTeacher] = useState([]);
   const [selectedText, setSelectedText] = useState("");
   const [attId, setAttId] = useState(null);
   const [formData, setFormData] = useState({
@@ -29,7 +36,15 @@ const ManageAttendant = () => {
     } catch (error) {}
   };
   const [teams2, setTeams2] = useState([]);
+  const getTeacher = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}api/users/getUsersTeacher`);
 
+      setUserTeacher(response.data);
+    } catch (error) {
+    } finally {
+    }
+  };
   const handleChange2 = async (e) => {
     const { name, value, type } = e.target;
     setFormData((prevFormData) => ({
@@ -37,18 +52,56 @@ const ManageAttendant = () => {
       [name]: value,
     }));
 
+    // if (type === "select-one") {
+    //   const selectedOptionText = e.target.options[e.target.selectedIndex].text;
+    //   setSelectedText(selectedOptionText);
+    // }
     if (type === "select-one") {
       const selectedOptionText = e.target.options[e.target.selectedIndex].text;
-      setSelectedText(selectedOptionText);
+      const marketingText = selectedOptionText.split(" || ")[0].trim();
+      setSelectedText(marketingText);
     }
 
     try {
+      // Fetch class enrollment data
       const response = await axios.get(
         `${apiUrl}api/classenrollment/getClassenrollmentById/${value}`
       );
 
-      setTeams2(response.data);
-    } catch (error) {}
+      const fetchedTeams = response.data;
+      setTeams2(fetchedTeams);
+
+      for (const user of fetchedTeams) {
+        const attendant = attendantStudent.find(
+          (attendant) =>
+            attendant.student_id === user.student_id &&
+            attendant.course_id === user.course_id
+        );
+        const student = userStudent.find(
+          (student) => student._id === user.student_id
+        );
+        const firstName = student?.firstName;
+        const lastName = student?.lastName;
+        const studentId = user.student_id;
+        const courseId = user.course_id;
+        const coursename = e.target.options[e.target.selectedIndex].text
+          .split(" || ")[0]
+          .trim();
+        if (!attendant) {
+          const courseData = {
+            // student_id: user.student_id,
+            // course_id: user.course_id,
+            student_id: studentId,
+            studentname: `${firstName} ${lastName}`,
+            course_id: courseId,
+            coursename: coursename,
+          };
+          await axios.post(`${apiUrl}api/attendent/register`, courseData);
+        }
+      }
+    } catch (error) {
+      console.error("Error occurred while making requests:", error);
+    }
   };
 
   const getUsersStudent = async () => {
@@ -71,9 +124,10 @@ const ManageAttendant = () => {
     } finally {
     }
   };
+
   const getCourse = async () => {
     try {
-      const response = await axios.get(`${apiUrl}api/course/getCourse`);
+      const response = await axios.get(`${apiUrl}api/course/getCourseStatus`);
 
       setOurCourse(response.data);
     } catch (error) {
@@ -104,6 +158,7 @@ const ManageAttendant = () => {
 
   useEffect(() => {
     getUsersStudent();
+    getTeacher();
     getCourse();
     getAttendantToday();
     //getClassEnrollment();
@@ -133,11 +188,53 @@ const ManageAttendant = () => {
                       >
                         <option value="">Select course name...</option>
 
-                        {ourCourse.map((user, i) => (
+                        {/* {ourCourse.map((user, i) => (
                           <option value={user._id} key={user._id} className="">
                             {user.coursename}
                           </option>
-                        ))}
+                        ))} */}
+                        {UserType === 1 &&
+                          ourCourse.map((user, i) => (
+                            <option
+                              value={user._id}
+                              key={user._id}
+                              className="capitalize"
+                            >
+                              {user.coursename} || {" Teacher : "}
+                              {
+                                userTeacher.find(
+                                  (teacher) => teacher._id === user.teacherid
+                                )?.firstName
+                              }{" "}
+                              {
+                                userTeacher.find(
+                                  (teacher) => teacher._id === user.teacherid
+                                )?.lastName
+                              }
+                            </option>
+                          ))}
+                        {UserType === 2 &&
+                          ourCourse
+                            .filter((item) => item.teacherid === UserID)
+                            .map((user, i) => (
+                              <option
+                                value={user._id}
+                                key={user._id}
+                                className="capitalize"
+                              >
+                                {user.coursename} || {" Teacher : "}
+                                {
+                                  userTeacher.find(
+                                    (teacher) => teacher._id === user.teacherid
+                                  )?.firstName
+                                }{" "}
+                                {
+                                  userTeacher.find(
+                                    (teacher) => teacher._id === user.teacherid
+                                  )?.lastName
+                                }
+                              </option>
+                            ))}
                       </select>
                     </dd>
                   </div>
@@ -202,7 +299,7 @@ const ManageAttendant = () => {
                       </label>
                     </div>
                   </td>
-                  <td className="px-6 py-4 uppercase text-center text-blue-800">
+                  <td className="px-6 py-4 uppercase text-center text-blue-800 font-bold">
                     {
                       userStudent.find(
                         (student) => student._id === user.student_id
@@ -259,22 +356,17 @@ const ManageAttendant = () => {
                       (attendant) =>
                         attendant.student_id === user.student_id &&
                         attendant.course_id === user.course_id
-                      // && attendant.attendantdate === new Date().toString()
                     )?.isattend ? (
                       <button
                         type="button"
-                        // onClick={() => alert("Hello")}
                         onClick={async () => {
                           const attendant = attendantStudent.find(
                             (attendant) =>
                               attendant.student_id === user.student_id &&
                               attendant.course_id === user.course_id
-                            // && attendant.attendantdate === new Date().toString()
                           );
 
                           if (attendant) {
-                            //console.log(attendant._id);
-                            //setAttId(attendant._id);
                             try {
                               const updatedUserData = {
                                 updateDate: new Date(),
@@ -289,8 +381,6 @@ const ManageAttendant = () => {
                                 autoClose: 1000,
                               });
 
-                              // handleReset();
-                              // getTeam();
                               getClassEnrollment();
                             } catch (error) {
                               toast.error("Cannot update. Please try again.", {
@@ -312,12 +402,9 @@ const ManageAttendant = () => {
                             (attendant) =>
                               attendant.student_id === user.student_id &&
                               attendant.course_id === user.course_id
-                            // && attendant.attendantdate === new Date().toString()
                           );
 
                           if (attendant) {
-                            //console.log(attendant._id);
-                            //setAttId(attendant._id);
                             try {
                               const updatedUserData = {
                                 updateDate: new Date(),
@@ -332,8 +419,6 @@ const ManageAttendant = () => {
                                 autoClose: 1000,
                               });
 
-                              // handleReset();
-                              // getTeam();
                               getClassEnrollment();
                             } catch (error) {
                               toast.error("Cannot update. Please try again.", {

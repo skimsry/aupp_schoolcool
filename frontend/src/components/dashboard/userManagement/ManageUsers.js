@@ -276,19 +276,19 @@ function ManageUsers() {
               <th scope="col" className="px-6 py-3">
                 Name
               </th>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3 text-center">
                 Gender
               </th>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3 text-center">
                 Date of Birth
               </th>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3 text-center">
                 Role
               </th>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3 text-center">
                 Phone Number
               </th>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3 text-center">
                 Create Date
               </th>
               <th scope="col" className="px-6 py-3">
@@ -316,18 +316,15 @@ function ManageUsers() {
                   <i className="ri-user-3-line text-blue-500 text-2xl"></i>
                   <div className="ps-3">
                     <div className="text-base font-semibold uppercase">
-                      {/* {`${capitalize(user.firstName)} ${capitalize(
-                        user.lastName
-                      )}`} */}
                       {`${user.firstName} ${user.lastName}`}
                     </div>
-                    <div className="font-normal text-gray-500">
+                    <div className="font-normal text-blue-500">
                       {user.email}
                     </div>
                   </div>
                 </th>
-                {/* <td className="px-6 py-4">{user.gender}</td> */}
-                <td className="px-6 py-4">
+
+                <td className="px-6 py-4 text-center">
                   {user.gender === "M"
                     ? "Male"
                     : user.gender === "F"
@@ -337,11 +334,11 @@ function ManageUsers() {
                     : ""}
                 </td>
 
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-center">
                   <FormattedDate date={user.dob} />
                 </td>
-                {/* <td className="px-6 py-4">{user.type}</td> */}
-                <td className="px-6 py-4">
+
+                <td className="px-6 py-4 text-center">
                   {user.type === 1
                     ? "Administrator"
                     : user.type === 2
@@ -352,8 +349,8 @@ function ManageUsers() {
                     ? "Parent"
                     : ""}
                 </td>
-                <td className="px-6 py-4">{user.phoneNumber}</td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-center">{user.phoneNumber}</td>
+                <td className="px-6 py-4 text-center">
                   <FormattedDate date={user.createdDate} />
                 </td>
                 <td className="px-6 py-4">

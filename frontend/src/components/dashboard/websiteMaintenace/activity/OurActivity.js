@@ -367,10 +367,10 @@ const OurActivity = () => {
                 Content
               </th>
 
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3 text-center">
                 Post Date
               </th>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3 text-center">
                 Action
               </th>
             </tr>
@@ -391,13 +391,15 @@ const OurActivity = () => {
                 <td className="px-6 py-4 w-48">
                   <img id={user._id} src={user.imgcover} alt={user.name} />
                 </td>
-                <td className="px-6 py-4 w-56">{user.title}</td>
+                <td className="px-6 py-4 w-56 text-blue-500 font-bold">
+                  {user.title}
+                </td>
 
                 <td className="px-6 py-4 w-96">{user.content}</td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-center">
                   <FormattedDate date={user.createdDate} />
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-center">
                   <button
                     type="button"
                     key={user._id}

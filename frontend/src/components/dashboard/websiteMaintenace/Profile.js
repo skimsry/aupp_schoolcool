@@ -25,6 +25,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
+  const [gpassword, setGpassword] = useState("");
   const path = useLocation();
   const path_dashboard = path.pathname.startsWith("/")
     ? path.pathname.slice(9)
@@ -46,6 +47,28 @@ const Profile = () => {
     updateDate: "",
   });
   const apiUrl = process.env.REACT_APP_APIURL;
+  const generatePassword = () => {
+    let charset = "";
+    charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    charset += "abcdefghijklmnopqrstuvwxyz";
+    charset += "0123456789";
+    charset += "!@#$%^&*";
+
+    let password = "";
+    for (let i = 0; i < 8; i++) {
+      password += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    setGpassword(password);
+    setFormData({
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      gender: formData.gender,
+      dob: formData.dob,
+      phoneNumber: formData.phoneNumber,
+      password: password,
+      updateDate: new Date(),
+    });
+  };
   const handleChange = (e) => {
     const { name, type, checked, value } = e.target;
     setFormData((prevFormData) => ({
@@ -231,7 +254,9 @@ const Profile = () => {
         `${apiUrl}api/users/updateFull/${path_dashboard}`,
         updatedUserData // No need to stringify here; axios will handle it
       );
+      //console.log(response.data);
       updateUser(response.data.user, response.data.token);
+
       //setUser(updatedUserData);
       // Notify user of success
       toast.success("Profile updated successfully.", {
@@ -450,11 +475,19 @@ const Profile = () => {
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Password <span className="text-red-500">*</span>
-                  <span className="text-red-500">
+                  {/* <span className="text-red-500">
                     {" ( "}
                     Default password will generate {' " '}123!@#thawat
                     {' " '}. Please change it!{" ) "}
-                  </span>
+                  </span> */}
+                  <button
+                    type="button"
+                    onClick={generatePassword}
+                    class="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Password Generate
+                  </button>
+                  <span class="text-red-600"> {gpassword} </span>
                 </label>
                 <input
                   type="password"
