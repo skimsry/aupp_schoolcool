@@ -250,6 +250,7 @@ const Main = () => {
           <Route path="/about_us" element={<AboutUs />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
         {isAuthenticated ? (
           <Routes>
@@ -398,7 +399,7 @@ const Main = () => {
           </Routes>
         ) : (
           <Routes>
-            <Route path="/login" element={<Login />} />
+            {/* <Route path="/login" element={<Login />} /> */}
             <Route path="/dashboard" element={<Navigate to="/login" />} />
             <Route path="/updateUser/:userId" element={<Login />} />
             <Route path="/addNewUser/:?" element={<Login />} />
