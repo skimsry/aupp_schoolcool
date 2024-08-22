@@ -219,12 +219,9 @@ const ManageScore = () => {
     //     parseFloat(formData.final)
     // );
     if (
-      // formData.assignment > 20 ||
-      // formData.midterm > 30 ||
-      // formData.final > 50
-      parseFloat(formData.assignment) +
-        parseFloat(formData.midterm) +
-        parseFloat(formData.final) >
+      (formData.assignment ? parseFloat(formData.assignment) : 0) +
+        (formData.midterm ? parseFloat(formData.midterm) : 0) +
+        (formData.final ? parseFloat(formData.final) : 0) >
       100
     ) {
       toast.error(
@@ -243,17 +240,28 @@ const ManageScore = () => {
       } else {
         setAlert(true);
         try {
+          // const courseData = {
+          //   course_id: formData.course_id,
+          //   coursename: selectedText,
+          //   student_id: formData.student_id,
+          //   studentname: selectedText2,
+          //   // assignment: parseInt(formData.assignment, 10),
+          //   // midterm: parseInt(formData.midterm, 10),
+          //   // final: parseInt(formData.final, 10),
+          //   assignment: parseFloat(formData.assignment),
+          //   midterm: parseFloat(formData.midterm),
+          //   final: parseFloat(formData.final),
+          //   createdDate: new Date(),
+          //   updateDate: new Date(),
+          // };
           const courseData = {
             course_id: formData.course_id,
             coursename: selectedText,
             student_id: formData.student_id,
             studentname: selectedText2,
-            // assignment: parseInt(formData.assignment, 10),
-            // midterm: parseInt(formData.midterm, 10),
-            // final: parseInt(formData.final, 10),
-            assignment: parseFloat(formData.assignment),
-            midterm: parseFloat(formData.midterm),
-            final: parseFloat(formData.final),
+            assignment: parseFloat(formData.assignment) || 0,
+            midterm: parseFloat(formData.midterm) || 0,
+            final: parseFloat(formData.final) || 0,
             createdDate: new Date(),
             updateDate: new Date(),
           };
@@ -363,9 +371,9 @@ const ManageScore = () => {
     e.preventDefault();
 
     if (
-      parseFloat(formData.assignment) +
-        parseFloat(formData.midterm) +
-        parseFloat(formData.final) >
+      (formData.assignment ? parseFloat(formData.assignment) : 0) +
+        (formData.midterm ? parseFloat(formData.midterm) : 0) +
+        (formData.final ? parseFloat(formData.final) : 0) >
       100
     ) {
       toast.error("Please check score limitation. Cannot bigger than 100.", {
@@ -388,9 +396,12 @@ const ManageScore = () => {
           // assignment: parseInt(formData.assignment, 10),
           // midterm: parseInt(formData.midterm, 10),
           // final: parseInt(formData.final, 10),
-          assignment: parseFloat(formData.assignment),
-          midterm: parseFloat(formData.midterm),
-          final: parseFloat(formData.final),
+          // assignment: parseFloat(formData.assignment),
+          // midterm: parseFloat(formData.midterm),
+          // final: parseFloat(formData.final),
+          assignment: parseFloat(formData.assignment) || 0,
+          midterm: parseFloat(formData.midterm) || 0,
+          final: parseFloat(formData.final) || 0,
           updateDate: new Date(),
         };
 

@@ -46,13 +46,18 @@ const Activities = () => {
           <h2 className="text-3xl font-bold tracking-tight text-blue-800 sm:text-4xl">
             From the activities
           </h2>
-          {mactivity.map((item) => (
-            <p className="mt-2 text-lg leading-8 text-gray-600">{item.text}</p>
+          {mactivity.map((item, index) => (
+            <p key={index} className="mt-2 text-lg leading-8 text-gray-600">
+              {item.text}
+            </p>
           ))}
         </div>
         <div className="text-left mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
           {activity.map((activity, index) => (
-            <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <div
+              key={index}
+              className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+            >
               <a href="#" onClick={() => openModal(activity)}>
                 <img className="rounded-t-lg" alt="" src={activity.imgcover} />
               </a>

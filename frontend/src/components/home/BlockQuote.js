@@ -16,8 +16,11 @@ const BlockQuote = () => {
   }, [apiUrl]);
   return (
     <>
-      {tslideshow.map((item) => (
-        <blockquote className="w-1/2 relative border-s-4 ps-4 sm:ps-6 dark:border-neutral-700 pt-10 ms-4">
+      {tslideshow.map((item, index) => (
+        <blockquote
+          key={index}
+          className="w-1/2 relative border-s-4 ps-4 sm:ps-6 dark:border-neutral-700 pt-10 ms-4"
+        >
           <p className="text-gray-800 sm:text-xl dark:text-white">
             <em>{item.slogantext}</em>
           </p>

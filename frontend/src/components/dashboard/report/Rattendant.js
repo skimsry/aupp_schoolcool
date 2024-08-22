@@ -375,37 +375,34 @@ const Rattendant = () => {
                             ))}
 
                         {/* student */}
-                        {UserType === 3 ||
-                          (UserType === 4 &&
-                            ourCourse.map((user) => (
-                              <option
-                                value={user.course_id}
-                                key={user._id}
-                                className="capitalize"
-                              >
-                                {user.course_name} || {" Teacher : "}
-                                {
-                                  userTeacher.find(
-                                    (teacher) =>
-                                      teacher._id ===
-                                      classStudent.find(
-                                        (course) =>
-                                          course._id === user.course_id
-                                      )?.teacherid
-                                  )?.firstName
-                                }{" "}
-                                {
-                                  userTeacher.find(
-                                    (teacher) =>
-                                      teacher._id ===
-                                      classStudent.find(
-                                        (course) =>
-                                          course._id === user.course_id
-                                      )?.teacherid
-                                  )?.lastName
-                                }
-                              </option>
-                            )))}
+                        {(UserType === 3 || UserType === 4) &&
+                          ourCourse.map((user) => (
+                            <option
+                              value={user.course_id}
+                              key={user._id}
+                              className="capitalize"
+                            >
+                              {user.course_name} || {" Teacher : "}
+                              {
+                                userTeacher.find(
+                                  (teacher) =>
+                                    teacher._id ===
+                                    classStudent.find(
+                                      (course) => course._id === user.course_id
+                                    )?.teacherid
+                                )?.firstName
+                              }{" "}
+                              {
+                                userTeacher.find(
+                                  (teacher) =>
+                                    teacher._id ===
+                                    classStudent.find(
+                                      (course) => course._id === user.course_id
+                                    )?.teacherid
+                                )?.lastName
+                              }
+                            </option>
+                          ))}
                       </select>
                     </dd>
                   </div>

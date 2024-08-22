@@ -365,8 +365,8 @@ function AddUser() {
         phoneNumber: response.data.phoneNumber,
         type: response.data.type,
         email: response.data.email,
-        password: "123!@#thawat",
-        rePassword: "123!@#thawat",
+        // password: "123!@#thawat",
+        // rePassword: "123!@#thawat",
         status: response.data.status,
         createdDate: response.data.createdDate,
         updateDate: response.data.updateDate,
@@ -420,51 +420,56 @@ function AddUser() {
         autoClose: 3000,
       });
     } else {
-      const checkStrongPassword = checkPasswordStrength(formData.password);
-      if (checkStrongPassword === "weak") {
-        toast.error("Your password is not strong enough. Please try again!", {
-          position: "bottom-right",
-          autoClose: 2000,
-        });
-      } else {
-        try {
-          const updatedUserData = {
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            gender: formData.gender,
-            dob: formData.dob,
-            fos: formData.fos,
-            phoneNumber: formData.phoneNumber,
-            password: formData.password,
-            type: formData.type,
-            status: formData.status,
-            updateDate: new Date(),
-          };
-
-          const response = await axios.put(
-            `${apiUrl}api/users/updateFull/${userId}`, // userId should be passed here
-            updatedUserData
-          );
-          toast.success("Updated successfully.", {
-            position: "bottom-right",
-            autoClose: 1000,
-          });
-          setTimeout(() => {
-            if (userId === user._id) {
-              updateUser(response.data.user, response.data.token);
-              logout();
-            }
-            navigate("/manageUsers");
-          }, 1000);
-        } catch (error) {
-          setLoading(false);
-          toast.error("Cannot update this account. Please try again.", {
+      if (formData.password) {
+        const checkStrongPassword = checkPasswordStrength(formData.password);
+        if (checkStrongPassword === "weak") {
+          toast.error("Your password is not strong enough. Please try again!", {
             position: "bottom-right",
             autoClose: 2000,
           });
-        } finally {
           setLoading(false);
+          return; // Exit early if password is weak
         }
+      }
+
+      try {
+        const updatedUserData = {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          gender: formData.gender,
+          dob: formData.dob,
+          fos: formData.fos,
+          phoneNumber: formData.phoneNumber,
+          // password: formData.password,
+          ...(formData.password && { password: formData.password }),
+          type: formData.type,
+          status: formData.status,
+          updateDate: new Date(),
+        };
+
+        const response = await axios.put(
+          `${apiUrl}api/users/updateFull/${userId}`, // userId should be passed here
+          updatedUserData
+        );
+        toast.success("Updated successfully.", {
+          position: "bottom-right",
+          autoClose: 1000,
+        });
+        setTimeout(() => {
+          if (userId === user._id) {
+            updateUser(response.data.user, response.data.token);
+            logout();
+          }
+          navigate("/manageUsers");
+        }, 1000);
+      } catch (error) {
+        setLoading(false);
+        toast.error("Cannot update this account. Please try again.", {
+          position: "bottom-right",
+          autoClose: 2000,
+        });
+      } finally {
+        setLoading(false);
       }
     }
   };

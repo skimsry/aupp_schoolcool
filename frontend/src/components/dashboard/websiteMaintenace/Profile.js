@@ -139,8 +139,8 @@ const Profile = () => {
         phoneNumber: response.data.phoneNumber,
         type: response.data.type,
         email: response.data.email,
-        password: "123!@#thawat",
-        rePassword: "123!@#thawat",
+        // password: "123!@#thawat",
+        // rePassword: "123!@#thawat",
         status: response.data.status,
         createdDate: response.data.createdDate,
         updateDate: response.data.updateDate,
@@ -223,16 +223,17 @@ const Profile = () => {
       setLoading(false);
       return; // Exit early if validation fails
     }
-
-    // Check password strength
-    const passwordStrength = checkPasswordStrength(formData.password);
-    if (passwordStrength === "weak") {
-      toast.error("Your password is not strong enough. Please try again!", {
-        position: "bottom-right",
-        autoClose: 2000,
-      });
-      setLoading(false);
-      return; // Exit early if password is weak
+    if (formData.password) {
+      // Check password strength
+      const passwordStrength = checkPasswordStrength(formData.password);
+      if (passwordStrength === "weak") {
+        toast.error("Your password is not strong enough. Please try again!", {
+          position: "bottom-right",
+          autoClose: 2000,
+        });
+        setLoading(false);
+        return; // Exit early if password is weak
+      }
     }
 
     try {
@@ -242,7 +243,8 @@ const Profile = () => {
         gender: formData.gender,
         dob: formData.dob,
         phoneNumber: formData.phoneNumber,
-        password: formData.password,
+        // password: formData.password,
+        ...(formData.password && { password: formData.password }),
         updateDate: new Date(),
       };
 
